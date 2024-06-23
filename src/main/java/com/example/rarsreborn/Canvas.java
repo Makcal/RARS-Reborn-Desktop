@@ -1,41 +1,49 @@
 package com.example.rarsreborn;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.scene.DirectionalLight;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
+// 4D5156 - Light grey
+// 2B2D30 - Dark grey
 
 public class Canvas extends Application {
     Pane root = new Pane();
+
+    // Panels creating
+    Rectangle codePart = createEditorPart();
+    Rectangle terminalPart = createTerminalPart();
+    Rectangle managePanel = createManagePanel();
+    Rectangle statePanel = createStatePanel();
+    Rectangle registersPart = createRegistersPart();
+
+    // Buttons creating
+    Button editButton = createEditButton();
+    Button executeButton = createExecuteButton();
+    Button registerButton = createRegistersButton();
+    Button floatingButton = createFloatingPointButton();
+    Button statusButton = createControlStatusButton();
+    Button menuButton = createMenuButton();
+    Button runButton = createRunButton();
+    Button debugButton = createDebugButton();
+    Button stopButton = createStopButton();
+    Button saveButton = createSaveButton();
+    Rectangle menuPanel = menuPanel();
+    private boolean menuState = false;
 
     public Canvas() {
 
     }
 
     public void start(Stage primaryStage) {
-        Rectangle codePart = createEditorPart();
-        Rectangle terminalPart = createTerminalPart();
-        Rectangle managePanel = createManagePanel();
-        Rectangle statePanel = createStatePanel();
-        Rectangle registersPart = createRegistersPart();
-
-
-        // Buttons creating
-        Button editButton = createEditButton();
-        Button executeButton = createExecuteButton();
-        Button registerButton = createRegistersButton();
-        Button floatingButton = createFloatingPointButton();
-        Button statusButton = createControlStatusButton();
-        Button menuButton = createMenuButton();
-        Button runButton = createRunButton();
-        Button debugButton = createDebugButton();
-        Button stopButton = createStopButton();
-        Button saveButton = createSaveButton();
-
         Scene scene = new Scene(root, 1280.0, 720.0);
         primaryStage.setTitle("Initial");
         primaryStage.setScene(scene);
@@ -44,9 +52,9 @@ public class Canvas extends Application {
 
     private Button createEditButton() {
         Button editButton = new Button("Edit");
-        editButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
+        editButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #4D5156");
         editButton.setTextFill(Color.WHITE);
-        editButton.setOnAction(this::handleClickEditBtn);
+        editButton.setOnAction(event -> changeEditExecuteColor(editButton));
         editButton.setScaleX(1.4);
         editButton.setScaleY(1.2);
         editButton.setLayoutX(7.0);
@@ -59,7 +67,7 @@ public class Canvas extends Application {
         Button executeButton = new Button("Execute");
         executeButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
         executeButton.setTextFill(Color.WHITE);
-        executeButton.setOnAction(this::handleClickExecuteBtn);
+        executeButton.setOnAction(event -> changeEditExecuteColor(executeButton));
         executeButton.setScaleX(1.1);
         executeButton.setScaleY(1.2);
         executeButton.setLayoutX(55.0);
@@ -68,12 +76,40 @@ public class Canvas extends Application {
         return executeButton;
     }
 
+    private void changeEditExecuteColor(Button clickedButton) {
+        if (clickedButton == editButton) {
+            editButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+            executeButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+        } else {
+            editButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            executeButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+        }
+    }
+
+    private void changeRegistersPanelColor(Button clickedButton) {
+        if (clickedButton == registerButton) {
+            registerButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+            floatingButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            statusButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+        } else if (clickedButton == floatingButton) {
+            floatingButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+            registerButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            statusButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+        } else {
+            statusButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+            registerButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            floatingButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+        }
+    }
+
+
     private Button createRegistersButton() {
         Button registersButton = new Button("Registers");
         registersButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
         registersButton.setTextFill(Color.WHITE);
-        registersButton.setOnAction(this::handleClickRegistersBtn);
-        registersButton.setLayoutX(1025.0);
+        registersButton.setOnAction(event -> changeRegistersPanelColor(registersButton));
+        registersButton.setLayoutX(940.0);
+        registersButton.setScaleX(1.5);
         registersButton.setScaleY(1.15);
         registersButton.setLayoutY(45.0);
         root.getChildren().add(registersButton);
@@ -84,10 +120,10 @@ public class Canvas extends Application {
         Button floatingButton = new Button("Floating point");
         floatingButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
         floatingButton.setTextFill(Color.WHITE);
-        floatingButton.setOnAction(this::handleClickFloatingBtn);
-        floatingButton.setLayoutX(1092.0);
+        floatingButton.setOnAction(event -> changeRegistersPanelColor(floatingButton));
+        floatingButton.setLayoutX(1027.0);
+        floatingButton.setScaleX(1.05);
         floatingButton.setScaleY(1.15);
-        floatingButton.setScaleX(1.0);
         floatingButton.setLayoutY(45.0);
         root.getChildren().add(floatingButton);
         return floatingButton;
@@ -97,10 +133,10 @@ public class Canvas extends Application {
         Button controlStatusButton = new Button("Control and status");
         controlStatusButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
         controlStatusButton.setTextFill(Color.WHITE);
-        controlStatusButton.setOnAction(this::handleClickStatusBtn);
-        controlStatusButton.setLayoutX(1176.0);
+        controlStatusButton.setOnAction(event -> changeRegistersPanelColor(controlStatusButton));
+        controlStatusButton.setLayoutX(1143.0);
+        controlStatusButton.setScaleX(1.34);
         controlStatusButton.setScaleY(1.15);
-        controlStatusButton.setScaleX(0.85);
         controlStatusButton.setLayoutY(45.0);
         root.getChildren().add(controlStatusButton);
         return controlStatusButton;
@@ -110,7 +146,7 @@ public class Canvas extends Application {
         Button runButton = new Button("Run");
         runButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
         runButton.setTextFill(Color.GREENYELLOW);
-        runButton.setOnAction(this::handleClickRunBtn);
+        runButton.setOnAction(event -> changeTopPanelButtonsColor(runButton));
         runButton.setLayoutX(50.0);
         runButton.setLayoutY(7.0);
         root.getChildren().add(runButton);
@@ -121,7 +157,7 @@ public class Canvas extends Application {
         Button debugButton = new Button("Debug");
         debugButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
         debugButton.setTextFill(Color.GREENYELLOW);
-        debugButton.setOnAction(this::handleClickDebugBtn);
+        debugButton.setOnAction(event -> changeTopPanelButtonsColor(debugButton));
         debugButton.setLayoutX(95.0);
         debugButton.setLayoutY(7.0);
         root.getChildren().add(debugButton);
@@ -132,7 +168,7 @@ public class Canvas extends Application {
         Button stopButton = new Button("Stop");
         stopButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
         stopButton.setTextFill(Color.RED);
-        stopButton.setOnAction(this::handleClickStopBtn);
+        stopButton.setOnAction(event -> changeTopPanelButtonsColor(stopButton));
         stopButton.setLayoutX(155.0);
         stopButton.setLayoutY(7.0);
         root.getChildren().add(stopButton);
@@ -143,15 +179,39 @@ public class Canvas extends Application {
         Button saveButton = new Button("Save");
         saveButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
         saveButton.setTextFill(Color.MEDIUMPURPLE);
-        saveButton.setOnAction(this::handleClickSaveBtn);
+        saveButton.setOnAction(event -> changeTopPanelButtonsColor(saveButton));
         saveButton.setLayoutX(205.0);
         saveButton.setLayoutY(7.0);
         root.getChildren().add(saveButton);
         return saveButton;
     }
 
+    private void changeTopPanelButtonsColor(Button clickedButton) {
+        if (clickedButton == runButton) {
+            runButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+            debugButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            saveButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            stopButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+        } else if (clickedButton == debugButton) {
+            runButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            debugButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+            saveButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            stopButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+        } else if (clickedButton == saveButton) {
+            runButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            debugButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            saveButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+            stopButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+        } else {
+            runButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            debugButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            saveButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            stopButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+        }
+    }
+
     private Rectangle createTerminalPart() {
-        Rectangle terminalPart = new Rectangle(1024.0, 135.0);
+        Rectangle terminalPart = new Rectangle(924.0, 135.0);
         terminalPart.setLayoutY(581.5);
         terminalPart.setFill(Color.web("#1E1F22"));
         terminalPart.setStroke(Color.web("#2B2D30"));
@@ -161,7 +221,7 @@ public class Canvas extends Application {
     }
 
     private Rectangle createEditorPart() {
-        Rectangle codePart = new Rectangle(1024.0, 500.0);
+        Rectangle codePart = new Rectangle(924.0, 500.0);
         codePart.setLayoutY(76.0);
         codePart.setFill(Color.web("#1E1F22"));
         codePart.setStroke(Color.web("#2B2D30"));
@@ -179,6 +239,18 @@ public class Canvas extends Application {
         return managePanel;
     }
 
+    private Rectangle createRegistersPart() {
+        Rectangle registersPart = new Rectangle(400.0, 650.0);
+        registersPart.setLayoutX(924.0);
+        registersPart.setLayoutY(78.0);
+        registersPart.setFill(Color.web("#2B2D30"));
+        registersPart.setStroke(Color.web("#1E1F22"));
+        registersPart.setStrokeWidth(2.0);
+        root.setStyle("-fx-background-color: #" + "1E1F22");
+        root.getChildren().add(registersPart);
+        return registersPart;
+    }
+
     private Rectangle createStatePanel() {
         Rectangle statePanel = new Rectangle(1280.0, 36.0);
         statePanel.setLayoutY(41.0);
@@ -189,6 +261,7 @@ public class Canvas extends Application {
         root.getChildren().add(statePanel);
         return statePanel;
     }
+
     private Button createMenuButton() {
         Rectangle menuBackground = new Rectangle(44.0, 40.5);
         menuBackground.setLayoutX(2.0);
@@ -196,7 +269,7 @@ public class Canvas extends Application {
         Button menuButton = new Button();
         menuButton.setLayoutX(2);
         menuButton.setStyle("-fx-background-color: transparent;");
-        menuButton.setOnAction(this::handleClickMenuBtn);
+        menuButton.setOnAction(event -> menuManage());
         menuButton.setScaleX(3.85);
         menuButton.setScaleY(1.8);
 
@@ -220,19 +293,30 @@ public class Canvas extends Application {
         return menuButton;
 
     }
-    private Rectangle createRegistersPart() {
-        Rectangle registersPart = new Rectangle(300.0, 650.0);
-        registersPart.setLayoutX(1024.0);
-        registersPart.setLayoutY(78.0);
-        registersPart.setFill(Color.web("#2B2D30"));
-        registersPart.setStroke(Color.web("#1E1F22"));
-        registersPart.setStrokeWidth(2.0);
-        root.setStyle("-fx-background-color: #" + "1E1F22");
-        root.getChildren().add(registersPart);
-        return registersPart;
+
+    private void menuManage() {
+        if (menuState == false) {
+            menuState = true;
+            menuPanel.setVisible(true);
+        } else {
+            menuState = false;
+            menuPanel.setVisible(false);
+        }
+    }
+
+    private Rectangle menuPanel() {
+        Rectangle menu = new Rectangle(220, 400);
+        menu.setLayoutY(40);
+        menu.setFill(Color.web("#4D5156"));
+        menu.setStroke(Color.web("#2B2D30"));
+        menu.setStrokeWidth(4.0);
+        root.getChildren().add(menu);
+        menu.setVisible(false);
+        return menu;
     }
 
     private void handleClickEditBtn(ActionEvent event) {
+
         System.out.println("Edit button clicked!");
     }
 
@@ -267,6 +351,7 @@ public class Canvas extends Application {
     private void handleClickStatusBtn(ActionEvent event) {
         System.out.println("Control and status button clicked!");
     }
+
     private void handleClickMenuBtn(ActionEvent event) {
         System.out.println("Menu button clicked!");
     }
