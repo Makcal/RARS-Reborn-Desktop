@@ -199,7 +199,7 @@ public class Canvas extends Application {
             stopButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
         } else if (clickedButton == saveButton) {
             runButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
-            runButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            debugButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
             saveButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
             stopButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
         } else {
