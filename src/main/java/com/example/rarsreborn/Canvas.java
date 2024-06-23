@@ -9,33 +9,36 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+// 4D5156 - Light grey
+// 2B2D30 - Dark grey
+
 public class Canvas extends Application {
     Pane root = new Pane();
+
+    // Panels creating
+    Rectangle codePart = createEditorPart();
+    Rectangle terminalPart = createTerminalPart();
+    Rectangle managePanel = createManagePanel();
+    Rectangle statePanel = createStatePanel();
+    Rectangle registersPart = createRegistersPart();
+
+    // Buttons creating
+    Button editButton = createEditButton();
+    Button executeButton = createExecuteButton();
+    Button registerButton = createRegistersButton();
+    Button floatingButton = createFloatingPointButton();
+    Button statusButton = createControlStatusButton();
+    Button menuButton = createMenuButton();
+    Button runButton = createRunButton();
+    Button debugButton = createDebugButton();
+    Button stopButton = createStopButton();
+    Button saveButton = createSaveButton();
 
     public Canvas() {
 
     }
 
     public void start(Stage primaryStage) {
-        Rectangle codePart = createEditorPart();
-        Rectangle terminalPart = createTerminalPart();
-        Rectangle managePanel = createManagePanel();
-        Rectangle statePanel = createStatePanel();
-        Rectangle registersPart = createRegistersPart();
-
-
-        // Buttons creating
-        Button editButton = createEditButton();
-        Button executeButton = createExecuteButton();
-        Button registerButton = createRegistersButton();
-        Button floatingButton = createFloatingPointButton();
-        Button statusButton = createControlStatusButton();
-        Button menuButton = createMenuButton();
-        Button runButton = createRunButton();
-        Button debugButton = createDebugButton();
-        Button stopButton = createStopButton();
-        Button saveButton = createSaveButton();
-
         Scene scene = new Scene(root, 1280.0, 720.0);
         primaryStage.setTitle("Initial");
         primaryStage.setScene(scene);
@@ -44,9 +47,9 @@ public class Canvas extends Application {
 
     private Button createEditButton() {
         Button editButton = new Button("Edit");
-        editButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
+        editButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #4D5156");
         editButton.setTextFill(Color.WHITE);
-        editButton.setOnAction(this::handleClickEditBtn);
+        editButton.setOnAction(event -> changeColor(editButton));
         editButton.setScaleX(1.4);
         editButton.setScaleY(1.2);
         editButton.setLayoutX(7.0);
@@ -54,12 +57,11 @@ public class Canvas extends Application {
         root.getChildren().add(editButton);
         return editButton;
     }
-
     private Button createExecuteButton() {
         Button executeButton = new Button("Execute");
         executeButton.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-background-color: #2B2D30");
         executeButton.setTextFill(Color.WHITE);
-        executeButton.setOnAction(this::handleClickExecuteBtn);
+        executeButton.setOnAction(event -> changeColor(executeButton));
         executeButton.setScaleX(1.1);
         executeButton.setScaleY(1.2);
         executeButton.setLayoutX(55.0);
@@ -67,6 +69,16 @@ public class Canvas extends Application {
         root.getChildren().add(executeButton);
         return executeButton;
     }
+    private void changeColor(Button clickedButton) {
+        if (clickedButton == editButton) {
+            editButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");  // Set white for button1
+            executeButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");  // Set black for button2
+        } else {
+            editButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");  // Set black for button1
+            executeButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");  // Set white for button2
+        }
+    }
+
 
     private Button createRegistersButton() {
         Button registersButton = new Button("Registers");
@@ -233,6 +245,7 @@ public class Canvas extends Application {
     }
 
     private void handleClickEditBtn(ActionEvent event) {
+
         System.out.println("Edit button clicked!");
     }
 
