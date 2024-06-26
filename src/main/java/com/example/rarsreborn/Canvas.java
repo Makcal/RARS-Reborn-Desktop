@@ -3,12 +3,16 @@ package com.example.rarsreborn;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.scene.DirectionalLight;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -24,6 +28,7 @@ public class Canvas extends Application {
     Rectangle managePanel = createManagePanel();
     Rectangle statePanel = createStatePanel();
     Rectangle registersPart = createRegistersPart();
+    TextArea codeTextBox = createCodeTextBox();
 
     // Buttons creating
     Button editButton = createEditButton();
@@ -41,6 +46,16 @@ public class Canvas extends Application {
 
     public Canvas() {
 
+    }
+    public TextArea createCodeTextBox() {
+        TextArea code = new TextArea();
+        code.setLayoutY(76);
+        code.setPrefWidth(924);
+        code.setPrefHeight(500);
+
+        code.setStyle("-fx-control-inner-background: #1E1F22; -fx-text-fill: white; -fx-font-size: 14pt;-fx-border-color:black; -fx-border-width: 2px");
+        root.getChildren().add(code);
+        return code;
     }
 
     public void start(Stage primaryStage) {
