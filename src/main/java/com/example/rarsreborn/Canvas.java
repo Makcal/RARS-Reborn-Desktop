@@ -7,11 +7,13 @@ import javafx.geometry.Insets;
 import javafx.scene.DirectionalLight;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -20,15 +22,19 @@ import javafx.util.Duration;
 // 2B2D30 - Dark grey
 
 public class Canvas extends Application {
-    Pane root = new Pane();
+    AnchorPane root = new AnchorPane();
 
     // Panels creating
     Rectangle codePart = createEditorPart();
+    Rectangle executeWindow = createExecuteWindow();
     Rectangle terminalPart = createTerminalPart();
     Rectangle managePanel = createManagePanel();
     Rectangle statePanel = createStatePanel();
     Rectangle registersPart = createRegistersPart();
+    Rectangle memoryWindow = createMemoryWindow();
     TextArea codeTextBox = createCodeTextBox();
+    Label memoryText;
+    Label executeText;
 
     // Buttons creating
     Button editButton = createEditButton();
@@ -53,8 +59,10 @@ public class Canvas extends Application {
         code.setPrefWidth(924);
         code.setPrefHeight(500);
 
-        code.setStyle("-fx-control-inner-background: #1E1F22; -fx-text-fill: white; -fx-font-size: 14pt;-fx-border-color:black; -fx-border-width: 2px");
+        code.setStyle("-fx-control-inner-background: #1E1F22; -fx-text-fill: white; -fx-font-size: 14pt;" +
+                "-fx-border-color:black; -fx-border-width: 2px; -fx-background-color: #2B2D30;");
         root.getChildren().add(code);
+
         return code;
     }
 
@@ -95,10 +103,88 @@ public class Canvas extends Application {
         if (clickedButton == editButton) {
             editButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
             executeButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
+            closeExecuteWindow();
+            openEditWindow();
+            closeMemoryWindow();
+            openTerminalPart();
+            codeTextBox.setVisible(true);
         } else {
             editButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #2B2D30");
             executeButton.setStyle("-fx-border-color: black; -fx-border-width: 1;-fx-background-color: #4D5156");
+            openExecuteWindow();
+            openMemoryWindow();
+            closeEditWindow();
+            closeTerminalPart();
+            codeTextBox.setVisible(false);
         }
+    }
+    private Rectangle createExecuteWindow() {
+        Rectangle executePart = new Rectangle(920, 300.0);
+        executePart.setLayoutY(76.0);
+        executePart.setFill(Color.web("#1E1F22"));
+        executePart.setStroke(Color.web("#2B2D30"));
+        executePart.setStrokeWidth(4.0);
+        executePart.setVisible(false);
+        root.getChildren().add(executePart);
+
+        executeText = new Label();
+        executeText.setText("Text segment");
+        executeText.setStyle("-fx-font-size: 25px;");
+        executeText.setTextFill(Color.WHITE);
+        executeText.setLayoutX(4);
+        executeText.setLayoutY(76);
+        executeText.setVisible(false);
+        root.getChildren().add(executeText);
+
+        return executePart;
+    }
+    private Rectangle createMemoryWindow() {
+        Rectangle memoryWindow = new Rectangle(920, 420);
+        memoryWindow.setLayoutX(3);
+        memoryWindow.setLayoutY(381);
+        memoryWindow.setFill(Color.web("#2B2D30"));
+        memoryWindow.setStroke(Color.web("#1E1F22"));
+        memoryWindow.setStrokeWidth(0.5);
+        memoryWindow.setVisible(false);
+        root.getChildren().add(memoryWindow);
+
+        memoryText = new Label();
+        memoryText.setText("Data segment");
+        memoryText.setStyle("-fx-font-size: 25px;");
+        memoryText.setTextFill(Color.WHITE);
+        memoryText.setLayoutX(4);
+        memoryText.setLayoutY(383);
+        memoryText.setVisible(false);
+        root.getChildren().add(memoryText);
+        return memoryWindow;
+    }
+    private void openTerminalPart() {
+        terminalPart.setVisible(true);
+    }
+    private void closeTerminalPart() {
+        terminalPart.setVisible(false);
+    }
+    private void openMemoryWindow(){
+        memoryWindow.setVisible(true);
+        memoryText.setVisible(true);
+    }
+    private void closeMemoryWindow(){
+        memoryWindow.setVisible(false);
+        memoryText.setVisible(false);
+    }
+    private void openEditWindow() {
+        codePart.setVisible(true);
+    }
+    private void closeEditWindow() {
+        codePart.setVisible(false);
+    }
+    private void openExecuteWindow() {
+        executeWindow.setVisible(true);
+        executeText.setVisible(true);
+    }
+    private void closeExecuteWindow() {
+        executeWindow.setVisible(false);
+        executeText.setVisible(false);
     }
 
     private void changeRegistersPanelColor(Button clickedButton) {
@@ -231,6 +317,7 @@ public class Canvas extends Application {
         terminalPart.setFill(Color.web("#1E1F22"));
         terminalPart.setStroke(Color.web("#2B2D30"));
         terminalPart.setStrokeWidth(4.0);
+        terminalPart.setVisible(true);
         root.getChildren().add(terminalPart);
         return terminalPart;
     }
@@ -241,6 +328,7 @@ public class Canvas extends Application {
         codePart.setFill(Color.web("#1E1F22"));
         codePart.setStroke(Color.web("#2B2D30"));
         codePart.setStrokeWidth(4.0);
+        codePart.setVisible(true);
         root.getChildren().add(codePart);
         return codePart;
     }
@@ -328,47 +416,6 @@ public class Canvas extends Application {
         root.getChildren().add(menu);
         menu.setVisible(false);
         return menu;
-    }
-
-    private void handleClickEditBtn(ActionEvent event) {
-
-        System.out.println("Edit button clicked!");
-    }
-
-    private void handleClickExecuteBtn(ActionEvent event) {
-        System.out.println("Execute button clicked!");
-    }
-
-    private void handleClickRunBtn(ActionEvent event) {
-        System.out.println("Run button clicked!");
-    }
-
-    private void handleClickDebugBtn(ActionEvent event) {
-        System.out.println("Debug button clicked!");
-    }
-
-    private void handleClickStopBtn(ActionEvent event) {
-        System.out.println("Stop button clicked!");
-    }
-
-    private void handleClickSaveBtn(ActionEvent event) {
-        System.out.println("Save button clicked!");
-    }
-
-    private void handleClickRegistersBtn(ActionEvent event) {
-        System.out.println("Registers button clicked!");
-    }
-
-    private void handleClickFloatingBtn(ActionEvent event) {
-        System.out.println("Floating point button clicked!");
-    }
-
-    private void handleClickStatusBtn(ActionEvent event) {
-        System.out.println("Control and status button clicked!");
-    }
-
-    private void handleClickMenuBtn(ActionEvent event) {
-        System.out.println("Menu button clicked!");
     }
 
     public static void main(String[] args) {
