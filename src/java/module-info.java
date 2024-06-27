@@ -3,6 +3,6 @@ module com.example.rarsreborn {
     requires javafx.fxml;
 
 
-    opens com.example.rarsreborn to javafx.fxml;
-    exports com.example.rarsreborn;
+    opens rarsreborn to javafx.fxml;
+    exports rarsreborn;
 }

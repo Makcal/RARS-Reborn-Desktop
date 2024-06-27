@@ -1,16 +1,13 @@
-package com.example.rarsreborn;
+package rarsreborn;
 
-import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.scene.DirectionalLight;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 // 4D5156 - Light grey
 // 2B2D30 - Dark grey
