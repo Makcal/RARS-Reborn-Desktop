@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="global-pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SplitPane dividerPositions="0.0669" orientation="VERTICAL" prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane id="tool-pane" minHeight="0.0" minWidth="0.0" prefHeight="43.0" prefWidth="598.0" style="-fx-background-color: #F7F8FA;">
+               <children>
+                  <Button id="btn-file" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="39.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@Images/Menu.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button id="btn-run" layoutX="55.0" layoutY="2.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="26.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@Images/Run.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button id="btn-debug" layoutX="86.0" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@Images/Debug.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button id="btn-sotp" layoutX="130.0" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@Images/Stop.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button id="btn-save" layoutX="177.0" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@Images/Save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+               </children></AnchorPane>
+            <SplitPane dividerPositions="0.7130872483221476" prefHeight="361.0" prefWidth="598.0">
+              <items>
+                  <SplitPane dividerPositions="0.027855153203342618, 0.7883008356545961" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
+                    <items>
+                      <AnchorPane id="file-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                        <AnchorPane id="console-pane" prefHeight="200.0" prefWidth="200.0" />
+                      <AnchorPane id="code-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                    </items>
+                  </SplitPane>
+                  <SplitPane dividerPositions="0.03064066852367688" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                    <items>
+                      <AnchorPane id="register-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                      <AnchorPane id="register-table-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                    </items>
+                  </SplitPane>
+              </items>
+            </SplitPane>
+        </items>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </SplitPane>
+   </children>
+</AnchorPane>
