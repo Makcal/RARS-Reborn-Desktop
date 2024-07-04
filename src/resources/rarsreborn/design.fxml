@@ -6,9 +6,11 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane id="global-pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rarsreborn.DesignController">
    <children>
@@ -37,7 +39,7 @@
                         <MenuItem mnemonicParsing="false" text="Exit" />
                     </items>
                      <graphic>
-                        <ImageView fitHeight="32.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@Images/Menu.png" />
                            </image>
@@ -82,7 +84,14 @@
                   <SplitPane dividerPositions="0.027855153203342618, 0.7883008356545961" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
                     <items>
                       <AnchorPane id="file-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
-                        <AnchorPane id="console-pane" prefHeight="200.0" prefWidth="200.0" />
+                        <AnchorPane id="console-pane" prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <TextArea layoutX="126.0" layoutY="42.0" prefHeight="499.0" prefWidth="908.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <font>
+                                    <Font name="Consolas" size="18.0" />
+                                 </font>
+                              </TextArea>
+                           </children></AnchorPane>
                       <AnchorPane id="code-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                     </items>
                   </SplitPane>
