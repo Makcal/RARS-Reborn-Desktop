@@ -16,7 +16,7 @@
 
 <AnchorPane id="global-pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rarsreborn.DesignController">
    <children>
-      <SplitPane dividerPositions="0.0724" orientation="VERTICAL" prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.06267409470752089" orientation="VERTICAL" prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane id="tool-pane" minHeight="0.0" minWidth="0.0" prefHeight="43.0" prefWidth="598.0" style="-fx-background-color: #F7F8FA;">
                <children>
@@ -83,7 +83,7 @@
                </children></AnchorPane>
             <SplitPane dividerPositions="0.7130872483221476" prefHeight="361.0" prefWidth="598.0">
               <items>
-                  <SplitPane dividerPositions="0.027855153203342618, 0.7883008356545961" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
+                  <SplitPane dividerPositions="0.03283582089552239, 0.7880597014925373" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
                     <items>
                       <AnchorPane id="file-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                         <AnchorPane id="console-pane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;">
@@ -94,7 +94,14 @@
                                  </font>
                               </TextArea>
                            </children></AnchorPane>
-                      <AnchorPane id="code-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                      <AnchorPane id="code-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                           <children>
+                              <TextArea fx:id="console_box" editable="false" layoutX="169.0" layoutY="-37.0" prefHeight="139.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </TextArea>
+                           </children></AnchorPane>
                     </items>
                   </SplitPane>
                   <SplitPane dividerPositions="0.03064066852367688" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
@@ -102,11 +109,11 @@
                       <AnchorPane id="register-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                       <AnchorPane id="register-table-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <TableView layoutX="32.0" layoutY="74.0" prefHeight="640.0" prefWidth="364.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="reg_table" editable="true" layoutX="32.0" layoutY="74.0" prefHeight="640.0" prefWidth="364.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columns>
-                                  <TableColumn editable="false" prefWidth="40.0" sortable="false" />
-                                  <TableColumn editable="false" prefWidth="164.0" sortable="false" />
-                                    <TableColumn editable="false" prefWidth="156.0" sortable="false" />
+                                  <TableColumn fx:id="reg_table_num" editable="false" prefWidth="40.0" sortable="false" />
+                                  <TableColumn fx:id="reg_table_name" editable="false" prefWidth="164.0" sortable="false" />
+                                    <TableColumn fx:id="reg_table_value" editable="false" prefWidth="156.0" sortable="false" />
                                 </columns>
                               </TableView>
                            </children></AnchorPane>

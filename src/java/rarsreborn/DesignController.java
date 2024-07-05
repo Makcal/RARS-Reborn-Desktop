@@ -44,6 +44,9 @@ public class DesignController {
     private MenuItem menu_item_save;
     @FXML
     private MenuItem menu_item_save_as;
+    @FXML
+    private TextArea console_box;
+
 
     @FXML
     void OnBtnRunAction(ActionEvent event)  {
@@ -58,6 +61,7 @@ public class DesignController {
         while (iterator.hasNext()){
             Register32 current = iterator.next();
             System.out.println("Register: " + current.getName() + ", value: " + current.getValue());
+            console_box.appendText("Register: " + current.getName() + ", value: " + current.getValue() + "\n");
         }
         System.out.println("===================================");
     }
