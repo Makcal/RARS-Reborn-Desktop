@@ -6,6 +6,8 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -14,18 +16,18 @@
 
 <AnchorPane id="global-pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rarsreborn.DesignController">
    <children>
-      <SplitPane dividerPositions="0.07242339832869081" orientation="VERTICAL" prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.0724" orientation="VERTICAL" prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane id="tool-pane" minHeight="0.0" minWidth="0.0" prefHeight="43.0" prefWidth="598.0" style="-fx-background-color: #F7F8FA;">
                <children>
-                  <MenuButton layoutY="2.0" mnemonicParsing="false" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                  <MenuButton fx:id="menu_btn" layoutY="2.0" mnemonicParsing="false" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="New" />
-                      <MenuItem mnemonicParsing="false" text="Open" />
-                        <MenuItem mnemonicParsing="false" text="Close" />
-                        <MenuItem mnemonicParsing="false" text="Close All" />
+                      <MenuItem fx:id="menu_item_new" mnemonicParsing="false" text="New" />
+                      <MenuItem fx:id="menu_item_open" mnemonicParsing="false" text="Open" />
+                        <MenuItem fx:id="menu_item_close" mnemonicParsing="false" text="Close" />
+                        <MenuItem fx:id="menu_item_close_all" mnemonicParsing="false" text="Close All" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Save">
+                        <MenuItem fx:id="menu_item_save" mnemonicParsing="false" text="Save">
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -34,9 +36,9 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Save As..." />
+                        <MenuItem fx:id="menu_item_save_as" mnemonicParsing="false" text="Save As..." />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Exit" />
+                        <MenuItem fx:id="menu_item_exit" mnemonicParsing="false" text="Exit" />
                     </items>
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
@@ -46,7 +48,7 @@
                         </ImageView>
                      </graphic>
                   </MenuButton>
-                  <Button id="btn-run" layoutX="48.0" layoutY="3.0" mnemonicParsing="false" onAction="#OnBtnRunAction" prefHeight="30.0" prefWidth="26.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                  <Button fx:id="btn_run" layoutX="48.0" layoutY="3.0" mnemonicParsing="false" onAction="#OnBtnRunAction" prefHeight="30.0" prefWidth="26.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -54,7 +56,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button id="btn-debug" layoutX="78.0" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                  <Button id="btn-debug" fx:id="btn_debug" layoutX="78.0" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -62,7 +64,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button id="btn-sotp" layoutX="120.0" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                  <Button fx:id="btn_break" layoutX="120.0" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -70,7 +72,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button id="btn-save" layoutX="165.0" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
+                  <Button id="btn-save" fx:id="btn_save" layoutX="165.0" layoutY="2.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;" AnchorPane.topAnchor="2.0">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -84,9 +86,9 @@
                   <SplitPane dividerPositions="0.027855153203342618, 0.7883008356545961" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
                     <items>
                       <AnchorPane id="file-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
-                        <AnchorPane id="console-pane" prefHeight="200.0" prefWidth="200.0">
+                        <AnchorPane id="console-pane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;">
                            <children>
-                              <TextArea layoutX="126.0" layoutY="42.0" prefHeight="499.0" prefWidth="908.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TextArea fx:id="code_edit_box" layoutX="126.0" layoutY="42.0" prefHeight="499.0" prefWidth="908.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <font>
                                     <Font name="Consolas" size="18.0" />
                                  </font>
@@ -98,7 +100,16 @@
                   <SplitPane dividerPositions="0.03064066852367688" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                     <items>
                       <AnchorPane id="register-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
-                      <AnchorPane id="register-table-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                      <AnchorPane id="register-table-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                           <children>
+                              <TableView layoutX="32.0" layoutY="74.0" prefHeight="640.0" prefWidth="364.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columns>
+                                  <TableColumn editable="false" prefWidth="40.0" sortable="false" />
+                                  <TableColumn editable="false" prefWidth="164.0" sortable="false" />
+                                    <TableColumn editable="false" prefWidth="156.0" sortable="false" />
+                                </columns>
+                              </TableView>
+                           </children></AnchorPane>
                     </items>
                   </SplitPane>
               </items>
