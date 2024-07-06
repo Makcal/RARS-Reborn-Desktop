@@ -83,7 +83,7 @@ public class DesignController implements Initializable {
         try {
             Presets.classical.compile(code_edit_box.getText());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            console_box.appendText(e.getMessage());
         }
         Presets.classical.run();
 //        Iterator<Register32> iterator = Presets.classical.getRegisterFile().getAllRegisters().iterator();
