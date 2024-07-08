@@ -12,7 +12,7 @@ public class RarsApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(RarsApplication.class.getResource("design.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        stage.setTitle("RARS REBORN!");
+        stage.setTitle("RARS REBORN");
         stage.setScene(scene);
         stage.show();
     }

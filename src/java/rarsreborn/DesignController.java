@@ -12,13 +12,22 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import rarsreborn.core.Presets;
+import rarsreborn.core.core.environment.StringInputDevice;
+import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.register.Register32;
+import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.events.ConsolePrintEvent;
+import rarsreborn.core.events.IObserver;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.linking.LinkingException;
+import rarsreborn.core.simulator.Simulator32;
 
+import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 
 public class DesignController implements Initializable {
@@ -63,10 +72,27 @@ public class DesignController implements Initializable {
     @FXML
     private TableColumn<Register32, Integer> reg_table_value;
 
-    ObservableList<Register32> registersList = FXCollections.observableArrayList(Presets.classical.getRegisterFile().getAllRegisters());
+    Simulator32 simulator = Presets.getClassicalRiscVSimulator(new StringInputDevice() {
+        public String requestString(int count) {
+            Scanner scanner = new Scanner(System.in);
+            String s = scanner.nextLine();
+            return s.length() <= count ? s : s.substring(0, count);
+        }
+    });
+    Register32File registers = simulator.getRegisterFile();
+    IMemory memory = simulator.getMemory();
+
+    ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        simulator.subscribeEvent(ConsolePrintEvent.class, new IObserver<ConsolePrintEvent>() {
+            public void update(ConsolePrintEvent consolePrintEvent) {
+                console_box.appendText(consolePrintEvent.text());
+            }
+        });
+
+
         reg_table_name.setCellValueFactory(new PropertyValueFactory<Register32, String>("name"));
         reg_table_num.setCellValueFactory(new PropertyValueFactory<Register32, Integer>("number"));
         reg_table_value.setCellValueFactory(new PropertyValueFactory<Register32, Integer>("value"));
@@ -81,19 +107,12 @@ public class DesignController implements Initializable {
     void OnBtnRunAction(ActionEvent event) {
         console_box.setText("");
         try {
-            Presets.classical.compile(code_edit_box.getText());
+            String content = code_edit_box.getText();
+            simulator.compile(content);
+            simulator.run();
         } catch (Exception e) {
-            console_box.appendText(e.getMessage());
+            console_box.setText(e.getMessage());
         }
-        Presets.classical.run();
-//        Iterator<Register32> iterator = Presets.classical.getRegisterFile().getAllRegisters().iterator();
-//        System.out.println("===================================");
-//        while (iterator.hasNext()) {
-//            Register32 current = iterator.next();
-//            System.out.println("Register: " + current.getName() + ", value: " + current.getValue());
-//            console_box.appendText("Register: " + current.getName() + ", value: " + current.getValue() + "\n");
-//        }
-//        System.out.println("===================================");
         updateRegistersTable();
     }
 
