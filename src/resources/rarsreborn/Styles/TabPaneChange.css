@@ -5,6 +5,12 @@
     -fx-pref-height: 30px;
 }
 
+.tab-pane .tab-header-background {
+    -fx-background-color: #F7F8FA;
+    -fx-border-width: 0.4px;
+    -fx-border-color: #BDBEBE;
+}
+
 
 .tab:selected {
     -fx-background-color: #BDBEBE; /* Set background color for the selected tab */
