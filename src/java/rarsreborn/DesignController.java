@@ -111,6 +111,9 @@ public class DesignController implements Initializable {
         reg_table_num.setCellValueFactory(new PropertyValueFactory<Register32, Integer>("number"));
         reg_table_value.setCellValueFactory(new PropertyValueFactory<Register32, Integer>("value"));
         reg_table.setItems(registersList);
+
+
+        file_tab.getTabs().remove(initial_file_tab);
     }
 
     private void updateRegistersTable() {
