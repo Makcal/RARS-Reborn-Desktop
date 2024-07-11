@@ -1,0 +1,6 @@
+.table-view .column-header-background {
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+}
