@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.StringInputDevice;
 import rarsreborn.core.core.memory.IMemory;
@@ -57,6 +58,12 @@ public class DesignController implements Initializable {
     private MenuItem menu_item_save;
     @FXML
     private MenuItem menu_item_save_as;
+    @FXML
+    private TabPane file_tab;
+    @FXML
+    private Tab initial_file_tab;
+    @FXML
+    private TextArea initial_file_textbox;
     @FXML
     private TextArea console_box;
 
@@ -116,4 +123,16 @@ public class DesignController implements Initializable {
         updateRegistersTable();
     }
 
+    @FXML
+    void OnMenuItemNewAction(ActionEvent event) {
+        Tab newTab = new Tab("NEW TAB");
+        file_tab.getTabs().add(newTab);
+        AnchorPane newAnchorPane = new AnchorPane();
+        newTab.setContent(newAnchorPane);
+        TextArea newTextArea = new TextArea();
+        newAnchorPane.getChildren().add(newTextArea);
+        newTextArea.setStyle(initial_file_textbox.getStyle());
+        newTextArea.setPrefSize(initial_file_textbox.getPrefWidth(), initial_file_textbox.getPrefHeight());
+        newTextArea.setFont(initial_file_textbox.getFont());
+    }
 }

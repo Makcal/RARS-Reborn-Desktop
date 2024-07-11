@@ -25,9 +25,9 @@
                <children>
                   <ButtonBar buttonMinWidth="0.0" layoutX="-22.0" minWidth="0.0" prefWidth="300.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="-22.0" AnchorPane.topAnchor="0.0">
                      <buttons>
-                        <MenuButton fx:id="menu_btn" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                        <MenuButton fx:id="menu_btn" mnemonicParsing="false" style="-fx-background-color: transparent;" stylesheets="@Styles/MenuButtonChange.css">
                           <items>
-                            <MenuItem fx:id="menu_item_new" mnemonicParsing="false" text="New" />
+                            <MenuItem fx:id="menu_item_new" mnemonicParsing="false" onAction="#OnMenuItemNewAction" text="New" />
                             <MenuItem fx:id="menu_item_open" mnemonicParsing="false" text="Open" />
                               <MenuItem fx:id="menu_item_close" mnemonicParsing="false" text="Close" />
                               <MenuItem fx:id="menu_item_close_all" mnemonicParsing="false" text="Close All" />
