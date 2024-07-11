@@ -1,7 +1,10 @@
 .tab {
     -fx-background-color: #F7F8FA;
     -fx-border-color: #BDBEBE;
+    -fx-pref-width: 85px;
+    -fx-pref-height: 30px;
 }
+
 
 .tab:selected {
     -fx-background-color: #BDBEBE; /* Set background color for the selected tab */
