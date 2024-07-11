@@ -149,7 +149,7 @@
                       <AnchorPane id="register-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                       <AnchorPane id="register-table-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <TableView fx:id="reg_table" editable="true" layoutX="32.0" layoutY="74.0" prefHeight="640.0" prefWidth="364.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="reg_table" editable="true" layoutX="32.0" layoutY="74.0" prefHeight="640.0" prefWidth="364.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" stylesheets="@Styles/table.css">
                                 <columns>
                                   <TableColumn fx:id="reg_table_num" editable="false" prefWidth="40.0" sortable="false" />
                                   <TableColumn fx:id="reg_table_name" editable="false" prefWidth="164.0" sortable="false" />
