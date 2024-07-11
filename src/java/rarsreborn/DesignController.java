@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -120,7 +121,7 @@ public class DesignController implements Initializable {
     void OnBtnRunAction(ActionEvent event) {
         console_box.setText("");
         try {
-            String content = code_edit_box.getText();
+            String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
             simulator.compile(content);
             simulator.run();
         } catch (Exception e) {
