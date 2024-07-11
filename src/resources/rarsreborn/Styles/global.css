@@ -1,9 +1,12 @@
 .tab {
     -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 .text-area {
     -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 .table-view {
     -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
