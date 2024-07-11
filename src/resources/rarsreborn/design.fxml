@@ -100,15 +100,15 @@
               <items>
                   <SplitPane dividerPositions="0.7183308494783904" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
                     <items>
-                        <TabPane prefHeight="450.0" prefWidth="908.0" stylesheets="@Styles/TabPaneChange.css">
+                        <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0" stylesheets="@Styles/TabPaneChange.css" tabClosingPolicy="ALL_TABS">
                           <tabs>
-                            <Tab closable="false" text="EDIT">
+                            <Tab fx:id="initial_file_tab" text="FILE">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0" tabClosingPolicy="ALL_TABS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <TabPane fx:id="base_tab" prefHeight="450.0" prefWidth="908.0">
                                             <tabs>
-                                              <Tab fx:id="initial_file_tab" text="FILE">
+                                              <Tab fx:id="base_edit_tab" closable="false" text="EDIT">
                                                 <content>
                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                          <children>
@@ -121,15 +121,15 @@
                                                       </AnchorPane>
                                                 </content>
                                               </Tab>
+                                              <Tab fx:id="base_execute_tab" closable="false" text="EXECUTE">
+                                                <content>
+                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                </content>
+                                              </Tab>
                                             </tabs>
                                           </TabPane>
                                        </children>
                                     </AnchorPane>
-                              </content>
-                            </Tab>
-                            <Tab closable="false" text="EXECUTE">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                               </content>
                             </Tab>
                           </tabs>

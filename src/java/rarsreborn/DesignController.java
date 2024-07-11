@@ -61,7 +61,13 @@ public class DesignController implements Initializable {
     @FXML
     private TabPane file_tab;
     @FXML
+    private TabPane base_tab;
+    @FXML
     private Tab initial_file_tab;
+    @FXML
+    private Tab base_edit_tab;
+    @FXML
+    private Tab base_execute_tab;
     @FXML
     private TextArea initial_file_textbox;
     @FXML
@@ -127,10 +133,23 @@ public class DesignController implements Initializable {
     void OnMenuItemNewAction(ActionEvent event) {
         Tab newTab = new Tab("NEW TAB");
         file_tab.getTabs().add(newTab);
+
         AnchorPane newAnchorPane = new AnchorPane();
         newTab.setContent(newAnchorPane);
+
+        TabPane newTabPane = new TabPane();
+        Tab newEditTab = new Tab("EDIT");
+        Tab newExecuteTab = new Tab("EXECUTE");
+        newTabPane.getTabs().addAll(newEditTab, newExecuteTab);
+
+        newAnchorPane.getChildren().add(newTabPane);
+        newTabPane.setPrefSize(base_tab.getPrefWidth(), base_tab.getPrefHeight());
+
+        AnchorPane newEditPane = new AnchorPane();
+        newEditTab.setContent(newEditPane);
         TextArea newTextArea = new TextArea();
-        newAnchorPane.getChildren().add(newTextArea);
+        newEditPane.getChildren().add(newTextArea);
+
         newTextArea.setStyle(initial_file_textbox.getStyle());
         newTextArea.setPrefSize(initial_file_textbox.getPrefWidth(), initial_file_textbox.getPrefHeight());
         newTextArea.setFont(initial_file_textbox.getFont());
