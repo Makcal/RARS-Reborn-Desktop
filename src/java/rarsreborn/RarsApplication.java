@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-public class RarsApplication extends Application {
+public class RarsApplication extends Application implements Runnable{
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(RarsApplication.class.getResource("design.fxml"));
@@ -16,7 +16,8 @@ public class RarsApplication extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
+    @Override
+    public void run() {
         launch();
     }
 }

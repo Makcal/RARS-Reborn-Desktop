@@ -1,6 +1,5 @@
 package rarsreborn;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +10,8 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.StringInputDevice;
@@ -19,14 +20,9 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.events.ConsolePrintEvent;
 import rarsreborn.core.events.IObserver;
-import rarsreborn.core.exceptions.compilation.CompilationException;
-import rarsreborn.core.exceptions.linking.LinkingException;
 import rarsreborn.core.simulator.Simulator32;
 
-import java.io.File;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -72,6 +68,7 @@ public class DesignController implements Initializable {
     private TextArea initial_file_textbox;
     @FXML
     private TextArea console_box;
+    String consoleUneditableText = "";
 
     @FXML
     private TableView<Register32> reg_table;
@@ -87,8 +84,7 @@ public class DesignController implements Initializable {
 
     Simulator32 simulator = Presets.getClassicalRiscVSimulator(new StringInputDevice() {
         public String requestString(int count) {
-            Scanner scanner = new Scanner(System.in);
-            String s = scanner.nextLine();
+            String s = consoleScanner.readLine();
             return s.length() <= count ? s : s.substring(0, count);
         }
     });
@@ -97,11 +93,14 @@ public class DesignController implements Initializable {
 
     ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
 
+    TextAreaScanner consoleScanner;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         simulator.subscribeEvent(ConsolePrintEvent.class, new IObserver<ConsolePrintEvent>() {
             public void update(ConsolePrintEvent consolePrintEvent) {
                 console_box.appendText(consolePrintEvent.text());
+                consoleUneditableText += consolePrintEvent.text();
             }
         });
 
@@ -113,6 +112,16 @@ public class DesignController implements Initializable {
 
 
         file_tab.getTabs().remove(initial_file_tab);
+        console_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
+            String proposed = c.getControlNewText();
+            if (proposed.startsWith(consoleUneditableText)) {
+                return  c;
+            } else {
+                return null ;
+            }
+        }));
+
+        consoleScanner = new TextAreaScanner(console_box);
     }
 
     private void updateRegistersTable() {
@@ -122,10 +131,13 @@ public class DesignController implements Initializable {
     @FXML
     void OnBtnRunAction(ActionEvent event) {
         console_box.setText("");
+        consoleUneditableText = "";
+        consoleScanner.update();
         try {
             String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
             simulator.compile(content);
-            simulator.run();
+            Thread newSimulatorThread = new Thread(new SimulatorThread(simulator));
+            newSimulatorThread.start();
         } catch (Exception e) {
             console_box.setText(e.getMessage());
         }
