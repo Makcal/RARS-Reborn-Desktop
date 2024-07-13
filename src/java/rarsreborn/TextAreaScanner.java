@@ -3,13 +3,12 @@ package rarsreborn;
 import javafx.scene.control.TextArea;
 
 public class TextAreaScanner{
-    private TextArea textbox;
+    private final TextArea textbox;
     private int textPtr = 0;
     private final StringBuilder readLine = new StringBuilder();
 
     TextAreaScanner(TextArea textArea){
         textbox = textArea;
-
     }
 
     public String readLine() {
