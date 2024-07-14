@@ -1,30 +1,29 @@
 package rarsreborn;
 
-import javafx.scene.control.TextArea;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import java.util.ArrayList;
 
 public class TextAreaScanner{
-    private final TextArea textbox;
-    private int textPtr = 0;
-    private StringBuilder readLine = new StringBuilder();
-
-    TextAreaScanner(TextArea textArea){
-        textbox = textArea;
-    }
+    private final ArrayList<String> inputStack = new ArrayList<>();
 
     public String readLine() {
-        textbox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                event.consume();
-                readLine = new StringBuilder(textbox.getText());
-                textbox.appendText("\n");
+        while (inputStack.isEmpty()){
+            try {
+                Thread.sleep(1);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
             }
-        });
-        return readLine.toString();
+
+        }
+        String s = inputStack.getLast();
+        inputStack.removeLast();
+        return s;
+    }
+
+    public void addInput(String s){
+        inputStack.add(s);
     }
 
     public void update(){
-        textPtr = 0;
+        inputStack.clear();
     }
 }

@@ -7,10 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import rarsreborn.core.Presets;
@@ -21,6 +18,8 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.simulator.Simulator32;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -67,7 +66,7 @@ public class DesignController implements Initializable {
     private TextArea initial_file_textbox;
     @FXML
     private TextArea console_box;
-    String consoleUneditableText = "";
+    final StringBuilder consoleUneditableText = new StringBuilder();
 
     @FXML
     private TableView<Register32> reg_table;
@@ -83,7 +82,6 @@ public class DesignController implements Initializable {
 
     Simulator32 simulator = Presets.getClassicalRiscVSimulator(new StringInputDevice() {
         public String requestString(int count) {
-            updateRegistersTable();
             String s = consoleScanner.readLine();
             return s.length() <= count ? s : s.substring(0, count);
         }
@@ -98,31 +96,43 @@ public class DesignController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         registersList.add(simulator.getProgramCounter());
-
-        simulator.getExecutionEnvironment().addObserver(ConsolePrintEvent.class, (consolePrintEvent) -> {
-            console_box.appendText(consolePrintEvent.text());
-        });
-
-
         reg_table_name.setCellValueFactory(new PropertyValueFactory<Register32, String>("name"));
         reg_table_num.setCellValueFactory(new PropertyValueFactory<Register32, Integer>("number"));
         reg_table_value.setCellValueFactory(new PropertyValueFactory<Register32, Integer>("value"));
         reg_table.setItems(registersList);
 
-
-
+        simulator.getExecutionEnvironment().addObserver(ConsolePrintEvent.class, (consolePrintEvent) -> {
+            console_box.appendText(consolePrintEvent.text());
+        });
 
         file_tab.getTabs().remove(initial_file_tab);
+
         console_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
             String proposed = c.getControlNewText();
-            if (proposed.startsWith(consoleUneditableText)) {
+            if (proposed.startsWith(consoleUneditableText.toString())) {
                 return  c;
             } else {
                 return null ;
             }
         }));
 
-        consoleScanner = new TextAreaScanner(console_box);
+        consoleScanner = new TextAreaScanner();
+        console_box.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                event.consume();
+                console_box.appendText("\n");
+                int charPtr = console_box.getText().length() - 2;
+                while (console_box.getText().charAt(charPtr) != '\n'){
+                    charPtr--;
+                    if (charPtr == -1){
+                        charPtr = 0;
+                        break;
+                    }
+                }
+                consoleUneditableText.append(console_box.getText().substring(charPtr));
+                consoleScanner.addInput(console_box.getText().substring(charPtr));
+            }
+        });
     }
 
     private void updateRegistersTable() {
@@ -132,7 +142,7 @@ public class DesignController implements Initializable {
     @FXML
     void OnBtnRunAction(ActionEvent event) {
         console_box.setText("");
-        consoleUneditableText = "";
+        consoleUneditableText.setLength(0);
         consoleScanner.update();
         try {
             String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
