@@ -15,6 +15,7 @@ import rarsreborn.core.core.environment.ConsolePrintEvent;
 import rarsreborn.core.core.environment.StringInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.register.Register32;
+import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.simulator.Simulator32;
@@ -100,6 +101,11 @@ public class DesignController implements Initializable {
         reg_table_num.setCellValueFactory(new PropertyValueFactory<Register32, Integer>("number"));
         reg_table_value.setCellValueFactory(new PropertyValueFactory<Register32, Integer>("value"));
         reg_table.setItems(registersList);
+        for (Register32 r: registersList){
+            r.addObserver(Register32ChangeEvent.class, (register32ChangeEvent) -> {
+                updateRegistersTable();
+            });
+        }
 
         simulator.getExecutionEnvironment().addObserver(ConsolePrintEvent.class, (consolePrintEvent) -> {
             console_box.appendText(consolePrintEvent.text());
