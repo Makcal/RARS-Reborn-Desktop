@@ -11,12 +11,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import rarsreborn.core.Presets;
-import rarsreborn.core.core.environment.ConsolePrintEvent;
-import rarsreborn.core.core.environment.StringInputDevice;
+import rarsreborn.core.core.environment.ITextInputDevice;
+import rarsreborn.core.core.environment.events.*;
 import rarsreborn.core.core.memory.IMemory;
-import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.simulator.Simulator32;
 import javafx.scene.input.KeyCode;
@@ -81,10 +81,21 @@ public class DesignController implements Initializable {
     @FXML
     private TableColumn<Register32, Integer> reg_table_value;
 
-    Simulator32 simulator = Presets.getClassicalRiscVSimulator(new StringInputDevice() {
+    Simulator32 simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
+        @Override
         public String requestString(int count) {
             String s = consoleScanner.readLine();
             return s.length() <= count ? s : s.substring(0, count);
+        }
+
+        @Override
+        public int requestInt() {
+            return 0;
+        }
+
+        @Override
+        public byte requestChar() {
+            return 0;
         }
     });
     Register32File registers = simulator.getRegisterFile();
@@ -107,8 +118,8 @@ public class DesignController implements Initializable {
             });
         }
 
-        simulator.getExecutionEnvironment().addObserver(ConsolePrintEvent.class, (consolePrintEvent) -> {
-            console_box.appendText(consolePrintEvent.text());
+        simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (ConsolePrintStringEvent) -> {
+            console_box.appendText(ConsolePrintStringEvent.text());
         });
 
         file_tab.getTabs().remove(initial_file_tab);
@@ -121,6 +132,7 @@ public class DesignController implements Initializable {
                 return null ;
             }
         }));
+        console_box.setEditable(false);
 
         consoleScanner = new TextAreaScanner();
         console_box.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -139,6 +151,8 @@ public class DesignController implements Initializable {
                 consoleScanner.addInput(console_box.getText().substring(charPtr));
             }
         });
+
+        btn_run.setDisable(true);
     }
 
     private void updateRegistersTable() {
@@ -150,6 +164,7 @@ public class DesignController implements Initializable {
         console_box.setText("");
         consoleUneditableText.setLength(0);
         consoleScanner.update();
+        console_box.setEditable(true);
         try {
             String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
             simulator.compile(content);
@@ -189,6 +204,8 @@ public class DesignController implements Initializable {
         newTextArea.setStyle(initial_file_textbox.getStyle());
         newTextArea.setPrefSize(initial_file_textbox.getPrefWidth(), initial_file_textbox.getPrefHeight());
         newTextArea.setFont(initial_file_textbox.getFont());
+
+        btn_run.setDisable(false);
     }
 
     @FXML
