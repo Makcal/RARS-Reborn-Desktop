@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
+import rarsreborn.core.Example;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.events.*;
@@ -118,8 +119,33 @@ public class DesignController implements Initializable {
             });
         }
 
-        simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (ConsolePrintStringEvent) -> {
-            console_box.appendText(ConsolePrintStringEvent.text());
+        simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (event) -> {
+            console_box.appendText(event.text());
+            consoleUneditableText.append(event.text());
+        });
+        simulator.getExecutionEnvironment().addObserver(ConsolePrintCharEvent.class, (event) -> {
+            console_box.appendText(String.valueOf((char)event.character()));
+            consoleUneditableText.append((char)event.character());
+        });
+        simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerEvent.class, (event) -> {
+            console_box.appendText(String.valueOf(event.value()));
+            consoleUneditableText.append(event.value());
+        });
+        simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerHexEvent.class, (event) -> {
+            console_box.appendText(Integer.toHexString(event.value()));
+            consoleUneditableText.append(Integer.toHexString(event.value()));
+        });
+        simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerOctalEvent.class, (event) -> {
+            console_box.appendText(Integer.toOctalString(event.value()));
+            consoleUneditableText.append(Integer.toOctalString(event.value()));
+        });
+        simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerBinaryEvent.class, (event) -> {
+            console_box.appendText(Integer.toBinaryString(event.value()));
+            consoleUneditableText.append(Integer.toBinaryString(event.value()));
+        });
+        simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerUnsignedEvent.class, (event) -> {
+            console_box.appendText(Integer.toUnsignedString(event.value()));
+            consoleUneditableText.append(Integer.toUnsignedString(event.value()));
         });
 
         file_tab.getTabs().remove(initial_file_tab);
@@ -161,8 +187,8 @@ public class DesignController implements Initializable {
 
     @FXML
     void OnBtnRunAction(ActionEvent event) {
-        console_box.setText("");
         consoleUneditableText.setLength(0);
+        console_box.setText("");
         consoleScanner.update();
         console_box.setEditable(true);
         try {
