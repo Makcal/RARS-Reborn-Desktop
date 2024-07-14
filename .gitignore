@@ -40,3 +40,4 @@ out/
 META-INF
 bundled_java*
 libs/
+builds/
