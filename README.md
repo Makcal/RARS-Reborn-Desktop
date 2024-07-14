@@ -15,9 +15,9 @@ The interface was made in such a way as to be as similar as possible to the inte
 - Registers tables
 
 ## Demo
-![Initial window](https://ibb.co/dtWrLPv)
+[Initial window](https://ibb.co/rfb1JFX)
 
-![Registers table updating](https://imgur.com/a/AL6uenV)
+[Registers table updating](https://ibb.co/dtWrLPv)
 
 
 ## Link to deployed product
