@@ -75,31 +75,16 @@ build:
     when: on_success
     name: builds
     paths:
-      - target/bundled
+      - "rarsreborn.desktop*.jar"
   variables:
     GIT_SUBMODULE_STRATEGY: recursive
   script:
     - |
-      cd core
-      export MAVEN_OPTS="$MAVEN_OPTS -Dmaven.repo.local=../.m2/repository"
-      ./mvnw $MAVEN_CLI_OPTS package
-      mkdir build_jar
-      cp out/RARS_Reborn_Core-1.0.jar build_jar
-      ./mvnw \
-        $MAVEN_CLI_OPTS \
-        install:install-file \
-        -Dfile=build_jar/RARS_Reborn_Core-1.0.jar \
-        -DgroupId=org.rarsreborn \
-        -DartifactId=core \
-        -Dversion=1.0 \
-        -Dpackaging=jar \
-        -DgeneratePom=true
-      export MAVEN_OPTS="$MAVEN_OPTS -Dmaven.repo.local=.m2/repository"
-      cd ..
-
+      export MAVEN_CLI_OPTS="$MAVEN_CLI_OPTS -s ci_settings.xml"
       ./mvnw $MAVEN_CLI_OPTS package -Dplatform=win
       ./mvnw $MAVEN_CLI_OPTS package -Dplatform=mac
       ./mvnw $MAVEN_CLI_OPTS package -Dplatform=linux
+      cp target/bundled/rarsreborn.desktop*.jar .
 
 .windows_packing:
   stage: build

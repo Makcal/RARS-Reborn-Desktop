@@ -4,15 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>rarsreborn</groupId>
-    <artifactId>RARS-REBORN</artifactId>
+    <groupId>swapik</groupId>
+    <artifactId>rarsreborn.desktop</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>RARS-REBORN</name>
+    <name>RARS Reborn</name>
 
     <properties>
         <platform>win</platform>
         <javafx.version>21-ea+24</javafx.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.pg.innopolis.university/api/v4/groups/2049/-/packages/maven</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <!-- JavaFX dependencies -->
@@ -36,11 +43,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.rarsreborn</groupId>
-            <artifactId>core</artifactId>
+            <groupId>swapik</groupId>
+            <artifactId>rarsreborn.core</artifactId>
             <version>1.0</version>
         </dependency>
-
     </dependencies>
 
     <build>
