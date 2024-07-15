@@ -1,3 +1,4 @@
 [submodule "core"]
 	path = core
 	url = https://gitlab.pg.innopolis.university/swapik/rars-reborn-core.git
+	branch = main
