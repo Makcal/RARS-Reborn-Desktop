@@ -2,6 +2,8 @@ package rarsreborn;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -210,6 +212,14 @@ public class DesignController implements Initializable {
     @FXML
     void OnMenuItemNewAction(ActionEvent event) {
         Tab newTab = new Tab("NEW TAB");
+        newTab.setOnClosed(new EventHandler<Event>() {
+            @Override
+            public void handle(Event event) {
+                if (file_tab.getTabs().isEmpty()){
+                    btn_run.setDisable(true);
+                }
+            }
+        });
         file_tab.getTabs().add(newTab);
 
         AnchorPane newAnchorPane = new AnchorPane();
