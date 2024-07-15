@@ -68,6 +68,10 @@ variables:
     key: "maven-$CI_COMMIT_REF_SLUG"
     paths:
       - .m2/repository
+  before_script:
+    - |
+      apt update
+      apt install git -y
 
 build:
   extends: .jdk
