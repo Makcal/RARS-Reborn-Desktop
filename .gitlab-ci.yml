@@ -68,10 +68,6 @@ variables:
     key: "maven-$CI_COMMIT_REF_SLUG"
     paths:
       - .m2/repository
-  before_script:
-    - |
-      apt update
-      apt install git -y
 
 build:
   extends: .jdk
@@ -80,23 +76,27 @@ build:
     name: builds
     paths:
       - target/bundled
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
   script:
     - |
-      git clone https://gitlab.pg.innopolis.university/swapik/rars-reborn-core.git core
       cd core
-      git checkout main
-      ./mvnw package
+      export MAVEN_OPTS="$MAVEN_OPTS -Dmaven.repo.local=../.m2/repository"
+      ./mvnw $MAVEN_CLI_OPTS package
       mkdir build_jar
       cp out/RARS_Reborn_Core-1.0.jar build_jar
-      ./mvnw install:install-file \
+      ./mvnw \
+        $MAVEN_CLI_OPTS \
+        install:install-file \
         -Dfile=build_jar/RARS_Reborn_Core-1.0.jar \
         -DgroupId=org.rarsreborn \
         -DartifactId=core \
         -Dversion=1.0 \
         -Dpackaging=jar \
         -DgeneratePom=true
+      export MAVEN_OPTS="$MAVEN_OPTS -Dmaven.repo.local=.m2/repository"
       cd ..
 
-      ./mvnw $MAVEN_CLI_OPTS package -DskipTests=true -Dplatform=win
-      ./mvnw $MAVEN_CLI_OPTS package -DskipTests=true -Dplatform=mac
-      ./mvnw $MAVEN_CLI_OPTS package -DskipTests=true -Dplatform=linux
+      ./mvnw $MAVEN_CLI_OPTS package -Dplatform=win
+      ./mvnw $MAVEN_CLI_OPTS package -Dplatform=mac
+      ./mvnw $MAVEN_CLI_OPTS package -Dplatform=linux
