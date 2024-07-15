@@ -22,6 +22,7 @@ import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.simulator.Simulator32;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import rarsreborn.core.simulator.StopEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -216,7 +217,9 @@ public class DesignController implements Initializable {
 
         TabPane newTabPane = new TabPane();
         Tab newEditTab = new Tab("EDIT");
+        newEditTab.setClosable(false);
         Tab newExecuteTab = new Tab("EXECUTE");
+        newExecuteTab.setClosable(false);
         newTabPane.getTabs().addAll(newEditTab, newExecuteTab);
 
         newAnchorPane.getChildren().add(newTabPane);
