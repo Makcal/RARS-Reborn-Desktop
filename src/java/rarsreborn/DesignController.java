@@ -233,7 +233,11 @@ public class DesignController implements Initializable {
         newTabPane.getTabs().addAll(newEditTab, newExecuteTab);
 
         newAnchorPane.getChildren().add(newTabPane);
-        newTabPane.setPrefSize(base_tab.getPrefWidth(), base_tab.getPrefHeight());
+        AnchorPane.setTopAnchor(newTabPane, 0.0);
+        AnchorPane.setBottomAnchor(newTabPane, 0.0);
+        AnchorPane.setRightAnchor(newTabPane, 0.0);
+        AnchorPane.setLeftAnchor(newTabPane, 0.0);
+
 
         AnchorPane newEditPane = new AnchorPane();
         newEditTab.setContent(newEditPane);
@@ -241,8 +245,12 @@ public class DesignController implements Initializable {
         newEditPane.getChildren().add(newTextArea);
 
         newTextArea.setStyle(initial_file_textbox.getStyle());
-        newTextArea.setPrefSize(initial_file_textbox.getPrefWidth(), initial_file_textbox.getPrefHeight());
         newTextArea.setFont(initial_file_textbox.getFont());
+
+        AnchorPane.setTopAnchor(newTextArea, 0.0);
+        AnchorPane.setBottomAnchor(newTextArea, 0.0);
+        AnchorPane.setRightAnchor(newTextArea, 0.0);
+        AnchorPane.setLeftAnchor(newTextArea, 0.0);
 
         btn_run.setDisable(false);
     }
