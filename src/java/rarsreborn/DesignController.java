@@ -188,6 +188,7 @@ public class DesignController implements Initializable {
         });
 
         btn_run.setDisable(true);
+        btn_debug.setDisable(true);
     }
 
     private void updateRegistersTable() {
@@ -220,6 +221,7 @@ public class DesignController implements Initializable {
             public void handle(Event event) {
                 if (file_tab.getTabs().isEmpty()){
                     btn_run.setDisable(true);
+                    btn_debug.setDisable(true);
                 }
             }
         });
@@ -256,6 +258,7 @@ public class DesignController implements Initializable {
         AnchorPane.setLeftAnchor(newTextArea, 0.0);
 
         btn_run.setDisable(false);
+        btn_debug.setDisable(false);
     }
 
     @FXML
