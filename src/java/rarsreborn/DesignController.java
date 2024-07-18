@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextFormatter.Change;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import rarsreborn.core.Example;
 import rarsreborn.core.Presets;
@@ -109,6 +110,8 @@ public class DesignController implements Initializable {
 
     TextAreaScanner consoleScanner;
 
+    boolean debugMode = false;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         registersList.add(simulator.getProgramCounter());
@@ -150,6 +153,9 @@ public class DesignController implements Initializable {
             console_box.appendText(Integer.toUnsignedString(event.value()));
             consoleUneditableText.append(Integer.toUnsignedString(event.value()));
         });
+        simulator.addObserver(StopEvent.class, (event) -> {
+            debugMode = false;
+        });
 
         file_tab.getTabs().remove(initial_file_tab);
 
@@ -190,10 +196,7 @@ public class DesignController implements Initializable {
 
     @FXML
     void OnBtnRunAction(ActionEvent event) {
-        consoleUneditableText.setLength(0);
-        console_box.setText("");
-        consoleScanner.update();
-        console_box.setEditable(true);
+        preStartActions();
         try {
             String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
             simulator.compile(content);
@@ -260,5 +263,47 @@ public class DesignController implements Initializable {
         for (Register32 r: registersList){
             System.out.println(r.getName() + " " + r.getValue());
         }
+    }
+
+    @FXML
+    void onDebugBtnAction(ActionEvent event){
+        preStartActions();
+        if (debugMode){
+            (new Thread(() -> {
+                try {
+                    if (simulator.isRunning()) {
+                        simulator.runSteps(1);
+                    }
+                    else {
+                        debugMode = false;
+                    }
+                } catch (Exception e) {
+                    console_box.appendText(e.getMessage());
+                }
+            })).start();
+        }
+        else {
+            debugMode = true;
+            try {
+                String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
+                simulator.compile(content);
+                (new Thread(() -> {
+                    try {
+                        simulator.startWorker();
+                    } catch (Exception e) {
+                        console_box.appendText(e.getMessage());
+                    }
+                })).start();
+            } catch (Exception e) {
+                console_box.setText(e.getMessage());
+            }
+        }
+    }
+
+    private void preStartActions(){
+        consoleUneditableText.setLength(0);
+        console_box.setText("");
+        consoleScanner.update();
+        console_box.setEditable(true);
     }
 }

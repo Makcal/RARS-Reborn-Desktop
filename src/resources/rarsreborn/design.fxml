@@ -72,7 +72,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button id="btn-debug" fx:id="btn_debug" mnemonicParsing="false" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;">
+                        <Button id="btn-debug" fx:id="btn_debug" mnemonicParsing="false" onAction="#onDebugBtnAction" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
