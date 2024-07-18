@@ -23,7 +23,7 @@
         <items>
           <AnchorPane id="tool-pane" minHeight="0.0" minWidth="0.0" prefHeight="43.0" prefWidth="598.0" style="-fx-background-color: #F7F8FA;">
                <children>
-                  <ButtonBar buttonMinWidth="0.0" layoutX="-22.0" minWidth="0.0" prefWidth="300.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="-22.0" AnchorPane.topAnchor="0.0">
+                  <ButtonBar buttonMinWidth="0.0" layoutX="-22.0" minWidth="0.0" prefHeight="50.0" prefWidth="371.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="-22.0" AnchorPane.topAnchor="0.0">
                      <buttons>
                         <MenuButton fx:id="menu_btn" mnemonicParsing="false" style="-fx-background-color: transparent;" stylesheets="@Styles/MenuButtonChange.css">
                           <items>
@@ -81,11 +81,29 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button id="btn-save" fx:id="btn_save" mnemonicParsing="false" prefHeight="38.0" prefWidth="90.0" style="-fx-background-color: transparent;">
+                        <Button id="btn-save" fx:id="btn_save" mnemonicParsing="false" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@Images/Save.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="btn-debug" fx:id="btn_step_back" mnemonicParsing="false" onAction="#onStepBackBtnAction" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@Images/Debug.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="btn-debug" fx:id="btn_step_over" mnemonicParsing="false" onAction="#onStepOverBtnAction" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@Images/Debug.png" />
                                  </image>
                               </ImageView>
                            </graphic>

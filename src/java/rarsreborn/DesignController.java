@@ -11,9 +11,7 @@ import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextFormatter.Change;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import rarsreborn.core.Example;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.events.*;
@@ -40,6 +38,10 @@ public class DesignController implements Initializable {
     private Button btn_run;
     @FXML
     private Button btn_save;
+    @FXML
+    private Button btn_step_over;
+    @FXML
+    private Button btn_step_back;
     @FXML
     private TextArea code_edit_box;
     @FXML
@@ -155,6 +157,8 @@ public class DesignController implements Initializable {
         });
         simulator.addObserver(StopEvent.class, (event) -> {
             debugMode = false;
+            btn_step_back.setVisible(false);
+            btn_step_over.setVisible(false);
         });
 
         file_tab.getTabs().remove(initial_file_tab);
@@ -189,6 +193,8 @@ public class DesignController implements Initializable {
 
         btn_run.setDisable(true);
         btn_debug.setDisable(true);
+        btn_step_back.setVisible(false);
+        btn_step_over.setVisible(false);
     }
 
     private void updateRegistersTable() {
@@ -271,6 +277,44 @@ public class DesignController implements Initializable {
     @FXML
     void onDebugBtnAction(ActionEvent event){
         preStartActions();
+        debugMode = true;
+        try {
+            String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
+            simulator.compile(content);
+            (new Thread(() -> {
+                try {
+                    simulator.startWorker();
+                } catch (Exception e) {
+                    console_box.appendText(e.getMessage());
+                }
+            })).start();
+            btn_step_back.setVisible(true);
+            btn_step_over.setVisible(true);
+        } catch (Exception e) {
+            console_box.setText(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onStepBackBtnAction(ActionEvent event) {
+        if (debugMode){
+            (new Thread(() -> {
+                try {
+                    if (simulator.isRunning()) {
+                        simulator.stepBack();
+                    }
+                    else {
+                        debugMode = false;
+                    }
+                } catch (Exception e) {
+                    console_box.appendText(e.getMessage());
+                }
+            })).start();
+        }
+    }
+
+    @FXML
+    public void onStepOverBtnAction(ActionEvent event) {
         if (debugMode){
             (new Thread(() -> {
                 try {
@@ -285,22 +329,6 @@ public class DesignController implements Initializable {
                 }
             })).start();
         }
-        else {
-            debugMode = true;
-            try {
-                String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
-                simulator.compile(content);
-                (new Thread(() -> {
-                    try {
-                        simulator.startWorker();
-                    } catch (Exception e) {
-                        console_box.appendText(e.getMessage());
-                    }
-                })).start();
-            } catch (Exception e) {
-                console_box.setText(e.getMessage());
-            }
-        }
     }
 
     private void preStartActions(){
@@ -308,5 +336,10 @@ public class DesignController implements Initializable {
         console_box.setText("");
         consoleScanner.update();
         console_box.setEditable(true);
+        try {
+            simulator.reset();
+        }
+        catch (Exception ignored){
+        }
     }
 }
