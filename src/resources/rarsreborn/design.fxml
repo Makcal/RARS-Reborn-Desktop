@@ -27,7 +27,14 @@
                      <buttons>
                         <MenuButton fx:id="menu_btn" mnemonicParsing="false" style="-fx-background-color: transparent;" stylesheets="@Styles/MenuButtonChange.css">
                           <items>
-                            <MenuItem fx:id="menu_item_new" mnemonicParsing="false" onAction="#OnMenuItemNewAction" text="New" />
+                            <MenuItem fx:id="menu_item_new" mnemonicParsing="false" onAction="#OnMenuItemNewAction" text="New">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@Images/New file.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></MenuItem>
                             <MenuItem fx:id="menu_item_open" mnemonicParsing="false" text="Open" />
                               <MenuItem fx:id="menu_item_close" mnemonicParsing="false" text="Close" />
                               <MenuItem fx:id="menu_item_close_all" mnemonicParsing="false" text="Close All" />
@@ -36,7 +43,7 @@
                                  <graphic>
                                     <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@Images/Save_Gray.png" />
+                                          <Image url="@Images/Save.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -54,6 +61,15 @@
                            </graphic>
                             
                         </MenuButton>
+                        <Button id="btn-save" fx:id="btn_newfile" mnemonicParsing="false" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@Images/New file.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                         <Button id="btn-save" fx:id="btn_save" mnemonicParsing="false" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -94,7 +110,7 @@
                            <graphic>
                               <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@Images/Debug.png" />
+                                    <Image url="@Images/Undo.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -103,7 +119,7 @@
                            <graphic>
                               <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@Images/Debug.png" />
+                                    <Image url="@Images/Next step.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -112,7 +128,7 @@
                            <graphic>
                               <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@Images/Debug.png" />
+                                    <Image url="@Images/Pause.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -121,7 +137,7 @@
                            <graphic>
                               <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@Images/Debug.png" />
+                                    <Image url="@Images/Next Breakpoint.png" />
                                  </image>
                               </ImageView>
                            </graphic>

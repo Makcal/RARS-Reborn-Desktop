@@ -31,50 +31,76 @@ import java.util.ResourceBundle;
 
 public class DesignController implements Initializable {
     @FXML
-    private Button btn_break;
-    @FXML
-    private Button btn_debug;
-    @FXML
-    private Button btn_run;
-    @FXML
-    private Button btn_save;
-    @FXML
-    private Button btn_step_over;
-    @FXML
-    private Button btn_step_back;
-    @FXML
-    private TextArea code_edit_box;
-    @FXML
-    private MenuButton menu_btn;
-    @FXML
-    private MenuItem menu_item_close;
-    @FXML
-    private MenuItem menu_item_close_all;
-    @FXML
-    private MenuItem menu_item_exit;
-    @FXML
-    private MenuItem menu_item_new;
-    @FXML
-    private MenuItem menu_item_open;
-    @FXML
-    private MenuItem menu_item_save;
-    @FXML
-    private MenuItem menu_item_save_as;
-    @FXML
-    private TabPane file_tab;
-    @FXML
-    private TabPane base_tab;
-    @FXML
-    private Tab initial_file_tab;
-    @FXML
     private Tab base_edit_tab;
+
     @FXML
     private Tab base_execute_tab;
+
     @FXML
-    private TextArea initial_file_textbox;
+    private TabPane base_tab;
+
+    @FXML
+    private Button btn_break;
+
+    @FXML
+    private Button btn_debug;
+
+    @FXML
+    private Button btn_newfile;
+
+    @FXML
+    private Button btn_pause;
+
+    @FXML
+    private Button btn_resume;
+
+    @FXML
+    private Button btn_run;
+
+    @FXML
+    private Button btn_save;
+
+    @FXML
+    private Button btn_step_back;
+
+    @FXML
+    private Button btn_step_over;
+
     @FXML
     private TextArea console_box;
-    final StringBuilder consoleUneditableText = new StringBuilder();
+
+    @FXML
+    private TabPane file_tab;
+
+    @FXML
+    private Tab initial_file_tab;
+
+    @FXML
+    private TextArea initial_file_textbox;
+
+    @FXML
+    private MenuButton menu_btn;
+
+    @FXML
+    private MenuItem menu_item_close;
+
+    @FXML
+    private MenuItem menu_item_close_all;
+
+    @FXML
+    private MenuItem menu_item_exit;
+
+    @FXML
+    private MenuItem menu_item_new;
+
+    @FXML
+    private MenuItem menu_item_open;
+
+    @FXML
+    private MenuItem menu_item_save;
+
+    @FXML
+    private MenuItem menu_item_save_as;
 
     @FXML
     private TableView<Register32> reg_table;
@@ -111,6 +137,7 @@ public class DesignController implements Initializable {
     ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
 
     TextAreaScanner consoleScanner;
+    final StringBuilder consoleUneditableText = new StringBuilder();
 
     boolean debugMode = false;
 
@@ -341,5 +368,11 @@ public class DesignController implements Initializable {
         }
         catch (Exception ignored){
         }
+    }
+
+    public void onPauseBtnAction(ActionEvent event) {
+    }
+
+    public void onResumeBtnAction(ActionEvent event) {
     }
 }
