@@ -24,6 +24,7 @@ import rarsreborn.core.simulator.Simulator32;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import rarsreborn.core.simulator.StopEvent;
+import rarsreborn.core.simulator.backstepper.BackStepper;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -186,6 +187,9 @@ public class DesignController implements Initializable {
             debugMode = false;
             btn_step_back.setVisible(false);
             btn_step_over.setVisible(false);
+        });
+        simulator.addObserver(BackStepper.class, (event) -> {
+            updateRegistersTable();
         });
 
         file_tab.getTabs().remove(initial_file_tab);
