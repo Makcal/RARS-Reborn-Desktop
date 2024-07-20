@@ -27,27 +27,27 @@
                 <buttons>
                     <MenuButton fx:id="menu_btn" mnemonicParsing="false" style="-fx-background-color: transparent;" stylesheets="@Styles/MenuButtonChange.css">
                         <items>
-                            <MenuItem fx:id="menu_item_new" mnemonicParsing="false" onAction="#OnMenuItemNewAction" text="New">
+                            <MenuItem mnemonicParsing="false" onAction="#CreateNewFile" text="New">
                                 <graphic>
                                     <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                         <Image url="@Images/New file.png" />
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <MenuItem fx:id="menu_item_open" mnemonicParsing="false" text="Open" />
-                            <MenuItem fx:id="menu_item_close" mnemonicParsing="false" text="Close" />
-                            <MenuItem fx:id="menu_item_close_all" mnemonicParsing="false" text="Close All" />
+                            <MenuItem mnemonicParsing="false" text="Open" />
+                            <MenuItem mnemonicParsing="false" onAction="#closeCurrentFile" text="Close" />
+                            <MenuItem mnemonicParsing="false" text="Close All" />
                             <SeparatorMenuItem mnemonicParsing="false" />
-                            <MenuItem fx:id="menu_item_save" mnemonicParsing="false" text="Save">
+                            <MenuItem mnemonicParsing="false" text="Save">
                                 <graphic>
                                     <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                         <Image url="@Images/Save.png" />
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <MenuItem fx:id="menu_item_save_as" mnemonicParsing="false" text="Save As..." />
+                            <MenuItem mnemonicParsing="false" text="Save As..." />
                             <SeparatorMenuItem mnemonicParsing="false" />
-                            <MenuItem fx:id="menu_item_exit" mnemonicParsing="false" text="Exit" />
+                            <MenuItem mnemonicParsing="false" text="Exit" />
                         </items>
                         <graphic>
                             <ImageView pickOnBounds="true" preserveRatio="true">
@@ -56,7 +56,7 @@
                         </graphic>
 
                     </MenuButton>
-                    <Button id="btn-save" fx:id="btn_new_file" mnemonicParsing="false" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
+                    <Button id="btn-save" fx:id="btn_new_file" mnemonicParsing="false" onAction="#CreateNewFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@Images/New file.png" />
@@ -127,7 +127,7 @@
         </AnchorPane>
         <SplitPane dividerPositions="0.7130872483221476" prefHeight="361.0" prefWidth="598.0">
             <SplitPane dividerPositions="0.7183308494783904" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
-                <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0" stylesheets="@Styles/TabPaneChange.css" tabClosingPolicy="ALL_TABS">
+                <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0" stylesheets="@Styles/TabPaneChange.css" tabClosingPolicy="ALL_TABS" tabMaxHeight="1000.0" tabMaxWidth="1.0E7">
                     <Tab fx:id="initial_file_tab" text="FILE">
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <TabPane fx:id="base_tab" prefHeight="450.0" prefWidth="908.0">

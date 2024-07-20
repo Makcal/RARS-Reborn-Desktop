@@ -78,30 +78,6 @@ public class DesignController implements Initializable {
 
     @FXML
     private TextArea initial_file_text_box;
-
-    @FXML
-    private MenuButton menu_btn;
-
-    @FXML
-    private MenuItem menu_item_close;
-
-    @FXML
-    private MenuItem menu_item_close_all;
-
-    @FXML
-    private MenuItem menu_item_exit;
-
-    @FXML
-    private MenuItem menu_item_new;
-
-    @FXML
-    private MenuItem menu_item_open;
-
-    @FXML
-    private MenuItem menu_item_save;
-    
-    @FXML
-    private MenuItem menu_item_save_as;
     
     @FXML
     private TableView<Register32> reg_table;
@@ -222,7 +198,7 @@ public class DesignController implements Initializable {
     }
 
     @FXML
-    private void OnMenuItemNewAction() {
+    private void CreateNewFile() {
         final String[] fileName = {""};
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fileCreationDesign.fxml"));
@@ -369,6 +345,12 @@ public class DesignController implements Initializable {
     }
     @FXML
     private void onResumeBtnAction() {
+    }
+    @FXML
+    private void closeCurrentFile(){
+        if (!file_tab.getTabs().isEmpty()) {
+            file_tab.getTabs().remove(file_tab.getSelectionModel().getSelectedItem());
+        }
     }
 
     private void setDebugControlsVisible(boolean visible){
