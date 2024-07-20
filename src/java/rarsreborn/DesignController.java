@@ -275,7 +275,7 @@ public class DesignController implements Initializable {
             if (Objects.equals(curTab.getText(), "EXECUTE")){
                 return;
             }
-            String content = ((TextArea) ((AnchorPane) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getChildren().get(0)).getText();
+            String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
             simulator.compile(content);
             (new Thread(() -> {
                 try {
@@ -305,7 +305,7 @@ public class DesignController implements Initializable {
             if (Objects.equals(curTab.getText(), "EXECUTE")){
                 return;
             }
-            String content = ((TextArea) ((AnchorPane) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getChildren().get(0)).getText();
+            String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
             simulator.compile(content);
             (new Thread(() -> {
                 try {
