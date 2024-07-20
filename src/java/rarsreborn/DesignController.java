@@ -454,6 +454,11 @@ public class DesignController implements Initializable {
         }
     }
 
+    @FXML
+    private void changeTheme(){
+        //TODO
+    }
+
     private void createNewTab(String fileName) {
         Tab newTab = new Tab(fileName);
         newTab.setOnClosed(event -> {
