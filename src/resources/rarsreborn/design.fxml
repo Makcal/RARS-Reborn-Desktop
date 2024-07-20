@@ -17,211 +17,152 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="global-pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            style="-fx-background-color: #ffffff;" stylesheets="@Styles/global.css" xmlns="http://javafx.com/javafx/22"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="rarsreborn.DesignController">
-    <SplitPane dividerPositions="0.07799442896935933" orientation="VERTICAL" prefHeight="720.0" prefWidth="1280.0"
-               AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-               AnchorPane.topAnchor="0.0">
+<AnchorPane id="global-pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #ffffff;" stylesheets="@Styles/global.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rarsreborn.DesignController">
+    <SplitPane dividerPositions="0.07799442896935933" orientation="VERTICAL" prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <opaqueInsets>
-            <Insets/>
+            <Insets />
         </opaqueInsets>
-        <AnchorPane id="tool-pane" minHeight="0.0" minWidth="0.0" prefHeight="43.0" prefWidth="598.0"
-                    style="-fx-background-color: #F7F8FA;">
-            <ButtonBar buttonMinWidth="0.0" layoutX="-22.0" minWidth="0.0" prefHeight="50.0" prefWidth="522.0"
-                       style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="3.0"
-                       AnchorPane.leftAnchor="-22.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane id="tool-pane" minHeight="0.0" minWidth="0.0" prefHeight="43.0" prefWidth="598.0" style="-fx-background-color: #F7F8FA;">
+            <ButtonBar buttonMinWidth="0.0" layoutX="-22.0" minWidth="0.0" prefHeight="50.0" prefWidth="522.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="-22.0" AnchorPane.topAnchor="0.0">
                 <buttons>
-                    <MenuButton fx:id="menu_btn" mnemonicParsing="false"
-                                style="-fx-background-color: transparent;"
-                                stylesheets="@Styles/MenuButtonChange.css">
+                    <MenuButton fx:id="menu_btn" mnemonicParsing="false" style="-fx-background-color: transparent;" stylesheets="@Styles/MenuButtonChange.css">
                         <items>
-                            <MenuItem fx:id="menu_item_new" mnemonicParsing="false"
-                                      onAction="#OnMenuItemNewAction" text="New">
+                            <MenuItem fx:id="menu_item_new" mnemonicParsing="false" onAction="#OnMenuItemNewAction" text="New">
                                 <graphic>
-                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@Images/New file.png"/>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@Images/New file.png" />
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <MenuItem fx:id="menu_item_open" mnemonicParsing="false" text="Open"/>
-                            <MenuItem fx:id="menu_item_close" mnemonicParsing="false" text="Close"/>
-                            <MenuItem fx:id="menu_item_close_all" mnemonicParsing="false" text="Close All"/>
-                            <SeparatorMenuItem mnemonicParsing="false"/>
+                            <MenuItem fx:id="menu_item_open" mnemonicParsing="false" text="Open" />
+                            <MenuItem fx:id="menu_item_close" mnemonicParsing="false" text="Close" />
+                            <MenuItem fx:id="menu_item_close_all" mnemonicParsing="false" text="Close All" />
+                            <SeparatorMenuItem mnemonicParsing="false" />
                             <MenuItem fx:id="menu_item_save" mnemonicParsing="false" text="Save">
                                 <graphic>
-                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@Images/Save.png"/>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@Images/Save.png" />
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <MenuItem fx:id="menu_item_save_as" mnemonicParsing="false" text="Save As..."/>
-                            <SeparatorMenuItem mnemonicParsing="false"/>
-                            <MenuItem fx:id="menu_item_exit" mnemonicParsing="false" text="Exit"/>
+                            <MenuItem fx:id="menu_item_save_as" mnemonicParsing="false" text="Save As..." />
+                            <SeparatorMenuItem mnemonicParsing="false" />
+                            <MenuItem fx:id="menu_item_exit" mnemonicParsing="false" text="Exit" />
                         </items>
                         <graphic>
                             <ImageView pickOnBounds="true" preserveRatio="true">
-                                <Image url="@Images/Menu.png"/>
+                                <Image url="@Images/Menu.png" />
                             </ImageView>
                         </graphic>
 
                     </MenuButton>
-                    <Button id="btn-save" fx:id="btn_new_file" mnemonicParsing="false" prefHeight="38.0"
-                            prefWidth="119.0" style="-fx-background-color: transparent;">
+                    <Button id="btn-save" fx:id="btn_new_file" mnemonicParsing="false" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                       preserveRatio="true">
-                                <Image url="@Images/New file.png"/>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@Images/New file.png" />
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button id="btn-save" fx:id="btn_save" mnemonicParsing="false" prefHeight="38.0"
-                            prefWidth="119.0" style="-fx-background-color: transparent;">
+                    <Button id="btn-save" fx:id="btn_save" mnemonicParsing="false" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                       preserveRatio="true">
-                                <Image url="@Images/Save.png"/>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@Images/Save.png" />
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button fx:id="btn_run" mnemonicParsing="false" onAction="#OnRunBtnAction" prefHeight="30.0"
-                            prefWidth="26.0" style="-fx-background-color: transparent;">
+                    <Button fx:id="btn_run" mnemonicParsing="false" onAction="#OnRunBtnAction" prefHeight="30.0" prefWidth="26.0" style="-fx-background-color: transparent;">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="26.0" pickOnBounds="true"
-                                       preserveRatio="true">
-                                <Image url="@Images/Run.png"/>
+                            <ImageView fitHeight="30.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@Images/Run.png" />
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button fx:id="btn_break" mnemonicParsing="false" onAction="#onStopBtnAction"
-                            prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;">
+                    <Button fx:id="btn_break" mnemonicParsing="false" onAction="#onStopBtnAction" prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;">
                         <graphic>
-                            <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true"
-                                       preserveRatio="true">
-                                <Image url="@Images/Stop.png"/>
+                            <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@Images/Stop.png" />
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button id="btn-debug" fx:id="btn_debug" mnemonicParsing="false"
-                            onAction="#onDebugBtnAction" prefHeight="28.0" prefWidth="52.0"
-                            style="-fx-background-color: transparent;">
+                    <Button id="btn-debug" fx:id="btn_debug" mnemonicParsing="false" onAction="#onDebugBtnAction" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true"
-                                       preserveRatio="true">
-                                <Image url="@Images/Debug.png"/>
+                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@Images/Debug.png" />
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button id="btn-debug" fx:id="btn_step_back" mnemonicParsing="false"
-                            onAction="#onStepBackBtnAction" prefHeight="28.0" prefWidth="52.0"
-                            style="-fx-background-color: transparent;">
+                    <Button id="btn-debug" fx:id="btn_step_back" mnemonicParsing="false" onAction="#onStepBackBtnAction" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true"
-                                       preserveRatio="true">
-                                <Image url="@Images/Undo.png"/>
+                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@Images/Undo.png" />
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button id="btn-debug" fx:id="btn_step_over" mnemonicParsing="false"
-                            onAction="#onStepOverBtnAction" prefHeight="38.0" prefWidth="52.0"
-                            style="-fx-background-color: transparent;">
+                    <Button id="btn-debug" fx:id="btn_step_over" mnemonicParsing="false" onAction="#onStepOverBtnAction" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true"
-                                       preserveRatio="true">
-                                <Image url="@Images/Next step.png"/>
+                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@Images/Next step.png" />
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button id="btn-debug" fx:id="btn_pause" mnemonicParsing="false"
-                            onAction="#onPauseBtnAction" prefHeight="38.0" prefWidth="52.0"
-                            style="-fx-background-color: transparent;">
+                    <Button id="btn-debug" fx:id="btn_pause" mnemonicParsing="false" onAction="#onPauseBtnAction" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true"
-                                       preserveRatio="true">
-                                <Image url="@Images/Pause.png"/>
+                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@Images/Pause.png" />
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button id="btn-debug" fx:id="btn_resume" mnemonicParsing="false"
-                            onAction="#onResumeBtnAction" prefHeight="38.0" prefWidth="52.0"
-                            style="-fx-background-color: transparent;">
+                    <Button id="btn-debug" fx:id="btn_resume" mnemonicParsing="false" onAction="#onResumeBtnAction" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true"
-                                       preserveRatio="true">
-                                <Image url="@Images/Next Breakpoint.png"/>
+                            <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@Images/Next Breakpoint.png" />
                             </ImageView>
                         </graphic>
                     </Button>
                 </buttons>
                 <opaqueInsets>
-                    <Insets/>
+                    <Insets />
                 </opaqueInsets>
             </ButtonBar>
         </AnchorPane>
         <SplitPane dividerPositions="0.7130872483221476" prefHeight="361.0" prefWidth="598.0">
-            <SplitPane dividerPositions="0.7183308494783904" orientation="VERTICAL" prefHeight="361.0"
-                       prefWidth="422.0">
-                <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0"
-                         stylesheets="@Styles/TabPaneChange.css" tabClosingPolicy="ALL_TABS">
+            <SplitPane dividerPositions="0.7183308494783904" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
+                <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0" stylesheets="@Styles/TabPaneChange.css" tabClosingPolicy="ALL_TABS">
                     <Tab fx:id="initial_file_tab" text="FILE">
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                    prefWidth="200.0">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <TabPane fx:id="base_tab" prefHeight="450.0" prefWidth="908.0">
                                 <Tab fx:id="base_edit_tab" closable="false" text="EDIT">
-                                    <AnchorPane minHeight="0.0" minWidth="0.0"
-                                                prefHeight="180.0" prefWidth="200.0">
-                                        <TextArea fx:id="initial_file_text_box"
-                                                  prefHeight="408.0"
-                                                  prefWidth="908.0"
-                                                  AnchorPane.bottomAnchor="0.0"
-                                                  AnchorPane.leftAnchor="0.0"
-                                                  AnchorPane.rightAnchor="0.0"
-                                                  AnchorPane.topAnchor="0.0">
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                        <TextArea fx:id="initial_file_text_box" prefHeight="408.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <font>
-                                                <Font size="18.0"/>
+                                                <Font size="18.0" />
                                             </font>
                                         </TextArea>
                                     </AnchorPane>
                                 </Tab>
-                                <Tab fx:id="base_execute_tab" closable="false"
-                                     text="EXECUTE">
-                                    <AnchorPane minHeight="0.0" minWidth="0.0"
-                                                prefHeight="180.0" prefWidth="200.0"/>
+                                <Tab fx:id="base_execute_tab" closable="false" text="EXECUTE">
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                                 </Tab>
                             </TabPane>
                         </AnchorPane>
                     </Tab>
                 </TabPane>
-                <AnchorPane id="file-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0"
-                            prefWidth="160.0">
-                    <TextArea fx:id="console_box" layoutY="56.0" prefHeight="421.0" prefWidth="908.0"
-                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <AnchorPane id="file-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                    <TextArea fx:id="console_box" layoutY="56.0" prefHeight="421.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <font>
-                            <Font size="18.0"/>
+                            <Font size="18.0" />
                         </font>
                     </TextArea>
                 </AnchorPane>
             </SplitPane>
-            <SplitPane dividerPositions="0.03064066852367688" orientation="VERTICAL" prefHeight="200.0"
-                       prefWidth="160.0">
-                <AnchorPane id="register-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0"
-                            prefWidth="160.0"/>
-                <AnchorPane id="register-table-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0"
-                            prefWidth="160.0">
-                    <TableView fx:id="reg_table" editable="true" layoutX="32.0" layoutY="74.0"
-                               prefHeight="640.0" prefWidth="364.0" stylesheets="@Styles/table.css"
-                               AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <SplitPane dividerPositions="0.03064066852367688" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                <AnchorPane id="register-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                <AnchorPane id="register-table-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                    <TableView fx:id="reg_table" editable="true" layoutX="32.0" layoutY="74.0" prefHeight="640.0" prefWidth="364.0" stylesheets="@Styles/table.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columns>
-                            <TableColumn fx:id="reg_table_num" editable="false" prefWidth="40.0"
-                                         sortable="false"/>
-                            <TableColumn fx:id="reg_table_name" editable="false" prefWidth="164.0"
-                                         sortable="false"/>
-                            <TableColumn fx:id="reg_table_value" editable="false" prefWidth="156.0"
-                                         sortable="false"/>
+                            <TableColumn fx:id="reg_table_num" editable="false" prefWidth="40.0" sortable="false" />
+                            <TableColumn fx:id="reg_table_name" editable="false" prefWidth="164.0" sortable="false" />
+                            <TableColumn fx:id="reg_table_value" editable="false" prefWidth="156.0" sortable="false" />
                         </columns>
                     </TableView>
                 </AnchorPane>

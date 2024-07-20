@@ -1,8 +1,6 @@
 .tab {
     -fx-background-color: #F7F8FA;
     -fx-border-color: #BDBEBE;
-    -fx-pref-width: 85px;
-    -fx-pref-height: 30px;
 }
 
 .tab-pane .tab-header-background {

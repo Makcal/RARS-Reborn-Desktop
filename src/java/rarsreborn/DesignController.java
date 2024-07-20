@@ -5,14 +5,18 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.events.*;
@@ -219,45 +223,66 @@ public class DesignController implements Initializable {
 
     @FXML
     private void OnMenuItemNewAction() {
-        Tab newTab = new Tab("NEW TAB");
-        newTab.setOnClosed(event -> {
-            if (file_tab.getTabs().isEmpty()) {
-                setControlsDisable(true);
-            }
-        });
-        file_tab.getTabs().add(newTab);
+        final String[] fileName = {""};
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fileCreationDesign.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("New file");
+            stage.setResizable(false);
+            stage.setScene(new Scene(fxmlLoader.load(), 231, 148));
+            stage.setAlwaysOnTop(true);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOnHiding((event) -> {
+                fileName[0] = ( (FileCreationDesignController) fxmlLoader.getController()).getName();
+                stage.close();
+            });
+            stage.showAndWait();
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        if (!fileName[0].isEmpty()) {
 
-        AnchorPane newAnchorPane = new AnchorPane();
-        newTab.setContent(newAnchorPane);
+            Tab newTab = new Tab(fileName[0]);
+            newTab.setOnClosed(event -> {
+                if (file_tab.getTabs().isEmpty()) {
+                    setControlsDisable(true);
+                }
+            });
+            file_tab.getTabs().add(newTab);
 
-        TabPane newTabPane = new TabPane();
-        Tab newEditTab = new Tab("EDIT");
-        newEditTab.setClosable(false);
-        Tab newExecuteTab = new Tab("EXECUTE");
-        newExecuteTab.setClosable(false);
-        newTabPane.getTabs().addAll(newEditTab, newExecuteTab);
+            AnchorPane newAnchorPane = new AnchorPane();
+            newTab.setContent(newAnchorPane);
 
-        newAnchorPane.getChildren().add(newTabPane);
-        AnchorPane.setTopAnchor(newTabPane, 0.0);
-        AnchorPane.setBottomAnchor(newTabPane, 0.0);
-        AnchorPane.setRightAnchor(newTabPane, 0.0);
-        AnchorPane.setLeftAnchor(newTabPane, 0.0);
+            TabPane newTabPane = new TabPane();
+            Tab newEditTab = new Tab("EDIT");
+            newEditTab.setClosable(false);
+            Tab newExecuteTab = new Tab("EXECUTE");
+            newExecuteTab.setClosable(false);
+            newTabPane.getTabs().addAll(newEditTab, newExecuteTab);
+
+            newAnchorPane.getChildren().add(newTabPane);
+            AnchorPane.setTopAnchor(newTabPane, 0.0);
+            AnchorPane.setBottomAnchor(newTabPane, 0.0);
+            AnchorPane.setRightAnchor(newTabPane, 0.0);
+            AnchorPane.setLeftAnchor(newTabPane, 0.0);
 
 
-        AnchorPane newEditPane = new AnchorPane();
-        newEditTab.setContent(newEditPane);
-        TextArea newTextArea = new TextArea();
-        newEditPane.getChildren().add(newTextArea);
+            AnchorPane newEditPane = new AnchorPane();
+            newEditTab.setContent(newEditPane);
+            TextArea newTextArea = new TextArea();
+            newEditPane.getChildren().add(newTextArea);
 
-        newTextArea.setStyle(initial_file_text_box.getStyle());
-        newTextArea.setFont(initial_file_text_box.getFont());
+            newTextArea.setStyle(initial_file_text_box.getStyle());
+            newTextArea.setFont(initial_file_text_box.getFont());
 
-        AnchorPane.setTopAnchor(newTextArea, 0.0);
-        AnchorPane.setBottomAnchor(newTextArea, 0.0);
-        AnchorPane.setRightAnchor(newTextArea, 0.0);
-        AnchorPane.setLeftAnchor(newTextArea, 0.0);
+            AnchorPane.setTopAnchor(newTextArea, 0.0);
+            AnchorPane.setBottomAnchor(newTextArea, 0.0);
+            AnchorPane.setRightAnchor(newTextArea, 0.0);
+            AnchorPane.setLeftAnchor(newTextArea, 0.0);
 
-        setControlsDisable(false);
+            setControlsDisable(false);
+        }
     }
 
     @FXML
