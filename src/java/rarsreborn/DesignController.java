@@ -151,9 +151,6 @@ public class DesignController implements Initializable {
         memory_choice.setItems(FXCollections.observableArrayList("0x00400000 (.text)", "0x10010000 (.data)", "0x10040000 (.heap)", "current sp"));
         address_choice.setItems(FXCollections.observableArrayList("Decimal addresses", "Hexadecimal addresses"));
         value_choice.setItems(FXCollections.observableArrayList("Decimal values", "Hexadecimal values", "ASCII"));
-        memory_choice.getSelectionModel().select("0x10010000 (.data)");
-        address_choice.getSelectionModel().select("Hexadecimal addresses");
-        value_choice.getSelectionModel().select("Hexadecimal values");
         memory_choice.getSelectionModel().selectedIndexProperty().addListener((observable) -> {
             switch (memory_choice.getSelectionModel().getSelectedIndex()){
                 case 0:
@@ -173,6 +170,9 @@ public class DesignController implements Initializable {
         });
         address_choice.getSelectionModel().selectedIndexProperty().addListener((observable -> updateMemoryTable()));
         value_choice.getSelectionModel().selectedIndexProperty().addListener((observable -> updateMemoryTable()));
+        memory_choice.getSelectionModel().select("0x10010000 (.data)");
+        address_choice.getSelectionModel().select("Hexadecimal addresses");
+        value_choice.getSelectionModel().select("Hexadecimal values");
         updateMemoryTable();
 
         simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (event) -> {
