@@ -152,8 +152,8 @@ public class DesignController implements Initializable {
         address_choice.setItems(FXCollections.observableArrayList("Decimal addresses", "Hexadecimal addresses"));
         value_choice.setItems(FXCollections.observableArrayList("Decimal values", "Hexadecimal values", "ASCII"));
         memory_choice.getSelectionModel().select("0x10010000 (.data)");
-        address_choice.getSelectionModel().select("Decimal addresses");
-        value_choice.getSelectionModel().select("Decimal values");
+        address_choice.getSelectionModel().select("Hexadecimal addresses");
+        value_choice.getSelectionModel().select("Hexadecimal values");
         memory_choice.getSelectionModel().selectedIndexProperty().addListener((observable) -> {
             switch (memory_choice.getSelectionModel().getSelectedIndex()){
                 case 0:
