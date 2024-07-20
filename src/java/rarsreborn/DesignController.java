@@ -245,26 +245,7 @@ public class DesignController implements Initializable {
 
     @FXML
     private void CreateNewFile() {
-        final String[] fileName = {""};
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fileCreationDesign.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("New file");
-            stage.setResizable(false);
-            stage.setScene(new Scene(fxmlLoader.load(), 231, 148));
-            stage.setAlwaysOnTop(true);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOnHiding((event) -> {
-                fileName[0] = ((FileCreationDesignController) fxmlLoader.getController()).getName();
-                stage.close();
-            });
-            stage.showAndWait();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        if (!fileName[0].isEmpty()) {
-            createNewTab(fileName[0]);
-        }
+        createNewTab("New Tab");
     }
 
     @FXML
@@ -498,6 +479,7 @@ public class DesignController implements Initializable {
         AnchorPane.setLeftAnchor(newTextArea, 0.0);
 
         setControlsDisable(false);
+        file_tab.getSelectionModel().select(newTab);
     }
 
     private void setDebugControlsVisible(boolean visible) {
