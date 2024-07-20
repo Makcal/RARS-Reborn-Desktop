@@ -1,5 +1,7 @@
 package rarsreborn;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -17,8 +19,10 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.events.*;
@@ -71,20 +75,20 @@ public class DesignController implements Initializable {
 
     @FXML
     private TextArea initial_file_text_box;
-    
+
     @FXML
     private TableView<Register32> reg_table;
-    
+
     @FXML
     private TableColumn<Register32, String> reg_table_name;
-    
+
     @FXML
     private TableColumn<Register32, Integer> reg_table_num;
-    
+
     @FXML
     private TableColumn<Register32, Integer> reg_table_value;
 
-    
+
     private final Simulator32 simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
         @Override
         public String requestString(int count) {
@@ -104,7 +108,7 @@ public class DesignController implements Initializable {
     });
     private final Register32File registers = simulator.getRegisterFile();
 //    private final IMemory memory = simulator.getMemory();
-    
+
     private final ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
     private final TextAreaScanner consoleScanner = new TextAreaScanner();
     private final StringBuilder consoleUneditableText = new StringBuilder();
@@ -118,7 +122,7 @@ public class DesignController implements Initializable {
         reg_table_num.setCellValueFactory(new PropertyValueFactory<>("number"));
         reg_table_value.setCellValueFactory(new PropertyValueFactory<>("value"));
         reg_table.setItems(registersList);
-        for (Register32 r: registersList){
+        for (Register32 r : registersList) {
             r.addObserver(Register32ChangeEvent.class, (register32ChangeEvent) -> updateRegistersTable());
         }
 
@@ -127,8 +131,8 @@ public class DesignController implements Initializable {
             consoleUneditableText.append(event.text());
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintCharEvent.class, (event) -> {
-            console_box.appendText(String.valueOf((char)event.character()));
-            consoleUneditableText.append((char)event.character());
+            console_box.appendText(String.valueOf((char) event.character()));
+            consoleUneditableText.append((char) event.character());
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerEvent.class, (event) -> {
             console_box.appendText(String.valueOf(event.value()));
@@ -162,9 +166,9 @@ public class DesignController implements Initializable {
         console_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
             String proposed = c.getControlNewText();
             if (proposed.startsWith(consoleUneditableText.toString())) {
-                return  c;
+                return c;
             } else {
-                return null ;
+                return null;
             }
         }));
         console_box.setEditable(false);
@@ -173,9 +177,9 @@ public class DesignController implements Initializable {
                 event.consume();
                 console_box.appendText("\n");
                 int charPtr = console_box.getText().length() - 2;
-                while (console_box.getText().charAt(charPtr) != '\n'){
+                while (console_box.getText().charAt(charPtr) != '\n') {
                     charPtr--;
-                    if (charPtr == -1){
+                    if (charPtr == -1) {
                         charPtr = 0;
                         break;
                     }
@@ -202,12 +206,11 @@ public class DesignController implements Initializable {
             stage.setAlwaysOnTop(true);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setOnHiding((event) -> {
-                fileName[0] = ( (FileCreationDesignController) fxmlLoader.getController()).getName();
+                fileName[0] = ((FileCreationDesignController) fxmlLoader.getController()).getName();
                 stage.close();
             });
             stage.showAndWait();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         if (!fileName[0].isEmpty()) {
@@ -260,7 +263,7 @@ public class DesignController implements Initializable {
     private void OnRunBtnAction() {
         preStartActions();
         try {
-            String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
+            String content = ((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
             simulator.compile(content);
             (new Thread(() -> {
                 try {
@@ -275,16 +278,18 @@ public class DesignController implements Initializable {
             console_box.setText(e.getMessage());
         }
     }
+
     @FXML
-    private void onStopBtnAction(){
+    private void onStopBtnAction() {
         simulator.stop();
     }
+
     @FXML
-    private void onDebugBtnAction(){
+    private void onDebugBtnAction() {
         preStartActions();
         debugMode = true;
         try {
-            String content = ((TextArea)((Parent)((TabPane)((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
+            String content = ((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
             simulator.compile(content);
             (new Thread(() -> {
                 try {
@@ -300,15 +305,15 @@ public class DesignController implements Initializable {
             console_box.setText(e.getMessage());
         }
     }
+
     @FXML
     private void onStepBackBtnAction() {
-        if (debugMode){
+        if (debugMode) {
             (new Thread(() -> {
                 try {
                     if (simulator.isRunning()) {
                         simulator.stepBack();
-                    }
-                    else {
+                    } else {
                         debugMode = false;
                     }
                 } catch (Exception e) {
@@ -317,15 +322,15 @@ public class DesignController implements Initializable {
             })).start();
         }
     }
+
     @FXML
     private void onStepOverBtnAction() {
-        if (debugMode){
+        if (debugMode) {
             (new Thread(() -> {
                 try {
                     if (simulator.isRunning()) {
                         simulator.runSteps(1);
-                    }
-                    else {
+                    } else {
                         debugMode = false;
                     }
                 } catch (Exception e) {
@@ -335,45 +340,71 @@ public class DesignController implements Initializable {
         }
         updateRegistersTable();
     }
+
     @FXML
     private void onPauseBtnAction() {
     }
+
     @FXML
     private void onResumeBtnAction() {
     }
+
     @FXML
-    private void closeCurrentFile(){
+    private void closeCurrentFile() {
         if (!file_tab.getTabs().isEmpty()) {
             file_tab.getTabs().remove(file_tab.getSelectionModel().getSelectedItem());
         }
     }
+
     @FXML
-    private void closeAllFiles(){
+    private void closeAllFiles() {
         file_tab.getTabs().clear();
     }
+
     @FXML
-    private void closeApplication(){
+    private void closeApplication() {
         Platform.exit();
     }
+
     @FXML
-    private void saveFile(){
-        //TODO
+    private void saveFile() {
+        try {
+            String currentTabName = file_tab.getSelectionModel().getSelectedItem().getText();
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Text File");
+            fileChooser.setInitialFileName(currentTabName);
+//        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+            FileChooser.ExtensionFilter asmFilter = new FileChooser.ExtensionFilter("ASM files (*.asm)", "*.asm");
+            fileChooser.getExtensionFilters().add(asmFilter);
+
+            File newFile = fileChooser.showSaveDialog(Window.getWindows().get(0));
+            if (newFile != null) {
+                FileWriter currentFile = new FileWriter(newFile);
+                currentFile.write(((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText());
+                currentFile.close();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    private void setDebugControlsVisible(boolean visible){
+    private void setDebugControlsVisible(boolean visible) {
         btn_step_back.setVisible(visible);
         btn_step_over.setVisible(visible);
         btn_pause.setVisible(visible);
         btn_resume.setVisible(visible);
     }
-    private void setControlsDisable(boolean enabled){
+
+    private void setControlsDisable(boolean enabled) {
         btn_run.setDisable(enabled);
         btn_debug.setDisable(enabled);
     }
+
     private void updateRegistersTable() {
         reg_table.refresh();
     }
-    private void preStartActions(){
+
+    private void preStartActions() {
         consoleUneditableText.setLength(0);
         console_box.setText("");
         consoleScanner.update();
