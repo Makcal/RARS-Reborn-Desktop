@@ -14,9 +14,7 @@ public class TextAreaScanner{
             }
 
         }
-        String s = inputStack.getFirst();
-        inputStack.removeFirst();
-        return s;
+        return inputStack.removeFirst().split("\n")[0];
     }
 
     public void addInput(String s){
