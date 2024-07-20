@@ -477,7 +477,7 @@ public class DesignController implements Initializable {
     }
 
     private void updateMemoryTable(TableView<MemoryBlock> table){
-        //TODO
+        table.refresh();
     }
 
     private void preStartActions() {
