@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.events.*;
-import rarsreborn.core.core.memory.IMemory;
+//import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.Register32;
@@ -40,16 +40,10 @@ public class DesignController implements Initializable {
     private Tab base_execute_tab;
 
     @FXML
-    private TabPane base_tab;
-
-    @FXML
     private Button btn_break;
 
     @FXML
     private Button btn_debug;
-
-    @FXML
-    private Button btn_new_file;
 
     @FXML
     private Button btn_pause;
@@ -59,9 +53,6 @@ public class DesignController implements Initializable {
 
     @FXML
     private Button btn_run;
-
-    @FXML
-    private Button btn_save;
 
     @FXML
     private Button btn_step_back;
@@ -112,7 +103,7 @@ public class DesignController implements Initializable {
         }
     });
     private final Register32File registers = simulator.getRegisterFile();
-    private final IMemory memory = simulator.getMemory();
+//    private final IMemory memory = simulator.getMemory();
     
     private final ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
     private final TextAreaScanner consoleScanner = new TextAreaScanner();
@@ -235,7 +226,9 @@ public class DesignController implements Initializable {
             TabPane newTabPane = new TabPane();
             Tab newEditTab = new Tab("EDIT");
             newEditTab.setClosable(false);
+            newEditTab.setStyle(base_edit_tab.getStyle());
             Tab newExecuteTab = new Tab("EXECUTE");
+            newExecuteTab.setStyle(base_execute_tab.getStyle());
             newExecuteTab.setClosable(false);
             newTabPane.getTabs().addAll(newEditTab, newExecuteTab);
 

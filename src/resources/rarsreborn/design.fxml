@@ -56,7 +56,7 @@
                         </graphic>
 
                     </MenuButton>
-                    <Button id="btn-save" fx:id="btn_new_file" mnemonicParsing="false" onAction="#CreateNewFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
+                    <Button id="btn-save" mnemonicParsing="false" onAction="#CreateNewFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@Images/New file.png" />
@@ -130,7 +130,7 @@
                 <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0" stylesheets="@Styles/TabPaneChange.css" tabClosingPolicy="ALL_TABS" tabMaxHeight="1000.0" tabMaxWidth="1.0E7">
                     <Tab fx:id="initial_file_tab" text="FILE">
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                            <TabPane fx:id="base_tab" prefHeight="450.0" prefWidth="908.0">
+                            <TabPane prefHeight="450.0" prefWidth="908.0">
                                 <Tab fx:id="base_edit_tab" closable="false" style="-fx-pref-height: 30; -fx-pref-width: 85;" text="EDIT">
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                         <TextArea fx:id="initial_file_text_box" prefHeight="408.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
