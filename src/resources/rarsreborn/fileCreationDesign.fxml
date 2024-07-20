@@ -8,7 +8,7 @@
 
 <VBox alignment="CENTER" fillWidth="false" prefHeight="148.0" prefWidth="231.0" spacing="10.0"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="rarsreborn.FileCreationDesignController">
+      fx:controller="rarsreborn.FileCreationDesignController" stylesheets="@Styles/global.css">
    <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="288.0" text="New file name:"
           textAlignment="CENTER">
       <font>
