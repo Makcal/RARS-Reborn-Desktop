@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +22,7 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -31,6 +31,7 @@ import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.events.*;
 //import rarsreborn.core.core.memory.IMemory;
+import rarsreborn.core.core.memory.MemoryBlock;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.Register32;
@@ -84,6 +85,9 @@ public class DesignController implements Initializable {
     private TableView<Register32> reg_table;
 
     @FXML
+    private TableView<MemoryBlock> initial_memory_table;
+
+    @FXML
     private TableColumn<Register32, String> reg_table_name;
 
     @FXML
@@ -91,6 +95,9 @@ public class DesignController implements Initializable {
 
     @FXML
     private TableColumn<Register32, Integer> reg_table_value;
+
+    @FXML
+    private AnchorPane initial_table_controls;
 
 
     private final Simulator32 simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
@@ -372,6 +379,24 @@ public class DesignController implements Initializable {
             }
         }
     }
+    @FXML
+    public void openFile() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose the file");
+            FileChooser.ExtensionFilter asmFilter = new FileChooser.ExtensionFilter("ASM files (*.asm)", "*.asm");
+            fileChooser.getExtensionFilters().add(asmFilter);
+            File file = fileChooser.showOpenDialog(Window.getWindows().get(0));
+
+            if (file != null) {
+                String content = new String(Files.readAllBytes(file.toPath()));
+                createNewTab(file.getName().split("\\.")[0]);
+                ((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).setText(content);
+            }
+        } catch (Exception e) {
+            console_box.appendText(e.getMessage());
+        }
+    }
 
     private void createNewTab(String fileName) {
         Tab newTab = new Tab(fileName);
@@ -414,26 +439,25 @@ public class DesignController implements Initializable {
         AnchorPane.setRightAnchor(newTextArea, 0.0);
         AnchorPane.setLeftAnchor(newTextArea, 0.0);
 
+        AnchorPane newExecutePane = new AnchorPane();
+        newExecuteTab.setContent(newExecutePane);
+        BorderPane newBorderPane = new BorderPane();
+        newExecutePane.getChildren().add(newBorderPane);
+        AnchorPane buttonsPane = new AnchorPane();
+        TableView<MemoryBlock> table = new TableView<>();
+        newBorderPane.setCenter(table);
+        newBorderPane.setBottom(buttonsPane);
+
+        AnchorPane.setTopAnchor(newBorderPane, 0.0);
+        AnchorPane.setBottomAnchor(newBorderPane, 0.0);
+        AnchorPane.setRightAnchor(newBorderPane, 0.0);
+        AnchorPane.setLeftAnchor(newBorderPane, 0.0);
+
+        table.setColumnResizePolicy(initial_memory_table.getColumnResizePolicy());
+        table.getColumns().addAll(initial_memory_table.getColumns());
+        buttonsPane.getChildren().addAll(initial_table_controls.getChildren());
+
         setControlsDisable(false);
-    }
-
-    @FXML
-    public void openFile() {
-        try {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Choose the file");
-            FileChooser.ExtensionFilter asmFilter = new FileChooser.ExtensionFilter("ASM files (*.asm)", "*.asm");
-            fileChooser.getExtensionFilters().add(asmFilter);
-            File file = fileChooser.showOpenDialog(Window.getWindows().get(0));
-
-            if (file != null) {
-                String content = new String(Files.readAllBytes(file.toPath()));
-                createNewTab(file.getName().split("\\.")[0]);
-                ((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).setText(content);
-            }
-        } catch (Exception e) {
-            console_box.appendText(e.getMessage());
-        }
     }
 
     private void setDebugControlsVisible(boolean visible) {
@@ -450,6 +474,10 @@ public class DesignController implements Initializable {
 
     private void updateRegistersTable() {
         reg_table.refresh();
+    }
+
+    private void updateMemoryTable(TableView<MemoryBlock> table){
+        //TODO
     }
 
     private void preStartActions() {
