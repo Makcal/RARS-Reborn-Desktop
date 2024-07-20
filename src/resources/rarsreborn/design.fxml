@@ -35,7 +35,7 @@
                         </ImageView>
                      </graphic>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Open"/>
+                  <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open"/>
                   <MenuItem mnemonicParsing="false" onAction="#closeCurrentFile" text="Close"/>
                   <MenuItem mnemonicParsing="false" onAction="#closeAllFiles" text="Close All"/>
                   <SeparatorMenuItem mnemonicParsing="false"/>

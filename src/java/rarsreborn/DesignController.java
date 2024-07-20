@@ -411,4 +411,8 @@ public class DesignController implements Initializable {
         console_box.setEditable(true);
         simulator.stop();
     }
+
+    public void openFile() {
+        //TODO
+    }
 }
