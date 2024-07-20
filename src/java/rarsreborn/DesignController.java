@@ -352,6 +352,10 @@ public class DesignController implements Initializable {
             file_tab.getTabs().remove(file_tab.getSelectionModel().getSelectedItem());
         }
     }
+    @FXML
+    private void closeAllFiles(){
+        file_tab.getTabs().clear();
+    }
 
     private void setDebugControlsVisible(boolean visible){
         btn_step_back.setVisible(visible);
