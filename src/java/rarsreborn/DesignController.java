@@ -362,6 +362,10 @@ public class DesignController implements Initializable {
     private void closeApplication(){
         Platform.exit();
     }
+    @FXML
+    private void saveFile(){
+        //TODO
+    }
 
     private void setDebugControlsVisible(boolean visible){
         btn_step_back.setVisible(visible);
