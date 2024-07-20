@@ -220,48 +220,7 @@ public class DesignController implements Initializable {
             System.out.println(e.getMessage());
         }
         if (!fileName[0].isEmpty()) {
-
-            Tab newTab = new Tab(fileName[0]);
-            newTab.setOnClosed(event -> {
-                if (file_tab.getTabs().isEmpty()) {
-                    setControlsDisable(true);
-                }
-            });
-            file_tab.getTabs().add(newTab);
-
-            AnchorPane newAnchorPane = new AnchorPane();
-            newTab.setContent(newAnchorPane);
-
-            TabPane newTabPane = new TabPane();
-            Tab newEditTab = new Tab("EDIT");
-            newEditTab.setClosable(false);
-            newEditTab.setStyle(base_edit_tab.getStyle());
-            Tab newExecuteTab = new Tab("EXECUTE");
-            newExecuteTab.setStyle(base_execute_tab.getStyle());
-            newExecuteTab.setClosable(false);
-            newTabPane.getTabs().addAll(newEditTab, newExecuteTab);
-
-            newAnchorPane.getChildren().add(newTabPane);
-            AnchorPane.setTopAnchor(newTabPane, 0.0);
-            AnchorPane.setBottomAnchor(newTabPane, 0.0);
-            AnchorPane.setRightAnchor(newTabPane, 0.0);
-            AnchorPane.setLeftAnchor(newTabPane, 0.0);
-
-
-            AnchorPane newEditPane = new AnchorPane();
-            newEditTab.setContent(newEditPane);
-            TextArea newTextArea = new TextArea();
-            newEditPane.getChildren().add(newTextArea);
-
-            newTextArea.setStyle(initial_file_text_box.getStyle());
-            newTextArea.setFont(initial_file_text_box.getFont());
-
-            AnchorPane.setTopAnchor(newTextArea, 0.0);
-            AnchorPane.setBottomAnchor(newTextArea, 0.0);
-            AnchorPane.setRightAnchor(newTextArea, 0.0);
-            AnchorPane.setLeftAnchor(newTextArea, 0.0);
-
-            setControlsDisable(false);
+            createNewTab(fileName[0]);
         }
     }
 
@@ -414,6 +373,69 @@ public class DesignController implements Initializable {
         }
     }
 
+    private void createNewTab(String fileName) {
+        Tab newTab = new Tab(fileName);
+        newTab.setOnClosed(event -> {
+            if (file_tab.getTabs().isEmpty()) {
+                setControlsDisable(true);
+            }
+        });
+        file_tab.getTabs().add(newTab);
+
+        AnchorPane newAnchorPane = new AnchorPane();
+        newTab.setContent(newAnchorPane);
+
+        TabPane newTabPane = new TabPane();
+        Tab newEditTab = new Tab("EDIT");
+        newEditTab.setClosable(false);
+        newEditTab.setStyle(base_edit_tab.getStyle());
+        Tab newExecuteTab = new Tab("EXECUTE");
+        newExecuteTab.setStyle(base_execute_tab.getStyle());
+        newExecuteTab.setClosable(false);
+        newTabPane.getTabs().addAll(newEditTab, newExecuteTab);
+
+        newAnchorPane.getChildren().add(newTabPane);
+        AnchorPane.setTopAnchor(newTabPane, 0.0);
+        AnchorPane.setBottomAnchor(newTabPane, 0.0);
+        AnchorPane.setRightAnchor(newTabPane, 0.0);
+        AnchorPane.setLeftAnchor(newTabPane, 0.0);
+
+
+        AnchorPane newEditPane = new AnchorPane();
+        newEditTab.setContent(newEditPane);
+        TextArea newTextArea = new TextArea();
+        newEditPane.getChildren().add(newTextArea);
+
+        newTextArea.setStyle(initial_file_text_box.getStyle());
+        newTextArea.setFont(initial_file_text_box.getFont());
+
+        AnchorPane.setTopAnchor(newTextArea, 0.0);
+        AnchorPane.setBottomAnchor(newTextArea, 0.0);
+        AnchorPane.setRightAnchor(newTextArea, 0.0);
+        AnchorPane.setLeftAnchor(newTextArea, 0.0);
+
+        setControlsDisable(false);
+    }
+
+    @FXML
+    public void openFile() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose the file");
+            FileChooser.ExtensionFilter asmFilter = new FileChooser.ExtensionFilter("ASM files (*.asm)", "*.asm");
+            fileChooser.getExtensionFilters().add(asmFilter);
+            File file = fileChooser.showOpenDialog(Window.getWindows().get(0));
+
+            if (file != null) {
+                String content = new String(Files.readAllBytes(file.toPath()));
+                createNewTab(file.getName().split("\\.")[0]);
+                ((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).setText(content);
+            }
+        } catch (Exception e) {
+            console_box.appendText(e.getMessage());
+        }
+    }
+
     private void setDebugControlsVisible(boolean visible) {
         btn_step_back.setVisible(visible);
         btn_step_over.setVisible(visible);
@@ -438,7 +460,5 @@ public class DesignController implements Initializable {
         simulator.stop();
     }
 
-    public void openFile() {
-        //TODO
-    }
+
 }
