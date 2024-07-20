@@ -14,8 +14,8 @@ public class TextAreaScanner{
             }
 
         }
-        String s = inputStack.getLast();
-        inputStack.removeLast();
+        String s = inputStack.getFirst();
+        inputStack.removeFirst();
         return s;
     }
 

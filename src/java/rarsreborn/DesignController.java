@@ -85,9 +85,6 @@ public class DesignController implements Initializable {
     private TableColumn<Register32, Integer> reg_table_value;
 
     @FXML
-    private AnchorPane initial_table_controls;
-
-    @FXML
     private ChoiceBox<String> address_choice;
     @FXML
     private ChoiceBox<String> memory_choice;
@@ -126,12 +123,13 @@ public class DesignController implements Initializable {
             return 0;
         }
     });
+
     private final Register32File registers = simulator.getRegisterFile();
-    private final IMemory memory = simulator.getMemory();
-
     private final ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
-    private final ObservableList<Integer> memoryAddresses = FXCollections.observableArrayList();
 
+    private final IMemory memory = simulator.getMemory();
+    ObservableList<Integer> memoryAddresses = FXCollections.observableArrayList();
+    int memoryOffset;
     private final TextAreaScanner consoleScanner = new TextAreaScanner();
     private final StringBuilder consoleUneditableText = new StringBuilder();
 
@@ -150,28 +148,32 @@ public class DesignController implements Initializable {
             r.addObserver(Register32ChangeEvent.class, (register32ChangeEvent) -> updateRegistersTable());
         }
 
-        for (int i = 0; i < 8; i++){
-            memoryAddresses.add(Memory32.DATA_SECTION_START + (i * 32));
-        }
-        for (int i = 1; i < 9; i++){
-            int finalI = i;
-            //noinspection unchecked
-            ((TableColumn<Integer, Long>) memory_table.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
-                try {
-                    return new ReadOnlyObjectWrapper<>(memory.getMultiple(integerCellDataFeatures.getValue() + ((finalI - 1) * 4), 4));
-                } catch (Exception e) {
-                    throw new RuntimeException();
-                }
-            });
-        }
-        memory_choice.setItems(FXCollections.observableArrayList("0x00400000 (.text)", "0x10000000 (.extern)", "0x10010000 (.data)", "0x10040000 (.heap)", "0xffff0000 (MMIO)", "current gp", "current sp"));
+        memory_choice.setItems(FXCollections.observableArrayList("0x00400000 (.text)", "0x10010000 (.data)", "0x10040000 (.heap)", "current sp"));
         address_choice.setItems(FXCollections.observableArrayList("Decimal addresses", "Hexadecimal addresses"));
         value_choice.setItems(FXCollections.observableArrayList("Decimal values", "Hexadecimal values", "ASCII"));
         memory_choice.getSelectionModel().select("0x10010000 (.data)");
         address_choice.getSelectionModel().select("Decimal addresses");
-        value_choice.getSelectionModel().select("Decimal addresses");
-
-        memory_table.setItems(memoryAddresses);
+        value_choice.getSelectionModel().select("Decimal values");
+        memory_choice.getSelectionModel().selectedIndexProperty().addListener((observable) -> {
+            switch (memory_choice.getSelectionModel().getSelectedIndex()){
+                case 0:
+                    memoryOffset = Memory32.TEXT_SECTION_START;
+                    break;
+                case 1:
+                    memoryOffset = Memory32.DATA_SECTION_START;
+                    break;
+                case 2:
+                    memoryOffset = Memory32.HEAP_SECTION_START;
+                    break;
+                case 3:
+                    memoryOffset = simulator.getProgramCounter().getValue() - (simulator.getProgramCounter().getValue() % 32);
+                    break;
+            }
+            updateMemoryTable();
+        });
+        address_choice.getSelectionModel().selectedIndexProperty().addListener((observable -> updateMemoryTable()));
+        value_choice.getSelectionModel().selectedIndexProperty().addListener((observable -> updateMemoryTable()));
+        updateMemoryTable();
 
         simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (event) -> {
             console_box.appendText(event.text());
@@ -207,9 +209,7 @@ public class DesignController implements Initializable {
             btn_break.setDisable(true);
         });
         simulator.addObserver(BackStepFinishedEvent.class, (event) -> updateRegistersTable());
-        memory.addObserver(MemoryChangeEvent.class, (event) -> {
-            memory_table.refresh();
-        });
+        memory.addObserver(MemoryChangeEvent.class, (event) -> memory_table.refresh());
 
         console_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
             String proposed = c.getControlNewText();
@@ -453,12 +453,24 @@ public class DesignController implements Initializable {
 
     @FXML
     void onMemoryLeftAction() {
-
+        memoryOffset -= 32;
+        if (memoryOffset >= 0){
+            updateMemoryTable();
+        }
+        else {
+            memoryOffset += 32;
+        }
     }
 
     @FXML
     void onMemoryRightAction() {
-
+        memoryOffset += 32;
+        if (memoryOffset <= memory.getSize()){
+            updateMemoryTable();
+        }
+        else {
+            memoryOffset -= 32;
+        }
     }
 
     private void createNewTab(String fileName) {
@@ -504,8 +516,102 @@ public class DesignController implements Initializable {
         reg_table.refresh();
     }
 
-    private void updateMemoryTable(TableView<IMemory> table){
-        table.refresh();
+    private void updateMemoryTable(){
+        memory_table.getItems().clear();
+        memoryAddresses.clear();
+        for (int i = 0; i < 8; i++){
+            memoryAddresses.add(memoryOffset + (i * 32));
+        }
+        StringBuilder buildString = new StringBuilder();
+        switch (address_choice.getSelectionModel().getSelectedIndex()){
+            case 0:
+                //noinspection unchecked
+                ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
+                    try {
+                        return new ReadOnlyObjectWrapper<>(String.valueOf(integerCellDataFeatures.getValue()));
+                    } catch (Exception e) {
+                        throw new RuntimeException();
+                    }
+                });
+                break;
+            case 1:
+                //noinspection unchecked
+                ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
+                    try {
+                        buildString.setLength(0);
+                        buildString.append("0x");
+                        buildString.append(Integer.toHexString(integerCellDataFeatures.getValue()));
+                        while (buildString.length() < 10){
+                            buildString.insert(2, 0);
+                        }
+                        return new ReadOnlyObjectWrapper<>(buildString.toString());
+                    } catch (Exception e) {
+                        throw new RuntimeException();
+                    }
+                });
+                break;
+        }
+        switch (value_choice.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                for (int i = 1; i < 9; i++) {
+                    int finalI = i;
+                    //noinspection unchecked
+                    ((TableColumn<Integer, String>) memory_table.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                        try {
+                            return new ReadOnlyObjectWrapper<>(String.valueOf(memory.getMultiple(integerCellDataFeatures.getValue() + ((finalI - 1) * 4), 4)));
+                        } catch (Exception e) {
+                            throw new RuntimeException();
+                        }
+                    });
+                }
+                break;
+            case 1:
+                for (int i = 1; i < 9; i++) {
+                    int finalI = i;
+                    //noinspection unchecked
+                    ((TableColumn<Integer, String>) memory_table.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                        try {
+                            buildString.setLength(0);
+                            buildString.append("0x");
+                            buildString.append(Long.toHexString(memory.getMultiple(integerCellDataFeatures.getValue() + ((finalI - 1) * 4), 4)));
+                            while (buildString.length() < 10){
+                                buildString.insert(2, 0);
+                            }
+                            return new ReadOnlyObjectWrapper<>(buildString.toString());
+                        } catch (Exception e) {
+                            throw new RuntimeException();
+                        }
+                    });
+                }
+                break;
+            case 2:
+                for (int i = 1; i < 9; i++) {
+                    int finalI = i;
+                    //noinspection unchecked
+                    ((TableColumn<Integer, String>) memory_table.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                        try {
+                            buildString.setLength(0);
+                            for (int j = 0; j < 4; j++) {
+                                int k = memory.getByte(integerCellDataFeatures.getValue() + ((finalI - 1) * 4) + j);
+                                if (k < 126 && k > 32){
+                                    buildString.append((char) k);
+                                }
+                                else {
+                                    buildString.append("\\").append(Integer.toHexString(k));
+                                }
+                                buildString.append(" ");
+                            }
+                            return new ReadOnlyObjectWrapper<>(buildString.toString());
+                        } catch (Exception e) {
+                            throw new RuntimeException();
+                        }
+
+                    });
+                }
+                break;
+        }
+        memory_table.getItems().addAll(memoryAddresses);
+        memory_table.refresh();
     }
 
     private void preStartActions() {
@@ -515,6 +621,4 @@ public class DesignController implements Initializable {
         console_box.setEditable(true);
         simulator.stop();
     }
-
-
 }
