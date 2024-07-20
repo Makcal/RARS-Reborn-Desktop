@@ -2,6 +2,8 @@ package rarsreborn;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -355,6 +357,10 @@ public class DesignController implements Initializable {
     @FXML
     private void closeAllFiles(){
         file_tab.getTabs().clear();
+    }
+    @FXML
+    private void closeApplication(){
+        Platform.exit();
     }
 
     private void setDebugControlsVisible(boolean visible){
