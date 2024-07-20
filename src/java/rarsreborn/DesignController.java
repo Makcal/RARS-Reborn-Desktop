@@ -2,7 +2,11 @@ package rarsreborn;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -113,7 +117,9 @@ public class DesignController implements Initializable {
     private final TextAreaScanner consoleScanner = new TextAreaScanner();
     private final StringBuilder consoleUneditableText = new StringBuilder();
 
-    boolean debugMode = false;
+    private boolean debugMode = false;
+
+    private final HashMap<Tab, URI> filesNamesLinker = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -367,24 +373,44 @@ public class DesignController implements Initializable {
     }
 
     @FXML
-    private void saveFile() {
+    private void saveFileAs() {
         try {
-            String currentTabName = file_tab.getSelectionModel().getSelectedItem().getText();
+            Tab tab = file_tab.getSelectionModel().getSelectedItem();
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save Text File");
-            fileChooser.setInitialFileName(currentTabName);
-//        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-            FileChooser.ExtensionFilter asmFilter = new FileChooser.ExtensionFilter("ASM files (*.asm)", "*.asm");
-            fileChooser.getExtensionFilters().add(asmFilter);
+            fileChooser.setTitle("Save File");
+            fileChooser.setInitialFileName(tab.getText());
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ASM files (*.asm)", "*.asm"));
 
             File newFile = fileChooser.showSaveDialog(Window.getWindows().get(0));
             if (newFile != null) {
                 FileWriter currentFile = new FileWriter(newFile);
-                currentFile.write(((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText());
+                currentFile.write(((TextArea) ((Parent) ((TabPane) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText());
                 currentFile.close();
+                filesNamesLinker.put(tab, newFile.toURI());
+                tab.setText(newFile.getName().split("\\.")[0]);
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            console_box.appendText(e.getMessage());
+        }
+    }
+    @FXML
+    private void saveFile() {
+        Tab tab = file_tab.getSelectionModel().getSelectedItem();
+        if (filesNamesLinker.get(tab) == null){
+            saveFileAs();
+        }
+        else if (!Files.exists(Path.of(filesNamesLinker.get(tab)))) {
+            saveFileAs();
+        }
+        else {
+            try {
+                File newFile = new File(filesNamesLinker.get(tab));
+                FileWriter currentFile = new FileWriter(newFile);
+                currentFile.write(((TextArea) ((Parent) ((TabPane) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText());
+                currentFile.close();
+            } catch (Exception e) {
+                console_box.appendText(e.getMessage());
+            }
         }
     }
 

@@ -39,14 +39,14 @@
                   <MenuItem mnemonicParsing="false" onAction="#closeCurrentFile" text="Close"/>
                   <MenuItem mnemonicParsing="false" onAction="#closeAllFiles" text="Close All"/>
                   <SeparatorMenuItem mnemonicParsing="false"/>
-                  <MenuItem mnemonicParsing="false" text="Save">
+                  <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                            <Image url="@Images/Save.png"/>
                         </ImageView>
                      </graphic>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Save As..."/>
+                  <MenuItem mnemonicParsing="false" onAction="#saveFileAs" text="Save As..."/>
                   <SeparatorMenuItem mnemonicParsing="false"/>
                   <MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Exit"/>
                </items>
