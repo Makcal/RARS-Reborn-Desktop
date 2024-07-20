@@ -7,8 +7,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,7 +24,6 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -30,8 +31,9 @@ import javafx.stage.Window;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.events.*;
-//import rarsreborn.core.core.memory.IMemory;
-import rarsreborn.core.core.memory.MemoryBlock;
+import rarsreborn.core.core.memory.IMemory;
+import rarsreborn.core.core.memory.Memory32;
+import rarsreborn.core.core.memory.MemoryChangeEvent;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.Register32;
@@ -43,61 +45,54 @@ import rarsreborn.core.simulator.backstepper.BackStepFinishedEvent;
 
 public class DesignController implements Initializable {
     @FXML
-    private Tab base_edit_tab;
-
-    @FXML
-    private Tab base_execute_tab;
-
-    @FXML
     private Button btn_break;
-
     @FXML
     private Button btn_debug;
-
     @FXML
     private Button btn_pause;
-
     @FXML
     private Button btn_resume;
-
     @FXML
     private Button btn_run;
-
     @FXML
     private Button btn_step_back;
-
     @FXML
     private Button btn_step_over;
 
     @FXML
     private TextArea console_box;
+    @FXML
+    private TextArea initial_file_text_box;
 
     @FXML
     private TabPane file_tab;
 
     @FXML
     private Tab initial_file_tab;
-
     @FXML
-    private TextArea initial_file_text_box;
+    private Tab execute_tab;
 
     @FXML
     private TableView<Register32> reg_table;
-
     @FXML
-    private TableView<MemoryBlock> initial_memory_table;
+    private TableView<Integer> memory_table;
 
     @FXML
     private TableColumn<Register32, String> reg_table_name;
-
     @FXML
     private TableColumn<Register32, Integer> reg_table_num;
-
     @FXML
     private TableColumn<Register32, Integer> reg_table_value;
 
     @FXML
     private AnchorPane initial_table_controls;
+
+    @FXML
+    private ChoiceBox<String> address_choice;
+    @FXML
+    private ChoiceBox<String> memory_choice;
+    @FXML
+    private ChoiceBox<String> value_choice;
 
 
     private final Simulator32 simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
@@ -109,18 +104,34 @@ public class DesignController implements Initializable {
 
         @Override
         public int requestInt() {
+            String s = consoleScanner.readLine();
+            try {
+                return Integer.parseInt(s);
+            }
+            catch (Exception e){
+                console_box.appendText("\"" + s + "\" is not an Integer");
+            }
             return 0;
         }
 
         @Override
         public byte requestChar() {
+            String s = consoleScanner.readLine();
+            try {
+                return Byte.parseByte(s);
+            }
+            catch (Exception e){
+                console_box.appendText("\"" + s + "\" is not an Character");
+            }
             return 0;
         }
     });
     private final Register32File registers = simulator.getRegisterFile();
-//    private final IMemory memory = simulator.getMemory();
+    private final IMemory memory = simulator.getMemory();
 
     private final ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
+    private final ObservableList<Integer> memoryAddresses = FXCollections.observableArrayList();
+
     private final TextAreaScanner consoleScanner = new TextAreaScanner();
     private final StringBuilder consoleUneditableText = new StringBuilder();
 
@@ -138,6 +149,29 @@ public class DesignController implements Initializable {
         for (Register32 r : registersList) {
             r.addObserver(Register32ChangeEvent.class, (register32ChangeEvent) -> updateRegistersTable());
         }
+
+        for (int i = 0; i < 8; i++){
+            memoryAddresses.add(Memory32.DATA_SECTION_START + (i * 32));
+        }
+        for (int i = 1; i < 9; i++){
+            int finalI = i;
+            //noinspection unchecked
+            ((TableColumn<Integer, Long>) memory_table.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                try {
+                    return new ReadOnlyObjectWrapper<>(memory.getMultiple(integerCellDataFeatures.getValue() + ((finalI - 1) * 4), 4));
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
+            });
+        }
+        memory_choice.setItems(FXCollections.observableArrayList("0x00400000 (.text)", "0x10000000 (.extern)", "0x10010000 (.data)", "0x10040000 (.heap)", "0xffff0000 (MMIO)", "current gp", "current sp"));
+        address_choice.setItems(FXCollections.observableArrayList("Decimal addresses", "Hexadecimal addresses"));
+        value_choice.setItems(FXCollections.observableArrayList("Decimal values", "Hexadecimal values", "ASCII"));
+        memory_choice.getSelectionModel().select("0x10010000 (.data)");
+        address_choice.getSelectionModel().select("Decimal addresses");
+        value_choice.getSelectionModel().select("Decimal addresses");
+
+        memory_table.setItems(memoryAddresses);
 
         simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (event) -> {
             console_box.appendText(event.text());
@@ -173,8 +207,9 @@ public class DesignController implements Initializable {
             btn_break.setDisable(true);
         });
         simulator.addObserver(BackStepFinishedEvent.class, (event) -> updateRegistersTable());
-
-        file_tab.getTabs().remove(initial_file_tab);
+        memory.addObserver(MemoryChangeEvent.class, (event) -> {
+            memory_table.refresh();
+        });
 
         console_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
             String proposed = c.getControlNewText();
@@ -202,6 +237,7 @@ public class DesignController implements Initializable {
             }
         });
 
+        file_tab.getTabs().remove(initial_file_tab);
         setControlsDisable(true);
         setDebugControlsVisible(false);
         btn_break.setDisable(true);
@@ -235,7 +271,11 @@ public class DesignController implements Initializable {
     private void OnRunBtnAction() {
         preStartActions();
         try {
-            String content = ((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
+            Tab curTab = file_tab.getSelectionModel().getSelectedItem();
+            if (Objects.equals(curTab.getText(), "EXECUTE")){
+                return;
+            }
+            String content = ((TextArea) ((AnchorPane) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getChildren().get(0)).getText();
             simulator.compile(content);
             (new Thread(() -> {
                 try {
@@ -261,7 +301,11 @@ public class DesignController implements Initializable {
         preStartActions();
         debugMode = true;
         try {
-            String content = ((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText();
+            Tab curTab = file_tab.getSelectionModel().getSelectedItem();
+            if (Objects.equals(curTab.getText(), "EXECUTE")){
+                return;
+            }
+            String content = ((TextArea) ((AnchorPane) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getChildren().get(0)).getText();
             simulator.compile(content);
             (new Thread(() -> {
                 try {
@@ -324,13 +368,16 @@ public class DesignController implements Initializable {
     @FXML
     private void closeCurrentFile() {
         if (!file_tab.getTabs().isEmpty()) {
+            if (Objects.equals(file_tab.getSelectionModel().getSelectedItem().getText(), "EXECUTE")){
+                return;
+            }
             file_tab.getTabs().remove(file_tab.getSelectionModel().getSelectedItem());
         }
     }
 
     @FXML
     private void closeAllFiles() {
-        file_tab.getTabs().clear();
+        file_tab.getTabs().removeIf(t -> !Objects.equals(t.getText(), "EXECUTE"));
     }
 
     @FXML
@@ -342,6 +389,9 @@ public class DesignController implements Initializable {
     private void saveFileAs() {
         try {
             Tab tab = file_tab.getSelectionModel().getSelectedItem();
+            if (Objects.equals(tab.getText(), "EXECUTE")){
+                return;
+            }
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Save File");
             fileChooser.setInitialFileName(tab.getText());
@@ -362,6 +412,9 @@ public class DesignController implements Initializable {
     @FXML
     private void saveFile() {
         Tab tab = file_tab.getSelectionModel().getSelectedItem();
+        if (Objects.equals(tab.getText(), "EXECUTE")){
+            return;
+        }
         if (filesNamesLinker.get(tab) == null){
             saveFileAs();
         }
@@ -398,38 +451,31 @@ public class DesignController implements Initializable {
         }
     }
 
+    @FXML
+    void onMemoryLeftAction() {
+
+    }
+
+    @FXML
+    void onMemoryRightAction() {
+
+    }
+
     private void createNewTab(String fileName) {
         Tab newTab = new Tab(fileName);
         newTab.setOnClosed(event -> {
-            if (file_tab.getTabs().isEmpty()) {
+            if (file_tab.getTabs().size() == 1) {
                 setControlsDisable(true);
             }
         });
         file_tab.getTabs().add(newTab);
+        newTab.setStyle(execute_tab.getStyle());
 
         AnchorPane newAnchorPane = new AnchorPane();
         newTab.setContent(newAnchorPane);
 
-        TabPane newTabPane = new TabPane();
-        Tab newEditTab = new Tab("EDIT");
-        newEditTab.setClosable(false);
-        newEditTab.setStyle(base_edit_tab.getStyle());
-        Tab newExecuteTab = new Tab("EXECUTE");
-        newExecuteTab.setStyle(base_execute_tab.getStyle());
-        newExecuteTab.setClosable(false);
-        newTabPane.getTabs().addAll(newEditTab, newExecuteTab);
-
-        newAnchorPane.getChildren().add(newTabPane);
-        AnchorPane.setTopAnchor(newTabPane, 0.0);
-        AnchorPane.setBottomAnchor(newTabPane, 0.0);
-        AnchorPane.setRightAnchor(newTabPane, 0.0);
-        AnchorPane.setLeftAnchor(newTabPane, 0.0);
-
-
-        AnchorPane newEditPane = new AnchorPane();
-        newEditTab.setContent(newEditPane);
         TextArea newTextArea = new TextArea();
-        newEditPane.getChildren().add(newTextArea);
+        newAnchorPane.getChildren().add(newTextArea);
 
         newTextArea.setStyle(initial_file_text_box.getStyle());
         newTextArea.setFont(initial_file_text_box.getFont());
@@ -438,24 +484,6 @@ public class DesignController implements Initializable {
         AnchorPane.setBottomAnchor(newTextArea, 0.0);
         AnchorPane.setRightAnchor(newTextArea, 0.0);
         AnchorPane.setLeftAnchor(newTextArea, 0.0);
-
-        AnchorPane newExecutePane = new AnchorPane();
-        newExecuteTab.setContent(newExecutePane);
-        BorderPane newBorderPane = new BorderPane();
-        newExecutePane.getChildren().add(newBorderPane);
-        AnchorPane buttonsPane = new AnchorPane();
-        TableView<MemoryBlock> table = new TableView<>();
-        newBorderPane.setCenter(table);
-        newBorderPane.setBottom(buttonsPane);
-
-        AnchorPane.setTopAnchor(newBorderPane, 0.0);
-        AnchorPane.setBottomAnchor(newBorderPane, 0.0);
-        AnchorPane.setRightAnchor(newBorderPane, 0.0);
-        AnchorPane.setLeftAnchor(newBorderPane, 0.0);
-
-        table.setColumnResizePolicy(initial_memory_table.getColumnResizePolicy());
-        table.getColumns().addAll(initial_memory_table.getColumns());
-        buttonsPane.getChildren().addAll(initial_table_controls.getChildren());
 
         setControlsDisable(false);
     }
@@ -476,7 +504,7 @@ public class DesignController implements Initializable {
         reg_table.refresh();
     }
 
-    private void updateMemoryTable(TableView<MemoryBlock> table){
+    private void updateMemoryTable(TableView<IMemory> table){
         table.refresh();
     }
 

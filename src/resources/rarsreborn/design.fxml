@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
@@ -125,61 +125,49 @@
       </ButtonBar>
    </AnchorPane>
    <Separator prefWidth="200.0" />
-   <SplitPane dividerPositions="0.7130872483221476" maxHeight="1.7976931348623157E308" prefWidth="1280.0" VBox.vgrow="ALWAYS">
+   <SplitPane dividerPositions="0.8841940532081377" maxHeight="1.7976931348623157E308" prefWidth="1280.0" VBox.vgrow="ALWAYS">
       <SplitPane dividerPositions="0.7183308494783904" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
          <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0" stylesheets="@Styles/TabPaneChange.css" tabClosingPolicy="ALL_TABS" tabMaxHeight="1000.0" tabMaxWidth="1.0E7">
-            <Tab fx:id="initial_file_tab" text="FILE">
+            <Tab fx:id="execute_tab" closable="false" style="-fx-pref-height: 30;" text="EXECUTE">
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                  <TabPane prefHeight="450.0" prefWidth="908.0">
-                     <Tab fx:id="base_edit_tab" closable="false" style="-fx-pref-height: 30; -fx-pref-width: 85;" text="EDIT">
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <TextArea fx:id="initial_file_text_box" prefHeight="408.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                              <font>
-                                 <Font size="18.0" />
-                              </font>
-                           </TextArea>
+                  <BorderPane prefHeight="415.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <center>
+                        <TableView fx:id="memory_table" prefHeight="351.0" prefWidth="908.0" BorderPane.alignment="CENTER">
+                           <columns>
+                              <TableColumn prefWidth="75.0" text="Address" />
+                              <TableColumn prefWidth="75.0" text="Value (+0)" />
+                              <TableColumn prefWidth="75.0" text="Value (+4)" />
+                              <TableColumn prefWidth="75.0" text="Value (+8)" />
+                              <TableColumn prefWidth="75.0" text="Value (+c)" />
+                              <TableColumn prefWidth="75.0" text="Value (+10)" />
+                              <TableColumn prefWidth="75.0" text="Value (+14)" />
+                              <TableColumn prefWidth="75.0" text="Value (+18)" />
+                              <TableColumn prefWidth="75.0" text="Value (+1c)" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </center>
+                     <bottom>
+                        <AnchorPane prefHeight="43.0" prefWidth="908.0" BorderPane.alignment="CENTER">
+                           <Button layoutX="14.0" layoutY="2.0" mnemonicParsing="false" onAction="#onMemoryLeftAction" text="left" />
+                           <Button layoutX="97.0" layoutY="2.0" mnemonicParsing="false" onAction="#onMemoryRightAction" text="right" />
+                           <ChoiceBox fx:id="memory_choice" layoutX="193.0" layoutY="3.0" prefWidth="300.0" />
+                           <ChoiceBox fx:id="address_choice" layoutX="502.0" layoutY="3.0" prefWidth="300.0" />
+                           <ChoiceBox fx:id="value_choice" layoutX="810.0" layoutY="2.0" prefWidth="300.0" />
                         </AnchorPane>
-                     </Tab>
-                     <Tab fx:id="base_execute_tab" closable="false" style="-fx-pref-width: 85; -fx-pref-height: 30;" text="EXECUTE">
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <BorderPane prefHeight="415.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0"
-                                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                       AnchorPane.topAnchor="0.0">
-                              <center>
-                                 <TableView fx:id="initial_memory_table" prefHeight="351.0" prefWidth="908.0"
-                                            BorderPane.alignment="CENTER">
-                                    <columns>
-                                       <TableColumn prefWidth="75.0" text="Address"/>
-                                       <TableColumn prefWidth="75.0" text="Value (+0)"/>
-                                       <TableColumn prefWidth="75.0" text="Value (+4)"/>
-                                       <TableColumn prefWidth="75.0" text="Value (+8)"/>
-                                       <TableColumn prefWidth="75.0" text="Value (+c)"/>
-                                       <TableColumn prefWidth="75.0" text="Value (+10)"/>
-                                       <TableColumn prefWidth="75.0" text="Value (+14)"/>
-                                       <TableColumn prefWidth="75.0" text="Value (+18)"/>
-                                       <TableColumn prefWidth="75.0" text="Value (+1c)"/>
-                                    </columns>
-                                    <columnResizePolicy>
-                                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                                    </columnResizePolicy>
-                                 </TableView>
-                              </center>
-                              <bottom>
-                                 <AnchorPane fx:id="initial_table_controls" prefHeight="43.0" prefWidth="908.0"
-                                             BorderPane.alignment="CENTER">
-                                    <Button layoutX="137.0" layoutY="9.0" mnemonicParsing="false" text="left"/>
-                                    <Button layoutX="194.0" layoutY="9.0" mnemonicParsing="false" text="right"/>
-                                    <CheckBox layoutX="273.0" layoutY="13.0" mnemonicParsing="false"
-                                              text="Hexidecimal Address"/>
-                                    <CheckBox layoutX="454.0" layoutY="13.0" mnemonicParsing="false"
-                                              text="Hexidecimal Values"/>
-                                    <CheckBox layoutX="623.0" layoutY="13.0" mnemonicParsing="false" text="ASCII"/>
-                                 </AnchorPane>
-                              </bottom>
-                           </BorderPane>
-                        </AnchorPane>
-                     </Tab>
-                  </TabPane>
+                     </bottom>
+                  </BorderPane>
+               </AnchorPane>
+            </Tab>
+            <Tab fx:id="initial_file_tab" style="-fx-pref-height: 30;" text="FILE">
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <TextArea fx:id="initial_file_text_box" prefHeight="440.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </TextArea>
                </AnchorPane>
             </Tab>
          </TabPane>
