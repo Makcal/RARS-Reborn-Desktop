@@ -285,21 +285,20 @@ public class DesignController implements Initializable {
         preStartActions();
         try {
             Tab curTab = file_tab.getSelectionModel().getSelectedItem();
-            btn_pause.setDisable(false);
-            if (Objects.equals(curTab.getText(), "EXECUTE")) {
-                return;
+            if (!Objects.equals(curTab.getText(), "EXECUTE")) {
+                btn_pause.setDisable(false);
+                String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
+                simulator.compile(content);
+                (new Thread(() -> {
+                    try {
+                        btn_break.setDisable(false);
+                        simulator.startWorkerAndRun();
+                    } catch (ExecutionException e) {
+                        console_box.appendText(e.getMessage());
+                        btn_break.setDisable(false);
+                    }
+                })).start();
             }
-            String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
-            simulator.compile(content);
-            (new Thread(() -> {
-                try {
-                    btn_break.setDisable(false);
-                    simulator.startWorkerAndRun();
-                } catch (ExecutionException e) {
-                    console_box.appendText(e.getMessage());
-                    btn_break.setDisable(false);
-                }
-            })).start();
         } catch (Exception e) {
             console_box.setText(e.getMessage());
         }
@@ -316,22 +315,21 @@ public class DesignController implements Initializable {
         debugMode = true;
         try {
             Tab curTab = file_tab.getSelectionModel().getSelectedItem();
-            btn_resume.setDisable(false);
-            if (Objects.equals(curTab.getText(), "EXECUTE")) {
-                return;
+            if (!Objects.equals(curTab.getText(), "EXECUTE")) {
+                btn_resume.setDisable(false);
+                String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
+                simulator.compile(content);
+                (new Thread(() -> {
+                    try {
+                        btn_break.setDisable(false);
+                        simulator.startWorker();
+                    } catch (Exception e) {
+                        console_box.appendText(e.getMessage());
+                        btn_break.setDisable(true);
+                    }
+                })).start();
+                setDebugControlsVisible(true);
             }
-            String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
-            simulator.compile(content);
-            (new Thread(() -> {
-                try {
-                    btn_break.setDisable(false);
-                    simulator.startWorker();
-                } catch (Exception e) {
-                    console_box.appendText(e.getMessage());
-                    btn_break.setDisable(true);
-                }
-            })).start();
-            setDebugControlsVisible(true);
         } catch (Exception e) {
             console_box.setText(e.getMessage());
         }
@@ -571,20 +569,20 @@ public class DesignController implements Initializable {
                 }
             });
         } else {
-                //noinspection unchecked
-                ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
-                    try {
-                        buildString.setLength(0);
-                        buildString.append("0x");
-                        buildString.append(Integer.toHexString(integerCellDataFeatures.getValue()));
-                        while (buildString.length() < 10) {
-                            buildString.insert(2, 0);
-                        }
-                        return new ReadOnlyObjectWrapper<>(buildString.toString());
-                    } catch (Exception e) {
-                        throw new RuntimeException();
+            //noinspection unchecked
+            ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
+                try {
+                    buildString.setLength(0);
+                    buildString.append("0x");
+                    buildString.append(Integer.toHexString(integerCellDataFeatures.getValue()));
+                    while (buildString.length() < 10) {
+                        buildString.insert(2, 0);
                     }
-                });
+                    return new ReadOnlyObjectWrapper<>(buildString.toString());
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
+            });
         }
         switch (value_choice.getSelectionModel().getSelectedIndex()) {
             case 0:
@@ -666,7 +664,7 @@ public class DesignController implements Initializable {
         updateRegisterTables();
     }
 
-    private void updateRegisterTables(){
+    private void updateRegisterTables() {
         reg_table.getItems().clear();
         float_reg_table.getItems().clear();
         if (table_hex.isSelected()) {
@@ -700,8 +698,7 @@ public class DesignController implements Initializable {
                     throw new RuntimeException();
                 }
             });
-        }
-        else {
+        } else {
             floating_table_value.setCellValueFactory(new PropertyValueFactory<>("float"));
             reg_table_value.setCellValueFactory(new PropertyValueFactory<>("value"));
         }
