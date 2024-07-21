@@ -20,8 +20,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -116,6 +114,7 @@ public class DesignController implements Initializable {
                 return Integer.parseInt(s);
             }
             catch (Exception e){
+                consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
                 console_box.appendText("\"" + s + "\" is not an Integer");
             }
             return 0;
@@ -143,8 +142,8 @@ public class DesignController implements Initializable {
     private final IMemory memory = simulator.getMemory();
     ObservableList<Integer> memoryAddresses = FXCollections.observableArrayList();
     int memoryOffset;
-    private final TextAreaScanner consoleScanner = new TextAreaScanner();
     private final StringBuilder consoleUneditableText = new StringBuilder();
+    private TextAreaScanner consoleScanner;
 
     private boolean debugMode = false;
 
@@ -152,6 +151,8 @@ public class DesignController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        consoleScanner = new TextAreaScanner(console_box, consoleUneditableText);
+
         registersList.add(simulator.getProgramCounter());
         reg_table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         reg_table_num.setCellValueFactory(new PropertyValueFactory<>("number"));
@@ -200,30 +201,37 @@ public class DesignController implements Initializable {
         simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (event) -> {
             console_box.appendText(event.text());
             consoleUneditableText.append(event.text());
+            consoleScanner.terminalMessage(event.text());
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintCharEvent.class, (event) -> {
             console_box.appendText(String.valueOf((char) event.character()));
             consoleUneditableText.append((char) event.character());
+            consoleScanner.terminalMessage(String.valueOf((char) event.character()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerEvent.class, (event) -> {
-            console_box.appendText(String.valueOf(event.value()));
             consoleUneditableText.append(event.value());
+            console_box.appendText(String.valueOf(event.value()));
+            consoleScanner.terminalMessage(String.valueOf(event.value()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerHexEvent.class, (event) -> {
             console_box.appendText(Integer.toHexString(event.value()));
             consoleUneditableText.append(Integer.toHexString(event.value()));
+            consoleScanner.terminalMessage(Integer.toHexString(event.value()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerOctalEvent.class, (event) -> {
             console_box.appendText(Integer.toOctalString(event.value()));
             consoleUneditableText.append(Integer.toOctalString(event.value()));
+            consoleScanner.terminalMessage(Integer.toOctalString(event.value()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerBinaryEvent.class, (event) -> {
             console_box.appendText(Integer.toBinaryString(event.value()));
             consoleUneditableText.append(Integer.toBinaryString(event.value()));
+            consoleScanner.terminalMessage(Integer.toBinaryString(event.value()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerUnsignedEvent.class, (event) -> {
             console_box.appendText(Integer.toUnsignedString(event.value()));
             consoleUneditableText.append(Integer.toUnsignedString(event.value()));
+            consoleScanner.terminalMessage(Integer.toUnsignedString(event.value()));
         });
         simulator.addObserver(StoppedEvent.class, (event) -> {
             debugMode = false;
@@ -242,22 +250,6 @@ public class DesignController implements Initializable {
             }
         }));
         console_box.setEditable(false);
-        console_box.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                event.consume();
-                console_box.appendText("\n");
-                int charPtr = console_box.getText().length() - 2;
-                while (console_box.getText().charAt(charPtr) != '\n') {
-                    charPtr--;
-                    if (charPtr == -1) {
-                        charPtr = 0;
-                        break;
-                    }
-                }
-                consoleUneditableText.append(console_box.getText().substring(charPtr));
-                consoleScanner.addInput(console_box.getText().substring(charPtr));
-            }
-        });
 
         file_tab.getTabs().remove(initial_file_tab);
         setControlsDisable(true);
