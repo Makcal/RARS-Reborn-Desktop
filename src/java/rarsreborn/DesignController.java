@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -99,6 +100,8 @@ public class DesignController implements Initializable {
     private ChoiceBox<String> value_choice;
     @FXML
     private VBox rootVBox;
+    @FXML
+    private AnchorPane header;
     private boolean isDarkTheme = false;
 
     private final SimulatorRiscV simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
@@ -113,8 +116,7 @@ public class DesignController implements Initializable {
             String s = consoleScanner.readLine();
             try {
                 return Integer.parseInt(s);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
                 console_box.appendText("\"" + s + "\" is not an Integer");
             }
@@ -126,8 +128,7 @@ public class DesignController implements Initializable {
             String s = consoleScanner.readLine();
             try {
                 return Byte.parseByte(s);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 console_box.appendText("\"" + s + "\" is not an Character");
             }
             return 0;
@@ -175,7 +176,7 @@ public class DesignController implements Initializable {
         address_choice.setItems(FXCollections.observableArrayList("Decimal addresses", "Hexadecimal addresses"));
         value_choice.setItems(FXCollections.observableArrayList("Decimal values", "Hexadecimal values", "ASCII"));
         memory_choice.getSelectionModel().selectedIndexProperty().addListener((observable) -> {
-            switch (memory_choice.getSelectionModel().getSelectedIndex()){
+            switch (memory_choice.getSelectionModel().getSelectedIndex()) {
                 case 0:
                     memoryOffset = Memory32.TEXT_SECTION_START;
                     break;
@@ -280,7 +281,7 @@ public class DesignController implements Initializable {
         try {
             Tab curTab = file_tab.getSelectionModel().getSelectedItem();
             btn_pause.setDisable(false);
-            if (Objects.equals(curTab.getText(), "EXECUTE")){
+            if (Objects.equals(curTab.getText(), "EXECUTE")) {
                 return;
             }
             String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
@@ -311,7 +312,7 @@ public class DesignController implements Initializable {
         try {
             Tab curTab = file_tab.getSelectionModel().getSelectedItem();
             btn_resume.setDisable(false);
-            if (Objects.equals(curTab.getText(), "EXECUTE")){
+            if (Objects.equals(curTab.getText(), "EXECUTE")) {
                 return;
             }
             String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
@@ -383,7 +384,7 @@ public class DesignController implements Initializable {
     @FXML
     private void closeCurrentFile() {
         if (!file_tab.getTabs().isEmpty()) {
-            if (Objects.equals(file_tab.getSelectionModel().getSelectedItem().getText(), "EXECUTE")){
+            if (Objects.equals(file_tab.getSelectionModel().getSelectedItem().getText(), "EXECUTE")) {
                 return;
             }
             file_tab.getTabs().remove(file_tab.getSelectionModel().getSelectedItem());
@@ -404,7 +405,7 @@ public class DesignController implements Initializable {
     private void saveFileAs() {
         try {
             Tab tab = file_tab.getSelectionModel().getSelectedItem();
-            if (Objects.equals(tab.getText(), "EXECUTE")){
+            if (Objects.equals(tab.getText(), "EXECUTE")) {
                 return;
             }
             FileChooser fileChooser = new FileChooser();
@@ -425,19 +426,18 @@ public class DesignController implements Initializable {
             console_box.appendText(e.getMessage());
         }
     }
+
     @FXML
     private void saveFile() {
         Tab tab = file_tab.getSelectionModel().getSelectedItem();
-        if (Objects.equals(tab.getText(), "EXECUTE")){
+        if (Objects.equals(tab.getText(), "EXECUTE")) {
             return;
         }
-        if (filesNamesLinker.get(tab) == null){
+        if (filesNamesLinker.get(tab) == null) {
             saveFileAs();
-        }
-        else if (!Files.exists(Path.of(filesNamesLinker.get(tab)))) {
+        } else if (!Files.exists(Path.of(filesNamesLinker.get(tab)))) {
             saveFileAs();
-        }
-        else {
+        } else {
             try {
                 File newFile = new File(filesNamesLinker.get(tab));
                 FileWriter currentFile = new FileWriter(newFile);
@@ -448,6 +448,7 @@ public class DesignController implements Initializable {
             }
         }
     }
+
     @FXML
     public void openFile() {
         try {
@@ -470,10 +471,9 @@ public class DesignController implements Initializable {
     @FXML
     void onMemoryLeftAction() {
         memoryOffset -= 32;
-        if (memoryOffset >= 0){
+        if (memoryOffset >= 0) {
             updateMemoryTable();
-        }
-        else {
+        } else {
             memoryOffset += 32;
         }
     }
@@ -481,20 +481,21 @@ public class DesignController implements Initializable {
     @FXML
     void onMemoryRightAction() {
         memoryOffset += 32;
-        if (memoryOffset <= memory.getSize()){
+        if (memoryOffset <= memory.getSize()) {
             updateMemoryTable();
-        }
-        else {
+        } else {
             memoryOffset -= 32;
         }
     }
+
     @FXML
-    private void changeTheme(){
-        if(isDarkTheme){
+    private void changeTheme() {
+        if (isDarkTheme) {
+            header.setStyle("-fx-background-color: #F7F8FA;");
             rootVBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
             rootVBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
-
         } else {
+            header.setStyle("-fx-background-color: #242628;");
             rootVBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
             rootVBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
         }
@@ -548,14 +549,14 @@ public class DesignController implements Initializable {
         float_reg_table.refresh();
     }
 
-    private void updateMemoryTable(){
+    private void updateMemoryTable() {
         memory_table.getItems().clear();
         memoryAddresses.clear();
-        for (int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             memoryAddresses.add(memoryOffset + (i * 32));
         }
         StringBuilder buildString = new StringBuilder();
-        switch (address_choice.getSelectionModel().getSelectedIndex()){
+        switch (address_choice.getSelectionModel().getSelectedIndex()) {
             case 0:
                 //noinspection unchecked
                 ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
@@ -573,7 +574,7 @@ public class DesignController implements Initializable {
                         buildString.setLength(0);
                         buildString.append("0x");
                         buildString.append(Integer.toHexString(integerCellDataFeatures.getValue()));
-                        while (buildString.length() < 10){
+                        while (buildString.length() < 10) {
                             buildString.insert(2, 0);
                         }
                         return new ReadOnlyObjectWrapper<>(buildString.toString());
@@ -606,7 +607,7 @@ public class DesignController implements Initializable {
                             buildString.setLength(0);
                             buildString.append("0x");
                             buildString.append(Long.toHexString(memory.getMultiple(integerCellDataFeatures.getValue() + ((finalI - 1) * 4), 4)));
-                            while (buildString.length() < 10){
+                            while (buildString.length() < 10) {
                                 buildString.insert(2, 0);
                             }
 
@@ -626,10 +627,9 @@ public class DesignController implements Initializable {
                             buildString.setLength(0);
                             for (int j = 0; j < 4; j++) {
                                 int k = memory.getByte(integerCellDataFeatures.getValue() + ((finalI - 1) * 4) + j);
-                                if (k < 126 && k > 32){
+                                if (k < 126 && k > 32) {
                                     buildString.append((char) k);
-                                }
-                                else {
+                                } else {
                                     buildString.append("\\").append(Integer.toHexString(k));
                                 }
                                 buildString.append(" ");
