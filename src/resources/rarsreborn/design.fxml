@@ -211,7 +211,7 @@
                <TabPane prefHeight="665.0" prefWidth="145.0" stylesheets="@Styles/global.css" tabClosingPolicy="ALL_TABS" tabMaxHeight="1000.0" tabMaxWidth="1.0E7" BorderPane.alignment="CENTER">
                   <Tab closable="false" style="-fx-pref-height: 30;" text="Registers table">
                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <TableView fx:id="reg_table" editable="true" layoutX="-14.0" prefHeight="587.0" prefWidth="403.0" stylesheets="@Styles/table.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="reg_table" editable="true" layoutX="-14.0" prefHeight="587.0" prefWidth="403.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columns>
                               <TableColumn fx:id="reg_table_num" editable="false" prefWidth="40.0" sortable="false" />
                               <TableColumn fx:id="reg_table_name" editable="false" prefWidth="164.0" sortable="false" />
@@ -225,7 +225,7 @@
                   </Tab>
                   <Tab closable="false" style="-fx-pref-height: 30;" text="Floating point">
                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <TableView fx:id="float_reg_table" editable="true" prefHeight="640.0" prefWidth="364.0" stylesheets="@Styles/table.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="float_reg_table" editable="true" prefHeight="640.0" prefWidth="364.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columns>
                               <TableColumn fx:id="floating_table_num" editable="false" prefWidth="40.0" sortable="false" />
                               <TableColumn fx:id="floating_table_name" editable="false" prefWidth="164.0" sortable="false" />

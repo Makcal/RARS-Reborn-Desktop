@@ -173,13 +173,13 @@ public class DesignController implements Initializable {
 
         registersList.add(simulator.getProgramCounter());
         reg_table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        reg_table_num.setCellValueFactory(new PropertyValueFactory<>("number"));
+        reg_table_num.setCellValueFactory(new PropertyValueFactory<>("numericName"));
         for (Register32 r : registersList) {
             r.addObserver(Register32ChangeEvent.class, (register32ChangeEvent) -> updateRegistersTable());
         }
 
         floating_table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        floating_table_num.setCellValueFactory(new PropertyValueFactory<>("number"));
+        floating_table_num.setCellValueFactory(new PropertyValueFactory<>("numericName"));
         for (RegisterFloat64 r : floatRegistersList) {
             r.addObserver(RegisterFloat64ChangeEvent.class, (float64ChangeEvent) -> updateFloatTable());
         }
@@ -457,7 +457,7 @@ public class DesignController implements Initializable {
             File newFile = fileChooser.showSaveDialog(Window.getWindows().get(0));
             if (newFile != null) {
                 FileWriter currentFile = new FileWriter(newFile);
-                currentFile.write(((TextArea) ((Parent) ((TabPane) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText());
+                currentFile.write(((TextArea) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 currentFile.close();
                 filesNamesLinker.put(tab, newFile.toURI());
                 tab.setText(newFile.getName().split("\\.")[0]);
@@ -481,7 +481,7 @@ public class DesignController implements Initializable {
             try {
                 File newFile = new File(filesNamesLinker.get(tab));
                 FileWriter currentFile = new FileWriter(newFile);
-                currentFile.write(((TextArea) ((Parent) ((TabPane) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).getText());
+                currentFile.write(((TextArea) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 currentFile.close();
             } catch (Exception e) {
                 console_box.appendText(e.getMessage());
