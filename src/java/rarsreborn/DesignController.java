@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -23,6 +22,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextFormatter.Change;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -289,6 +290,66 @@ public class DesignController implements Initializable {
         simulator.getProgramCounter().addObserver(Register32ChangeEvent.class, (event) -> updateCodeTableFocus((event.newValue() - Memory32.TEXT_SECTION_START) / 4));
         simulator.addObserver(BackStepFinishedEvent.class, (event) -> updateCodeTableFocus((simulator.getProgramCounter().getValue() - Memory32.TEXT_SECTION_START) / 4));
 
+        rootVBox.addEventFilter(KeyEvent.KEY_PRESSED, ke -> {
+            switch (ke.getCode()) {
+                case KeyCode.S:
+                    if (ke.isControlDown()) {
+                        if (ke.isShiftDown()) {
+                            saveFileAs();
+                        } else {
+                            saveFile();
+                        }
+                    }
+                    break;
+                case KeyCode.N:
+                    if (ke.isControlDown()) {
+                        createNewTab();
+                    }
+                    break;
+                case KeyCode.O:
+                    if (ke.isControlDown()) {
+                        openFile();
+                    }
+                    break;
+                case KeyCode.W:
+                    if (ke.isControlDown()) {
+                        if (ke.isShiftDown()){
+                            closeAllFiles();
+                        }
+                        else {
+                            closeCurrentFile();
+                        }
+                    }
+                    break;
+                case KeyCode.F5:
+                    if (ke.isShiftDown()){
+                        onDebugBtnAction();
+                    }
+                    else {
+                        OnRunBtnAction();
+                    }
+                    break;
+                case KeyCode.F6:
+                    if (debugMode){
+                        onStepBackBtnAction();
+                    }
+                    break;
+                case KeyCode.F7:
+                    if (debugMode){
+                        onStepOverBtnAction();
+                    }
+                    break;
+                case KeyCode.F8:
+                    onPauseBtnAction();
+                    break;
+                case KeyCode.F9:
+                    onResumeBtnAction();
+                    break;
+                case KeyCode.F10:
+                    onStopBtnAction();
+                    break;
+            }
+        });
 
         console_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
             String proposed = c.getControlNewText();
@@ -307,13 +368,13 @@ public class DesignController implements Initializable {
         btn_resume.setDisable(true);
         btn_pause.setDisable(true);
 
-        createNewTab("New File");
+        createNewTab();
         file_tab.getSelectionModel().select(1);
     }
 
     @FXML
     private void CreateNewFile() {
-        createNewTab("New Tab");
+        createNewTab();
     }
 
 
@@ -370,6 +431,7 @@ public class DesignController implements Initializable {
                     }
                 })).start();
                 setDebugControlsVisible(true);
+                file_tab.getSelectionModel().select(0);
             }
         } catch (Exception e) {
             console_box.setText(e.getMessage());
@@ -416,6 +478,10 @@ public class DesignController implements Initializable {
         simulator.pause();
         btn_pause.setDisable(true);
         btn_resume.setDisable(false);
+        debugMode = true;
+        btn_resume.setDisable(false);
+        file_tab.getSelectionModel().select(0);
+        setDebugControlsVisible(true);
     }
 
     @FXML
@@ -544,6 +610,10 @@ public class DesignController implements Initializable {
             rootVBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
         }
         isDarkTheme = !isDarkTheme;
+    }
+
+    private void createNewTab(){
+        createNewTab("New file");
     }
 
     private void createNewTab(String fileName) {
