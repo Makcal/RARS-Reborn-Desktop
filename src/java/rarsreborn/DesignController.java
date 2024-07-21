@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.net.URI;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import javafx.stage.Window;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.events.*;
+import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.memory.MemoryChangeEvent;
@@ -152,6 +155,8 @@ public class DesignController implements Initializable {
     private final ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
     private final ObservableList<RegisterFloat64> floatRegistersList = FXCollections.observableArrayList(floatRegisters.getAllRegisters());
 
+    private final ObservableList<IInstruction> instructions = FXCollections.observableArrayList();
+
     private final IMemory memory = simulator.getMemory();
     ObservableList<Integer> memoryAddresses = FXCollections.observableArrayList();
     int memoryOffset;
@@ -204,6 +209,29 @@ public class DesignController implements Initializable {
         value_choice.getSelectionModel().select("Hexadecimal values");
         updateMemoryTable();
 
+        code_table_address.setCellValueFactory(integerCellDataFeatures -> {
+            try {
+                return new ReadOnlyObjectWrapper<>(String.valueOf(integerCellDataFeatures.getValue() * 4 + Memory32.TEXT_SECTION_START));
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        });
+        code_table_basic.setCellValueFactory(
+                integerCellDataFeatures -> {
+                    try {
+                        return new ReadOnlyObjectWrapper<>(instructions.get(integerCellDataFeatures.getValue()).toString());
+                    } catch (Exception e) {
+                        throw new RuntimeException();
+                    }
+                });
+        code_table_code.setCellValueFactory(
+                integerCellDataFeatures -> {
+                    try {
+                        return new ReadOnlyObjectWrapper<>("0x" + Integer.toHexString(bytesToInt(instructions.get(integerCellDataFeatures.getValue()).serialize())));
+                    } catch (Exception e) {
+                        throw new RuntimeException();
+                    }
+                });
 
         simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (event) -> {
             console_box.appendText(event.text());
@@ -246,6 +274,8 @@ public class DesignController implements Initializable {
             btn_break.setDisable(true);
             btn_pause.setDisable(true);
             btn_resume.setDisable(true);
+            code_table.getItems().clear();
+            instructions.clear();
         });
         simulator.addObserver(BackStepFinishedEvent.class, (event) -> updateRegistersTable());
         memory.addObserver(MemoryChangeEvent.class, (event) -> memory_table.refresh());
@@ -289,6 +319,8 @@ public class DesignController implements Initializable {
                 btn_pause.setDisable(false);
                 String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
                 simulator.compile(content);
+                instructions.addAll(simulator.getProgramInstructions());
+                updateCodeTable();
                 (new Thread(() -> {
                     try {
                         btn_break.setDisable(false);
@@ -319,6 +351,8 @@ public class DesignController implements Initializable {
                 btn_resume.setDisable(false);
                 String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
                 simulator.compile(content);
+                instructions.addAll(simulator.getProgramInstructions());
+                updateCodeTable();
                 (new Thread(() -> {
                     try {
                         btn_break.setDisable(false);
@@ -704,5 +738,19 @@ public class DesignController implements Initializable {
         }
         reg_table.getItems().addAll(registersList);
         float_reg_table.getItems().addAll(floatRegistersList);
+    }
+
+    private void updateCodeTable(){
+        final ObservableList<Integer> ints = FXCollections.observableArrayList();
+        for (int i = 0; i < instructions.size(); i++){
+            ints.add(i);
+        }
+        code_table.getItems().addAll(ints);
+    }
+
+    private int bytesToInt(byte[] bytes){
+        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+        byteBuffer.order(ByteOrder.BIG_ENDIAN);
+        return byteBuffer.getInt();
     }
 }
