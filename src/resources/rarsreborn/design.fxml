@@ -184,28 +184,44 @@
          </AnchorPane>
       </SplitPane>
       <AnchorPane id="register-table-pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-         <TabPane fx:id="file_tab1" prefHeight="665.0" prefWidth="145.0" stylesheets="@Styles/global.css" tabClosingPolicy="ALL_TABS" tabMaxHeight="1000.0" tabMaxWidth="1.0E7" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <tabs>
-               <Tab fx:id="execute_tab1" closable="false" style="-fx-pref-height: 30;" text="Registers table">
-                  <content>
-                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <children>
-                           <TableView fx:id="reg_table" editable="true" prefHeight="640.0" prefWidth="364.0" stylesheets="@Styles/table.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                              <columns>
-                                 <TableColumn fx:id="reg_table_num" editable="false" prefWidth="40.0" sortable="false" />
-                                 <TableColumn fx:id="reg_table_name" editable="false" prefWidth="164.0" sortable="false" />
-                                 <TableColumn fx:id="reg_table_value" editable="false" prefWidth="156.0" sortable="false" />
-                              </columns>
-                              <columnResizePolicy>
-                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                              </columnResizePolicy>
-                           </TableView>
-                        </children>
-                     </AnchorPane>
-                  </content>
-               </Tab>
-               <Tab fx:id="initial_file_tab1" closable="false" style="-fx-pref-height: 30;" text="Floating point" />
-            </tabs>
+         <TabPane prefHeight="665.0" prefWidth="145.0" stylesheets="@Styles/global.css" tabClosingPolicy="ALL_TABS"
+                  tabMaxHeight="1000.0" tabMaxWidth="1.0E7" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Tab closable="false" style="-fx-pref-height: 30;" text="Registers table">
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <TableView fx:id="reg_table" editable="true" prefHeight="640.0" prefWidth="364.0"
+                             stylesheets="@Styles/table.css" AnchorPane.bottomAnchor="0.0"
+                             AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columns>
+                        <TableColumn fx:id="reg_table_num" editable="false" prefWidth="40.0" sortable="false"/>
+                        <TableColumn fx:id="reg_table_name" editable="false" prefWidth="164.0" sortable="false"/>
+                        <TableColumn fx:id="reg_table_value" editable="false" prefWidth="156.0" sortable="false"/>
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                     </columnResizePolicy>
+                  </TableView>
+               </AnchorPane>
+            </Tab>
+            <Tab closable="false" style="-fx-pref-height: 30;" text="Floating point">
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <TableView fx:id="float_reg_table" editable="true" prefHeight="640.0" prefWidth="364.0"
+                             stylesheets="@Styles/table.css" AnchorPane.bottomAnchor="0.0"
+                             AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columns>
+                        <TableColumn fx:id="floating_table_num" editable="false" prefWidth="40.0"
+                                     sortable="false"/>
+                        <TableColumn fx:id="floating_table_name" editable="false" prefWidth="164.0"
+                                     sortable="false"/>
+                        <TableColumn fx:id="floating_table_value" editable="false" prefWidth="156.0"
+                                     sortable="false"/>
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                     </columnResizePolicy>
+                  </TableView>
+               </AnchorPane>
+            </Tab>
          </TabPane>
       </AnchorPane>
    </SplitPane>

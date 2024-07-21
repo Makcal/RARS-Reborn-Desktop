@@ -34,8 +34,11 @@ import rarsreborn.core.core.memory.MemoryChangeEvent;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.Register32;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64ChangeEvent;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64File;
 import rarsreborn.core.exceptions.execution.ExecutionException;
-import rarsreborn.core.simulator.Simulator32;
+import rarsreborn.core.simulator.SimulatorRiscV;
 import rarsreborn.core.simulator.StoppedEvent;
 import rarsreborn.core.simulator.backstepper.BackStepFinishedEvent;
 
@@ -73,7 +76,15 @@ public class DesignController implements Initializable {
     private TableView<Register32> reg_table;
     @FXML
     private TableView<Integer> memory_table;
+    @FXML
+    private TableView<RegisterFloat64> float_reg_table;
 
+    @FXML
+    private TableColumn<RegisterFloat64, Integer> floating_table_num;
+    @FXML
+    private TableColumn<RegisterFloat64, String> floating_table_name;
+    @FXML
+    private TableColumn<RegisterFloat64, Float> floating_table_value;
     @FXML
     private TableColumn<Register32, String> reg_table_name;
     @FXML
@@ -91,7 +102,7 @@ public class DesignController implements Initializable {
     private VBox rootVBox;
     private boolean isDarkTheme = false;
 
-    private final Simulator32 simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
+    private final SimulatorRiscV simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
         @Override
         public String requestString(int count) {
             String s = consoleScanner.readLine();
@@ -124,8 +135,10 @@ public class DesignController implements Initializable {
     });
 
     private final Register32File registers = simulator.getRegisterFile();
-    private final ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
+    private final RegisterFloat64File floatRegisters = simulator.getFloatRegisterFile();
 
+    private final ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
+    private final ObservableList<RegisterFloat64> floatRegistersList = FXCollections.observableArrayList(floatRegisters.getAllRegisters());
 
     private final IMemory memory = simulator.getMemory();
     ObservableList<Integer> memoryAddresses = FXCollections.observableArrayList();
@@ -146,6 +159,14 @@ public class DesignController implements Initializable {
         reg_table.setItems(registersList);
         for (Register32 r : registersList) {
             r.addObserver(Register32ChangeEvent.class, (register32ChangeEvent) -> updateRegistersTable());
+        }
+
+        floating_table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
+        floating_table_num.setCellValueFactory(new PropertyValueFactory<>("number"));
+        floating_table_value.setCellValueFactory(new PropertyValueFactory<>("float"));
+        float_reg_table.setItems(floatRegistersList);
+        for (RegisterFloat64 r : floatRegistersList) {
+            r.addObserver(RegisterFloat64ChangeEvent.class, (float64ChangeEvent) -> updateFloatTable());
         }
 
         memory_choice.setItems(FXCollections.observableArrayList("0x00400000 (.text)", "0x10010000 (.data)", "0x10040000 (.heap)", "current sp"));
@@ -459,12 +480,12 @@ public class DesignController implements Initializable {
     @FXML
     private void changeTheme(){
         if(isDarkTheme){
-            rootVBox.getStylesheets().add(getClass().getResource("/rarsreborn/Styles/global.css").toExternalForm());
-            rootVBox.getStylesheets().remove(getClass().getResource("/rarsreborn/Styles/darkTheme.css").toExternalForm());
+            rootVBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
+            rootVBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
 
         } else {
-            rootVBox.getStylesheets().add(getClass().getResource("/rarsreborn/Styles/darkTheme.css").toExternalForm());
-            rootVBox.getStylesheets().remove(getClass().getResource("/rarsreborn/Styles/global.css").toExternalForm());
+            rootVBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
+            rootVBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
         }
         isDarkTheme = !isDarkTheme;
     }
@@ -512,6 +533,10 @@ public class DesignController implements Initializable {
 
     private void updateRegistersTable() {
         reg_table.refresh();
+    }
+
+    private void updateFloatTable() {
+        float_reg_table.refresh();
     }
 
     private void updateMemoryTable(){
