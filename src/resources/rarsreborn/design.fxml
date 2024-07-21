@@ -149,7 +149,7 @@
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                  <children>
-                                    <TableView fx:id="code_table" prefHeight="351.0" prefWidth="1110.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TableView fx:id="code_table" onMouseClicked="#codeTableMouseClicked" onMousePressed="#codeTableMouseClicked" prefHeight="351.0" prefWidth="1110.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columns>
                                           <TableColumn fx:id="code_table_address" editable="false" prefWidth="75.0" sortable="false" text="Address" />
                                           <TableColumn fx:id="code_table_code" editable="false" prefWidth="75.0" sortable="false" text="Code" />

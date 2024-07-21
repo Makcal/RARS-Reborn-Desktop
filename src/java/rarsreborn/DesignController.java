@@ -167,6 +167,8 @@ public class DesignController implements Initializable {
 
     private final HashMap<Tab, URI> filesNamesLinker = new HashMap<>();
 
+    private int lastCodeTableIndex = 0;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         consoleScanner = new TextAreaScanner(console_box, consoleUneditableText);
@@ -284,6 +286,8 @@ public class DesignController implements Initializable {
             btn_pause.setDisable(true);
             btn_resume.setDisable(false);
         });
+        simulator.getProgramCounter().addObserver(Register32ChangeEvent.class, (event) -> updateCodeTableFocus((event.newValue() - Memory32.TEXT_SECTION_START) / 4));
+        simulator.addObserver(BackStepFinishedEvent.class, (event) -> updateCodeTableFocus((simulator.getProgramCounter().getValue() - Memory32.TEXT_SECTION_START) / 4));
 
 
         console_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
@@ -755,5 +759,14 @@ public class DesignController implements Initializable {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         byteBuffer.order(ByteOrder.BIG_ENDIAN);
         return byteBuffer.getInt();
+    }
+
+    private void updateCodeTableFocus(int index){
+        code_table.getSelectionModel().select(index);
+        lastCodeTableIndex = index;
+    }
+    @FXML
+    private void codeTableMouseClicked(){
+        updateCodeTableFocus(lastCodeTableIndex);
     }
 }
