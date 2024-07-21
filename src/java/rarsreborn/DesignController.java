@@ -36,6 +36,7 @@ import rarsreborn.core.core.register.floatpoint.RegisterFloat64;
 import rarsreborn.core.core.register.floatpoint.RegisterFloat64ChangeEvent;
 import rarsreborn.core.core.register.floatpoint.RegisterFloat64File;
 import rarsreborn.core.exceptions.execution.ExecutionException;
+import rarsreborn.core.simulator.PausedEvent;
 import rarsreborn.core.simulator.SimulatorRiscV;
 import rarsreborn.core.simulator.StoppedEvent;
 import rarsreborn.core.simulator.backstepper.BackStepFinishedEvent;
@@ -237,9 +238,17 @@ public class DesignController implements Initializable {
             debugMode = false;
             setDebugControlsVisible(false);
             btn_break.setDisable(true);
+            btn_pause.setDisable(true);
+            btn_resume.setDisable(true);
         });
         simulator.addObserver(BackStepFinishedEvent.class, (event) -> updateRegistersTable());
         memory.addObserver(MemoryChangeEvent.class, (event) -> memory_table.refresh());
+
+        simulator.addObserver(PausedEvent.class, (event) -> {
+            btn_pause.setDisable(true);
+            btn_resume.setDisable(false);
+        });
+
 
         console_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
             String proposed = c.getControlNewText();
@@ -255,6 +264,8 @@ public class DesignController implements Initializable {
         setControlsDisable(true);
         setDebugControlsVisible(false);
         btn_break.setDisable(true);
+        btn_resume.setDisable(true);
+        btn_pause.setDisable(true);
     }
 
     @FXML
@@ -268,6 +279,7 @@ public class DesignController implements Initializable {
         preStartActions();
         try {
             Tab curTab = file_tab.getSelectionModel().getSelectedItem();
+            btn_pause.setDisable(false);
             if (Objects.equals(curTab.getText(), "EXECUTE")){
                 return;
             }
@@ -298,6 +310,7 @@ public class DesignController implements Initializable {
         debugMode = true;
         try {
             Tab curTab = file_tab.getSelectionModel().getSelectedItem();
+            btn_resume.setDisable(false);
             if (Objects.equals(curTab.getText(), "EXECUTE")){
                 return;
             }
@@ -329,7 +342,7 @@ public class DesignController implements Initializable {
                         debugMode = false;
                     }
                 } catch (Exception e) {
-                    console_box.appendText(e.getMessage());
+                    console_box.appendText(e.getMessage() + "\n");
                 }
             })).start();
         }
@@ -355,10 +368,16 @@ public class DesignController implements Initializable {
 
     @FXML
     private void onPauseBtnAction() {
+        simulator.pause();
+        btn_pause.setDisable(true);
+        btn_resume.setDisable(false);
     }
 
     @FXML
     private void onResumeBtnAction() {
+        btn_pause.setDisable(false);
+        btn_resume.setDisable(true);
+        simulator.run();
     }
 
     @FXML
@@ -514,8 +533,6 @@ public class DesignController implements Initializable {
     private void setDebugControlsVisible(boolean visible) {
         btn_step_back.setVisible(visible);
         btn_step_over.setVisible(visible);
-        btn_pause.setVisible(visible);
-        btn_resume.setVisible(visible);
     }
 
     private void setControlsDisable(boolean enabled) {
