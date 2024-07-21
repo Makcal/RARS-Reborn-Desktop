@@ -24,6 +24,7 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -90,7 +91,9 @@ public class DesignController implements Initializable {
     private ChoiceBox<String> memory_choice;
     @FXML
     private ChoiceBox<String> value_choice;
-
+    @FXML
+    private VBox rootVBox;
+    private boolean isDarkTheme = false;
 
     private final Simulator32 simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
         @Override
@@ -453,10 +456,17 @@ public class DesignController implements Initializable {
             memoryOffset -= 32;
         }
     }
-
     @FXML
     private void changeTheme(){
-        //TODO
+        if(isDarkTheme){
+            rootVBox.getStylesheets().add(getClass().getResource("/rarsreborn/Styles/global.css").toExternalForm());
+            rootVBox.getStylesheets().remove(getClass().getResource("/rarsreborn/Styles/darkTheme.css").toExternalForm());
+
+        } else {
+            rootVBox.getStylesheets().add(getClass().getResource("/rarsreborn/Styles/darkTheme.css").toExternalForm());
+            rootVBox.getStylesheets().remove(getClass().getResource("/rarsreborn/Styles/global.css").toExternalForm());
+        }
+        isDarkTheme = !isDarkTheme;
     }
 
     private void createNewTab(String fileName) {

@@ -21,11 +21,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="720.0" prefWidth="1280.0" stylesheets="@Styles/global.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rarsreborn.DesignController">
+<VBox fx:id="rootVBox" prefHeight="720.0" prefWidth="1280.0" stylesheets="@Styles/global.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rarsreborn.DesignController">
    <AnchorPane prefHeight="50.0">
       <ButtonBar buttonMinWidth="0.0" minWidth="0.0" prefHeight="50.0" prefWidth="660.0" style="-fx-background-color: transparent;">
          <buttons>
-            <MenuButton mnemonicParsing="false" style="-fx-background-color: transparent;" stylesheets="@Styles/MenuButtonChange.css">
+            <MenuButton mnemonicParsing="false" style="-fx-background-color: transparent;" stylesheets="@Styles/global.css">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#CreateNewFile" text="New">
                      <graphic>
@@ -47,7 +47,7 @@
                   </MenuItem>
                   <MenuItem mnemonicParsing="false" onAction="#saveFileAs" text="Save As..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#changeTheme" text="Change Theme" />
+                  <MenuItem  mnemonicParsing="false" onAction="#changeTheme" text="Change Theme" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Exit" />
                </items>
@@ -129,7 +129,7 @@
    <Separator prefWidth="200.0" />
    <SplitPane dividerPositions="0.8841940532081377" maxHeight="1.7976931348623157E308" prefWidth="1280.0" VBox.vgrow="ALWAYS">
       <SplitPane dividerPositions="0.7183308494783904" orientation="VERTICAL" prefHeight="361.0" prefWidth="422.0">
-         <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0" stylesheets="@Styles/TabPaneChange.css" tabClosingPolicy="ALL_TABS" tabMaxHeight="1000.0" tabMaxWidth="1.0E7">
+         <TabPane fx:id="file_tab" prefHeight="439.0" prefWidth="908.0" stylesheets="@Styles/global.css" tabClosingPolicy="ALL_TABS" tabMaxHeight="1000.0" tabMaxWidth="1.0E7">
             <Tab fx:id="execute_tab" closable="false" style="-fx-pref-height: 30;" text="EXECUTE">
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <BorderPane prefHeight="415.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
