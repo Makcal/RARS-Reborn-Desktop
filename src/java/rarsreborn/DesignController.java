@@ -14,10 +14,8 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextFormatter.Change;
@@ -26,8 +24,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 import rarsreborn.core.Presets;
 import rarsreborn.core.core.environment.ITextInputDevice;
@@ -130,6 +126,7 @@ public class DesignController implements Initializable {
     private final Register32File registers = simulator.getRegisterFile();
     private final ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
 
+
     private final IMemory memory = simulator.getMemory();
     ObservableList<Integer> memoryAddresses = FXCollections.observableArrayList();
     int memoryOffset;
@@ -177,6 +174,7 @@ public class DesignController implements Initializable {
         address_choice.getSelectionModel().select("Hexadecimal addresses");
         value_choice.getSelectionModel().select("Hexadecimal values");
         updateMemoryTable();
+
 
         simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (event) -> {
             console_box.appendText(event.text());
@@ -250,6 +248,7 @@ public class DesignController implements Initializable {
     private void CreateNewFile() {
         createNewTab("New Tab");
     }
+
 
     @FXML
     private void OnRunBtnAction() {
@@ -381,6 +380,7 @@ public class DesignController implements Initializable {
             fileChooser.setInitialFileName(tab.getText());
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ASM files (*.asm)", "*.asm"));
 
+
             File newFile = fileChooser.showSaveDialog(Window.getWindows().get(0));
             if (newFile != null) {
                 FileWriter currentFile = new FileWriter(newFile);
@@ -482,6 +482,7 @@ public class DesignController implements Initializable {
         AnchorPane newAnchorPane = new AnchorPane();
         newTab.setContent(newAnchorPane);
 
+
         TextArea newTextArea = new TextArea();
         newAnchorPane.getChildren().add(newTextArea);
 
@@ -574,6 +575,7 @@ public class DesignController implements Initializable {
                             while (buildString.length() < 10){
                                 buildString.insert(2, 0);
                             }
+
                             return new ReadOnlyObjectWrapper<>(buildString.toString());
                         } catch (Exception e) {
                             throw new RuntimeException();
