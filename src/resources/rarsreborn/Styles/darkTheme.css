@@ -8,9 +8,13 @@
 .text-area {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+    -fx-font-family: "Monospaced";
     -fx-font-size: 20px;
     -fx-control-inner-background: #242628;
     -fx-border-color: #2B2D30;
+}
+.tab-pane *.tab-header-background{
+    -fx-background-color: #2B2D30;
 }
 
 .button {
@@ -82,4 +86,8 @@
     -fx-border-color: #1E1F22;
     -fx-border-width: 1px;
     -fx-text-fill: white;
+}
+
+.choice-box .combo-box-popup {
+    -fx-border-color: red;
 }
