@@ -14,6 +14,7 @@ import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -44,6 +45,10 @@ import rarsreborn.core.simulator.backstepper.BackStepFinishedEvent;
 
 
 public class DesignController implements Initializable {
+    @FXML
+    public CheckBox table_hex;
+    @FXML
+    public CheckBox hex_address_choice;
     @FXML
     private Button btn_break;
     @FXML
@@ -78,22 +83,28 @@ public class DesignController implements Initializable {
     private TableView<Integer> memory_table;
     @FXML
     private TableView<RegisterFloat64> float_reg_table;
+    @FXML
+    public TableView<Integer> code_table;
+    @FXML
+    public TableColumn<Integer, String> code_table_address;
+    @FXML
+    public TableColumn<Integer, String> code_table_code;
+    @FXML
+    public TableColumn<Integer, String> code_table_basic;
 
     @FXML
     private TableColumn<RegisterFloat64, Integer> floating_table_num;
     @FXML
     private TableColumn<RegisterFloat64, String> floating_table_name;
     @FXML
-    private TableColumn<RegisterFloat64, Float> floating_table_value;
+    private TableColumn<RegisterFloat64, String> floating_table_value;
     @FXML
     private TableColumn<Register32, String> reg_table_name;
     @FXML
     private TableColumn<Register32, Integer> reg_table_num;
     @FXML
-    private TableColumn<Register32, Integer> reg_table_value;
+    private TableColumn<Register32, String> reg_table_value;
 
-    @FXML
-    private ChoiceBox<String> address_choice;
     @FXML
     private ChoiceBox<String> memory_choice;
     @FXML
@@ -158,22 +169,18 @@ public class DesignController implements Initializable {
         registersList.add(simulator.getProgramCounter());
         reg_table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         reg_table_num.setCellValueFactory(new PropertyValueFactory<>("number"));
-        reg_table_value.setCellValueFactory(new PropertyValueFactory<>("value"));
-        reg_table.setItems(registersList);
         for (Register32 r : registersList) {
             r.addObserver(Register32ChangeEvent.class, (register32ChangeEvent) -> updateRegistersTable());
         }
 
         floating_table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         floating_table_num.setCellValueFactory(new PropertyValueFactory<>("number"));
-        floating_table_value.setCellValueFactory(new PropertyValueFactory<>("float"));
-        float_reg_table.setItems(floatRegistersList);
         for (RegisterFloat64 r : floatRegistersList) {
             r.addObserver(RegisterFloat64ChangeEvent.class, (float64ChangeEvent) -> updateFloatTable());
         }
+        updateRegisterTables();
 
         memory_choice.setItems(FXCollections.observableArrayList("0x00400000 (.text)", "0x10010000 (.data)", "0x10040000 (.heap)", "current sp"));
-        address_choice.setItems(FXCollections.observableArrayList("Decimal addresses", "Hexadecimal addresses"));
         value_choice.setItems(FXCollections.observableArrayList("Decimal values", "Hexadecimal values", "ASCII"));
         memory_choice.getSelectionModel().selectedIndexProperty().addListener((observable) -> {
             switch (memory_choice.getSelectionModel().getSelectedIndex()) {
@@ -192,10 +199,8 @@ public class DesignController implements Initializable {
             }
             updateMemoryTable();
         });
-        address_choice.getSelectionModel().selectedIndexProperty().addListener((observable -> updateMemoryTable()));
         value_choice.getSelectionModel().selectedIndexProperty().addListener((observable -> updateMemoryTable()));
         memory_choice.getSelectionModel().select("0x10010000 (.data)");
-        address_choice.getSelectionModel().select("Hexadecimal addresses");
         value_choice.getSelectionModel().select("Hexadecimal values");
         updateMemoryTable();
 
@@ -556,18 +561,16 @@ public class DesignController implements Initializable {
             memoryAddresses.add(memoryOffset + (i * 32));
         }
         StringBuilder buildString = new StringBuilder();
-        switch (address_choice.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                //noinspection unchecked
-                ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
-                    try {
-                        return new ReadOnlyObjectWrapper<>(String.valueOf(integerCellDataFeatures.getValue()));
-                    } catch (Exception e) {
-                        throw new RuntimeException();
-                    }
-                });
-                break;
-            case 1:
+        if (!hex_address_choice.isSelected()) {
+            //noinspection unchecked
+            ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
+                try {
+                    return new ReadOnlyObjectWrapper<>(String.valueOf(integerCellDataFeatures.getValue()));
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
+            });
+        } else {
                 //noinspection unchecked
                 ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
                     try {
@@ -582,7 +585,6 @@ public class DesignController implements Initializable {
                         throw new RuntimeException();
                     }
                 });
-                break;
         }
         switch (value_choice.getSelectionModel().getSelectedIndex()) {
             case 0:
@@ -653,5 +655,57 @@ public class DesignController implements Initializable {
         consoleScanner.update();
         console_box.setEditable(true);
         simulator.stop();
+    }
+
+    @FXML
+    public void OnChangeAddressViewAction(ActionEvent event) {
+        updateMemoryTable();
+    }
+
+    public void OnChangeValueView(ActionEvent event) {
+        updateRegisterTables();
+    }
+
+    private void updateRegisterTables(){
+        reg_table.getItems().clear();
+        float_reg_table.getItems().clear();
+        if (table_hex.isSelected()) {
+            floating_table_value.setCellValueFactory(integerCellDataFeatures -> {
+                try {
+                    StringBuilder buildString = new StringBuilder();
+                    buildString.setLength(0);
+                    buildString.append("0x");
+                    buildString.append(Long.toHexString(integerCellDataFeatures.getValue().getLong()));
+                    while (buildString.length() < 10) {
+                        buildString.insert(2, 0);
+                    }
+
+                    return new ReadOnlyObjectWrapper<>(buildString.toString());
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
+            });
+            reg_table_value.setCellValueFactory(integerCellDataFeatures -> {
+                try {
+                    StringBuilder buildString = new StringBuilder();
+                    buildString.setLength(0);
+                    buildString.append("0x");
+                    buildString.append(Long.toHexString(integerCellDataFeatures.getValue().getValue()));
+                    while (buildString.length() < 10) {
+                        buildString.insert(2, 0);
+                    }
+
+                    return new ReadOnlyObjectWrapper<>(buildString.toString());
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
+            });
+        }
+        else {
+            floating_table_value.setCellValueFactory(new PropertyValueFactory<>("float"));
+            reg_table_value.setCellValueFactory(new PropertyValueFactory<>("value"));
+        }
+        reg_table.getItems().addAll(registersList);
+        float_reg_table.getItems().addAll(floatRegistersList);
     }
 }
