@@ -302,6 +302,9 @@ public class DesignController implements Initializable {
         btn_break.setDisable(true);
         btn_resume.setDisable(true);
         btn_pause.setDisable(true);
+
+        createNewTab("New File");
+        file_tab.getSelectionModel().select(1);
     }
 
     @FXML
