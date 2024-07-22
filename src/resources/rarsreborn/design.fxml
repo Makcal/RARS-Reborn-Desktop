@@ -15,6 +15,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -64,6 +65,9 @@
                      <Image url="@Images/lightTheme/New file.png" />
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Ctrl + O" />
+               </tooltip>
             </Button>
             <Button id="btn-save" fx:id="btn_save" mnemonicParsing="false" onAction="#saveFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                <graphic>
@@ -71,6 +75,9 @@
                      <Image url="@Images/lightTheme/Save.png" />
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Ctrl + S" />
+               </tooltip>
             </Button>
 
             <Button fx:id="btn_run" mnemonicParsing="false" onAction="#runFile" prefHeight="30.0" prefWidth="26.0" style="-fx-background-color: transparent;">
@@ -79,6 +86,9 @@
                      <Image url="@Images/lightTheme/Run.png" />
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="F5" />
+               </tooltip>
             </Button>
             <Button fx:id="btn_break" mnemonicParsing="false" onAction="#stopRunning" prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;">
                <graphic>
@@ -86,6 +96,9 @@
                      <Image url="@Images/lightTheme/Stop.png" />
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="F10" />
+               </tooltip>
             </Button>
             <Button id="btn-debug" fx:id="btn_debug" mnemonicParsing="false" onAction="#runFileStepMode" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
@@ -93,6 +106,9 @@
                      <Image url="@Images/lightTheme/Debug.png" />
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Shift + F5" />
+               </tooltip>
             </Button>
             <Button id="btn-debug" fx:id="btn_pause" mnemonicParsing="false" onAction="#pauseRunning" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
@@ -100,6 +116,9 @@
                      <Image url="@Images/lightTheme/Pause.png" />
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="F8" />
+               </tooltip>
             </Button>
             <Button id="btn-debug" fx:id="btn_resume" mnemonicParsing="false" onAction="#resumeRunning" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
@@ -107,6 +126,9 @@
                      <Image url="@Images/lightTheme/Next Breakpoint.png" />
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="F9" />
+               </tooltip>
             </Button>
             <Button id="btn-debug" fx:id="btn_step_back" mnemonicParsing="false" onAction="#stepBack" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
@@ -114,6 +136,9 @@
                      <Image url="@Images/lightTheme/Undo.png" />
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="F6" />
+               </tooltip>
             </Button>
             <Button id="btn-debug" fx:id="btn_step_over" mnemonicParsing="false" onAction="#stepOver" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
@@ -121,6 +146,9 @@
                      <Image url="@Images/lightTheme/Next step.png" />
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="F7" />
+               </tooltip>
             </Button>
          </buttons>
          <opaqueInsets>
