@@ -423,6 +423,7 @@ public class DesignController implements Initializable {
 
         setDebugControlsVisible(false);
         updateButtonsState();
+        updateTextFontScale();
     }
 
     @FXML
