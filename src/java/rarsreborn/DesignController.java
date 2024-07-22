@@ -147,8 +147,8 @@ public class DesignController implements Initializable {
             try {
                 return Integer.parseInt(s);
             } catch (Exception e) {
-                consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
                 console_text_box.appendText("\"" + s + "\" is not an Integer");
+                consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
             }
             return 0;
         }
@@ -159,8 +159,8 @@ public class DesignController implements Initializable {
             try {
                 return Float.parseFloat(s);
             } catch (Exception e) {
-                consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
                 console_text_box.appendText("\"" + s + "\" is not an Integer");
+                consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
             }
             return 0;
         }
@@ -171,8 +171,8 @@ public class DesignController implements Initializable {
             try {
                 return Double.parseDouble(s);
             } catch (Exception e) {
-                consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
                 console_text_box.appendText("\"" + s + "\" is not an Integer");
+                consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
             }
             return 0;
         }
@@ -184,6 +184,7 @@ public class DesignController implements Initializable {
                 return Byte.parseByte(s);
             } catch (Exception e) {
                 console_text_box.appendText("\"" + s + "\" is not an Character");
+                consoleUneditableText.append("\"").append(s).append("\" is not an Character");
             }
             return 0;
         }
@@ -290,8 +291,8 @@ public class DesignController implements Initializable {
             consoleScanner.terminalMessage(String.valueOf((char) event.character()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerEvent.class, (event) -> {
-            consoleUneditableText.append(event.value());
             console_text_box.appendText(String.valueOf(event.value()));
+            consoleUneditableText.append(event.value());
             consoleScanner.terminalMessage(String.valueOf(event.value()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerHexEvent.class, (event) -> {
@@ -448,6 +449,7 @@ public class DesignController implements Initializable {
                         simulator.startWorkerAndRun();
                     } catch (ExecutionException e) {
                         console_text_box.appendText(e.getMessage() + "\n");
+                        consoleUneditableText.append(e.getMessage()).append("\n");
                     }
                 })).start();
             } else if (!Objects.equals(curTab.getText(), "EXECUTE")) {
@@ -462,6 +464,7 @@ public class DesignController implements Initializable {
                         simulator.startWorkerAndRun();
                     } catch (ExecutionException e) {
                         console_text_box.appendText(e.getMessage() + "\n");
+                        consoleUneditableText.append(e.getMessage()).append("\n");
                     }
                 })).start();
             }
@@ -493,6 +496,7 @@ public class DesignController implements Initializable {
                         simulator.startWorker();
                     } catch (Exception e) {
                         console_text_box.appendText(e.getMessage() + "\n");
+                        consoleUneditableText.append(e.getMessage()).append("\n");
                     }
                 })).start();
             } else if(!Objects.equals(curTab.getText(), "EXECUTE")){
@@ -507,6 +511,7 @@ public class DesignController implements Initializable {
                         simulator.startWorker();
                     } catch (Exception e) {
                         console_text_box.appendText(e.getMessage() + "\n");
+                        consoleUneditableText.append(e.getMessage()).append("\n");
                     }
                 })).start();
             }
@@ -528,6 +533,7 @@ public class DesignController implements Initializable {
                     }
                 } catch (Exception e) {
                     console_text_box.appendText(e.getMessage() + "\n");
+                    consoleUneditableText.append(e.getMessage()).append("\n");
                 }
             })).start();
         }
@@ -544,6 +550,7 @@ public class DesignController implements Initializable {
                     }
                 } catch (Exception e) {
                     console_text_box.appendText(e.getMessage() + "\n");
+                    consoleUneditableText.append(e.getMessage()).append("\n");
                 }
             })).start();
         }
@@ -602,6 +609,7 @@ public class DesignController implements Initializable {
             }
         } catch (Exception e) {
             console_text_box.appendText(e.getMessage() + "\n");
+            consoleUneditableText.append(e.getMessage()).append("\n");
         }
     }
 
@@ -621,6 +629,7 @@ public class DesignController implements Initializable {
                     currentFile.close();
                 } catch (Exception e) {
                     console_text_box.appendText(e.getMessage() + "\n");
+                    consoleUneditableText.append(e.getMessage()).append("\n");
                 }
             }
         }
@@ -641,6 +650,7 @@ public class DesignController implements Initializable {
             }
         } catch (Exception e) {
             console_text_box.appendText(e.getMessage() + "\n");
+            consoleUneditableText.append(e.getMessage()).append("\n");
         }
     }
 
