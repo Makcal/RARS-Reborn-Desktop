@@ -366,12 +366,7 @@ public class DesignController implements Initializable {
                             break;
                         }
                         fontSize += 2;
-                        initial_file_text_box.setStyle("-fx-font-size: %dpx;".formatted(fontSize));
-                        for (Tab t: tab_pane_files.getTabs()){
-                            if (!Objects.equals(t.getText(), "EXECUTE")){
-                                ((Parent) t.getContent()).getChildrenUnmodifiable().get(0).setStyle("-fx-font-size: %dpx;".formatted(fontSize));
-                            }
-                        }
+                        updateTextFontScale();
                     }
                     break;
                 case KeyCode.MINUS:
@@ -380,12 +375,7 @@ public class DesignController implements Initializable {
                             break;
                         }
                         fontSize -= 2;
-                        initial_file_tab.setStyle("-fx-font-size: %dpx;".formatted(fontSize));
-                        for (Tab t: tab_pane_files.getTabs()){
-                            if (!Objects.equals(t.getText(), "EXECUTE")){
-                                ((Parent) t.getContent()).getChildrenUnmodifiable().get(0).setStyle("-fx-font-size: %dpx;".formatted(fontSize));
-                            }
-                        }
+                        updateTextFontScale();
                     }
                     break;
                 case KeyCode.F5:
@@ -994,6 +984,16 @@ public class DesignController implements Initializable {
                 current.setStyle("-fx-background-color: #2B2D30; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 26px");
             } else {
                 current.setStyle("-fx-background-color: white; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 26px");
+            }
+        }
+    }
+
+    private void updateTextFontScale(){
+        initial_file_tab.setStyle("-fx-font-size: %dpx;".formatted(fontSize));
+        console_text_box.setStyle("-fx-font-size: %dpx;".formatted(fontSize));
+        for (Tab t: tab_pane_files.getTabs()){
+            if (!Objects.equals(t.getText(), "EXECUTE")){
+                ((Parent) t.getContent()).getChildrenUnmodifiable().get(0).setStyle("-fx-font-size: %dpx;".formatted(fontSize));
             }
         }
     }
