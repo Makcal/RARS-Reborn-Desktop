@@ -608,7 +608,7 @@ public class DesignController implements Initializable {
             if (file != null) {
                 String content = new String(Files.readAllBytes(file.toPath()));
                 createNewTab(file.getName().split("\\.")[0]);
-                ((TextArea) ((Parent) ((TabPane) ((Parent) tab_pane_files.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).setText(content);
+                (((TextArea) ((Parent) tab_pane_files.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0))).setText(content);
             }
         } catch (Exception e) {
             console_text_box.appendText(e.getMessage()+ "\n");
