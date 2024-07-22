@@ -21,8 +21,8 @@ public class TextAreaScanner{
                 while (text.getText().charAt(charPtr) != '\n') {
                     charPtr++;
                 }
-                inputQueue.add(text.getText().substring(start));
-                uneditable.append(text.getText().substring(start).split("\n")[0]);
+                inputQueue.add(text.getText().substring(start, charPtr++));
+                uneditable.append(text.getText().substring(start));
             }
         });
     }
