@@ -193,7 +193,7 @@
             </Tab>
             <Tab fx:id="initial_file_tab" style="-fx-pref-height: 30;" text="FILE">
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                  <TextArea fx:id="initial_file_text_box" prefHeight="440.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TextArea fx:id="initial_file_text_box" prefHeight="440.0" prefWidth="908.0" style="-fx-font-size: 20px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="18.0" />
                      </font>
