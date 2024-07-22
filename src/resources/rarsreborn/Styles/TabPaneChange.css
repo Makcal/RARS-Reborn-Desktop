@@ -1,19 +1,7 @@
 .tab {
-    -fx-background-color: #F7F8FA;
-    -fx-border-color: #BDBEBE;
-}
-
-.tab-pane .tab-header-background {
-    -fx-background-color: #F7F8FA;
-    -fx-border-width: 1px;
-    -fx-border-color: #BDBEBE;
-}
-
-.tab:selected {
-    -fx-background-color: #BDBEBE; /* Set background color for the selected tab */
-    -fx-border-color: #BDBEBE; /* Set border color for the selected tab */
-}
-
-.tab:hover {
-    -fx-background-color: #BDBEBE; /* Set background color for hovered tab */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: red;
+    -fx-border-color: blue;
+    -fx-font-size: 17px;
 }

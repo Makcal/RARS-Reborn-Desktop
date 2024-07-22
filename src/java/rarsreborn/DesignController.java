@@ -289,6 +289,7 @@ public class DesignController implements Initializable {
 
         simulator.addObserver(StoppedEvent.class, (event) -> {
             setDebugControlsVisible(false);
+            clearTabsColor();
 
             table_code.getItems().clear();
             instructions.clear();
@@ -392,6 +393,7 @@ public class DesignController implements Initializable {
             if (!Objects.equals(curTab.getText(), "EXECUTE")) {
                 simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 instructions.addAll(simulator.getProgramInstructions());
+                curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
                 updateCodeTable();
                 updateButtonsState();
                 (new Thread(() -> {
@@ -418,6 +420,7 @@ public class DesignController implements Initializable {
             if (!Objects.equals(curTab.getText(), "EXECUTE")) {
                 simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 instructions.addAll(simulator.getProgramInstructions());
+                curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
                 updateCodeTable();
                 updateButtonsState();
                 (new Thread(() -> {
@@ -877,5 +880,10 @@ public class DesignController implements Initializable {
         images.put(btn_break, createImage(path, "Stop.png"));
         images.put(btn_left_memory, createImage(path, "LeftArrow.png"));
         images.put(btn_right_memory, createImage(path, "RightArrow.png"));
+    }
+    private void clearTabsColor() {
+        for(Tab current : tab_pane_files.getTabs()) {
+            current.setStyle("-fx-background-color: white; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 26px");
+        }
     }
 }
