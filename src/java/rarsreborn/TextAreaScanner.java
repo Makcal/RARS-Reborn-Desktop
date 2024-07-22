@@ -16,6 +16,7 @@ public class TextAreaScanner{
         text.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 event.consume();
+                text.appendText("\n");
                 int start = charPtr;
                 while (text.getText().charAt(charPtr) != '\n') {
                     charPtr++;
