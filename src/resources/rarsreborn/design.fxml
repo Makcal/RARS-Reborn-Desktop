@@ -243,7 +243,7 @@
                </TabPane>
             </center>
             <bottom>
-               <AnchorPane prefHeight="43.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <AnchorPane fx:id="anchor_pane_reg_table_button" prefHeight="43.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                   <CheckBox fx:id="check_box_reg_table_hex" layoutX="126.0" layoutY="14.0" mnemonicParsing="false" onAction="#OnChangeValueView" text="Hexidecimal values" />
                </AnchorPane>
             </bottom>

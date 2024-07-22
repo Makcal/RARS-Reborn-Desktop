@@ -131,6 +131,8 @@ public class DesignController implements Initializable {
 
     @FXML
     private AnchorPane anchor_pane_instruments;
+    @FXML
+    private AnchorPane anchor_pane_reg_table_button;
 
 
     private final SimulatorRiscV simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
@@ -632,11 +634,17 @@ public class DesignController implements Initializable {
     private void changeTheme() {
         if (isDarkTheme) {
             anchor_pane_instruments.setStyle("-fx-background-color: #F7F8FA;");
+            anchor_pane_reg_table_button.setStyle("-fx-background-color: #F7F8FA");
+            check_box_reg_table_hex.setStyle("-fx-text-fill: #242628");
+            check_box_memory_table_hex.setStyle("-fx-text-fill: #242628");
             root_VBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
             root_VBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
             updateButtonsState();
         } else {
             anchor_pane_instruments.setStyle("-fx-background-color: #242628;");
+            anchor_pane_reg_table_button.setStyle("-fx-background-color: #242628;");
+            check_box_reg_table_hex.setStyle("-fx-text-fill: #F7F8FA");
+            check_box_memory_table_hex.setStyle("-fx-text-fill: #F7F8FA");
             root_VBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
             root_VBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
             updateButtonsState();
