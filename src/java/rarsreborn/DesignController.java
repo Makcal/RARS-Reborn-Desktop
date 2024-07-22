@@ -217,7 +217,7 @@ public class DesignController implements Initializable {
         createButtonIcons("/rarsreborn/Images/lightTheme/", lightImages);
         createButtonIcons("/rarsreborn/Images/darkTheme/", darkImages);
 
-        consoleScanner = new TextAreaScanner(console_text_box, consoleUneditableText);
+        consoleScanner = new TextAreaScanner(console_text_box, consoleUneditableText, simulator);
 
         registersList.add(simulator.getProgramCounter());
         table_reg_name.setCellValueFactory(new PropertyValueFactory<>("name"));
