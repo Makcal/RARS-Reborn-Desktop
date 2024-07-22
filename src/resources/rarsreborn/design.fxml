@@ -26,12 +26,12 @@
    <AnchorPane fx:id="header" prefHeight="50.0">
       <ButtonBar buttonMinWidth="0.0" minWidth="0.0" prefHeight="50.0" prefWidth="660.0" style="-fx-background-color: transparent;">
          <buttons>
-            <MenuButton mnemonicParsing="false" style="-fx-background-color: transparent;" stylesheets="@Styles/global.css">
+            <MenuButton fx:id="burgerMenu" mnemonicParsing="false" style="-fx-background-color: transparent;" stylesheets="@Styles/global.css">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#CreateNewFile" text="New">
                      <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <Image url="@Images/New file.png" />
+                        <ImageView fx:id="smallNewFile" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <Image url="@Images/lightTheme/New file.png" />
                         </ImageView>
                      </graphic>
                   </MenuItem>
@@ -41,8 +41,8 @@
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save">
                      <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <Image url="@Images/Save.png" />
+                        <ImageView fx:id="smallSave" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <Image url="@Images/lightTheme/Save.png" />
                         </ImageView>
                      </graphic>
                   </MenuItem>
@@ -54,71 +54,71 @@
                </items>
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/Menu.png" />
+                     <Image url="@Images/lightTheme/Menu.png" />
                   </ImageView>
                </graphic>
             </MenuButton>
-            <Button id="btn-save" mnemonicParsing="false" onAction="#CreateNewFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
+            <Button fx:id="btn_newfile" id="btn-save" mnemonicParsing="false" onAction="#CreateNewFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/New file.png" />
+                     <Image url="@Images/lightTheme/New file.png" />
                   </ImageView>
                </graphic>
             </Button>
-            <Button id="btn-save" mnemonicParsing="false" onAction="#saveFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
+            <Button fx:id="btn_save" id="btn-save" mnemonicParsing="false" onAction="#saveFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/Save.png" />
+                     <Image url="@Images/lightTheme/Save.png" />
                   </ImageView>
                </graphic>
             </Button>
 
-                                                      <Button fx:id="btn_run" mnemonicParsing="false" onAction="#OnRunBtnAction" prefHeight="30.0" prefWidth="26.0" style="-fx-background-color: transparent;">
+            <Button fx:id="btn_run" mnemonicParsing="false" onAction="#OnRunBtnAction" prefHeight="30.0" prefWidth="26.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/Run.png" />
+                     <Image url="@Images/lightTheme/Run.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btn_break" mnemonicParsing="false" onAction="#onStopBtnAction" prefHeight="28.0" prefWidth="41.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/Stop.png" />
+                     <Image url="@Images/lightTheme/Stop.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button id="btn-debug" fx:id="btn_debug" mnemonicParsing="false" onAction="#onDebugBtnAction" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/Debug.png" />
+                     <Image url="@Images/lightTheme/Debug.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button id="btn-debug" fx:id="btn_pause" mnemonicParsing="false" onAction="#onPauseBtnAction" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/Pause.png" />
+                     <Image url="@Images/lightTheme/Pause.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button id="btn-debug" fx:id="btn_resume" mnemonicParsing="false" onAction="#onResumeBtnAction" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/Next Breakpoint.png" />
+                     <Image url="@Images/lightTheme/Next Breakpoint.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button id="btn-debug" fx:id="btn_step_back" mnemonicParsing="false" onAction="#onStepBackBtnAction" prefHeight="28.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/Undo.png" />
+                     <Image url="@Images/lightTheme/Undo.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button id="btn-debug" fx:id="btn_step_over" mnemonicParsing="false" onAction="#onStepOverBtnAction" prefHeight="38.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@Images/Next step.png" />
+                     <Image url="@Images/lightTheme/Next step.png" />
                   </ImageView>
                </graphic>
             </Button>

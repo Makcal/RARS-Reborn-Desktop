@@ -22,6 +22,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextFormatter.Change;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -67,6 +69,17 @@ public class DesignController implements Initializable {
     private Button btn_step_back;
     @FXML
     private Button btn_step_over;
+    @FXML
+    private Button btn_newfile;
+    @FXML
+    private Button btn_save;
+    @FXML
+    private MenuButton burgerMenu;
+    @FXML
+    private ImageView smallNewFile;
+    @FXML
+    private ImageView smallSave;
+
 
     @FXML
     private TextArea console_box;
@@ -279,6 +292,7 @@ public class DesignController implements Initializable {
             btn_resume.setDisable(true);
             code_table.getItems().clear();
             instructions.clear();
+            updateButtonsState();
         });
         simulator.addObserver(BackStepFinishedEvent.class, (event) -> updateRegistersTable());
         memory.addObserver(MemoryChangeEvent.class, (event) -> memory_table.refresh());
@@ -370,6 +384,7 @@ public class DesignController implements Initializable {
 
         createNewTab();
         file_tab.getSelectionModel().select(1);
+        updateRegistersTable();
     }
 
     @FXML
@@ -389,18 +404,26 @@ public class DesignController implements Initializable {
                 simulator.compile(content);
                 instructions.addAll(simulator.getProgramInstructions());
                 updateCodeTable();
+                if (isDarkTheme) {
+                    Image rerun = new Image(getClass().getResourceAsStream("/rarsreborn/Images/darkTheme/Rerun.png"));
+                    btn_run.setGraphic(new ImageView(rerun));
+                } else {
+                    Image rerun = new Image(getClass().getResourceAsStream("/rarsreborn/Images/lightTheme/Rerun.png"));
+                    btn_run.setGraphic(new ImageView(rerun));
+                }
+                updateButtonsState();
                 (new Thread(() -> {
                     try {
                         btn_break.setDisable(false);
                         simulator.startWorkerAndRun();
                     } catch (ExecutionException e) {
-                        console_box.appendText(e.getMessage());
+                        console_box.appendText(e.getMessage() + "\n");
                         btn_break.setDisable(false);
                     }
                 })).start();
             }
         } catch (Exception e) {
-            console_box.setText(e.getMessage());
+            console_box.setText(e.getMessage()+ "\n");
         }
     }
 
@@ -421,12 +444,20 @@ public class DesignController implements Initializable {
                 simulator.compile(content);
                 instructions.addAll(simulator.getProgramInstructions());
                 updateCodeTable();
+                if (isDarkTheme) {
+                    Image redebug = new Image(getClass().getResourceAsStream("/rarsreborn/Images/darkTheme/Redebug.png"));
+                    btn_debug.setGraphic(new ImageView(redebug));
+                } else {
+                    Image redebug = new Image(getClass().getResourceAsStream("/rarsreborn/Images/lightTheme/Redebug.png"));
+                    btn_debug.setGraphic(new ImageView(redebug));
+                }
+                updateButtonsState();
                 (new Thread(() -> {
                     try {
                         btn_break.setDisable(false);
                         simulator.startWorker();
                     } catch (Exception e) {
-                        console_box.appendText(e.getMessage());
+                        console_box.appendText(e.getMessage()+ "\n");
                         btn_break.setDisable(true);
                     }
                 })).start();
@@ -434,7 +465,7 @@ public class DesignController implements Initializable {
                 file_tab.getSelectionModel().select(0);
             }
         } catch (Exception e) {
-            console_box.setText(e.getMessage());
+            console_box.setText(e.getMessage()+ "\n");
         }
     }
 
@@ -466,7 +497,7 @@ public class DesignController implements Initializable {
                         debugMode = false;
                     }
                 } catch (Exception e) {
-                    console_box.appendText(e.getMessage());
+                    console_box.appendText(e.getMessage()+ "\n");
                 }
             })).start();
         }
@@ -533,7 +564,7 @@ public class DesignController implements Initializable {
                 tab.setText(newFile.getName().split("\\.")[0]);
             }
         } catch (Exception e) {
-            console_box.appendText(e.getMessage());
+            console_box.appendText(e.getMessage()+ "\n");
         }
     }
 
@@ -554,7 +585,7 @@ public class DesignController implements Initializable {
                 currentFile.write(((TextArea) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 currentFile.close();
             } catch (Exception e) {
-                console_box.appendText(e.getMessage());
+                console_box.appendText(e.getMessage()+ "\n");
             }
         }
     }
@@ -574,7 +605,7 @@ public class DesignController implements Initializable {
                 ((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).setText(content);
             }
         } catch (Exception e) {
-            console_box.appendText(e.getMessage());
+            console_box.appendText(e.getMessage()+ "\n");
         }
     }
 
@@ -604,10 +635,12 @@ public class DesignController implements Initializable {
             header.setStyle("-fx-background-color: #F7F8FA;");
             rootVBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
             rootVBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
+            updateButtonsState();
         } else {
             header.setStyle("-fx-background-color: #242628;");
             rootVBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
             rootVBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
+            updateButtonsState();
         }
         isDarkTheme = !isDarkTheme;
     }
@@ -763,7 +796,9 @@ public class DesignController implements Initializable {
         console_box.setText("");
         consoleScanner.update();
         console_box.setEditable(true);
-        simulator.stop();
+        if (simulator.isRunning()) {
+            simulator.stop();
+        }
     }
 
     @FXML
@@ -838,5 +873,223 @@ public class DesignController implements Initializable {
     @FXML
     private void codeTableMouseClicked(){
         updateCodeTableFocus(lastCodeTableIndex);
+    }
+
+    public void updateButtonsState() {
+        String darkPathTheme = "/rarsreborn/Images/darkTheme/";
+        String lightPathTheme = "/rarsreborn/Images/lightTheme/";
+        Platform.runLater(() -> {
+
+            if (simulator.isRunning() && !debugMode && !simulator.isPaused()) {
+                if (isDarkTheme) {
+                    Image burger = new Image(getClass().getResourceAsStream(darkPathTheme + "burger.png"));
+                    burgerMenu.setGraphic(new ImageView(burger));
+
+                    Image newFile = new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png"));
+                    btn_newfile.setGraphic(new ImageView(newFile));
+
+                    Image save = new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png"));
+                    btn_save.setGraphic(new ImageView(save));
+
+                    Image stepBack = new Image(getClass().getResourceAsStream(darkPathTheme + "Undo.png"));
+                    btn_step_back.setGraphic(new ImageView(stepBack));
+
+                    Image pause = new Image(getClass().getResourceAsStream(darkPathTheme + "Pause.png"));
+                    btn_pause.setGraphic(new ImageView(pause));
+
+                    Image stepNext = new Image(getClass().getResourceAsStream(darkPathTheme + "Next step.png"));
+                    btn_step_over.setGraphic(new ImageView(stepNext));
+
+                    Image nextBreakPoint = new Image(getClass().getResourceAsStream(darkPathTheme + "Next Breakpoint.png"));
+                    btn_resume.setGraphic(new ImageView(nextBreakPoint));
+
+                    Image stop = new Image(getClass().getResourceAsStream(darkPathTheme + "Stop.png"));
+                    btn_break.setGraphic(new ImageView(stop));
+
+                    Image rerun = new Image(getClass().getResourceAsStream(darkPathTheme + "Rerun.png"));
+                    btn_run.setGraphic(new ImageView(rerun));
+
+                    Image debug = new Image(getClass().getResourceAsStream(darkPathTheme + "debug.png"));
+                    btn_debug.setGraphic(new ImageView(debug));
+
+
+                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png")));
+                    smallSave.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png")));
+
+                } else {
+                    Image burger = new Image(getClass().getResourceAsStream(lightPathTheme + "Menu.png"));
+                    burgerMenu.setGraphic(new ImageView(burger));
+
+                    Image newFile = new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png"));
+                    btn_newfile.setGraphic(new ImageView(newFile));
+
+                    Image save = new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png"));
+                    btn_save.setGraphic(new ImageView(save));
+
+                    Image stepBack = new Image(getClass().getResourceAsStream(lightPathTheme + "Undo.png"));
+                    btn_step_back.setGraphic(new ImageView(stepBack));
+
+                    Image pause = new Image(getClass().getResourceAsStream(lightPathTheme + "Pause.png"));
+                    btn_pause.setGraphic(new ImageView(pause));
+
+                    Image stepNext = new Image(getClass().getResourceAsStream(lightPathTheme + "Next step.png"));
+                    btn_step_over.setGraphic(new ImageView(stepNext));
+
+                    Image nextBreakPoint = new Image(getClass().getResourceAsStream(lightPathTheme + "Next Breakpoint.png"));
+                    btn_resume.setGraphic(new ImageView(nextBreakPoint));
+
+                    Image stop = new Image(getClass().getResourceAsStream(lightPathTheme + "Stop.png"));
+                    btn_break.setGraphic(new ImageView(stop));
+
+                    Image debug = new Image(getClass().getResourceAsStream(lightPathTheme + "debug.png"));
+                    btn_debug.setGraphic(new ImageView(debug));
+
+                    Image rerun = new Image(getClass().getResourceAsStream(lightPathTheme + "Rerun.png"));
+                    btn_run.setGraphic(new ImageView(rerun));
+
+                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png")));
+                    smallSave.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png")));
+                }
+            } else if (debugMode) {
+                if (isDarkTheme) {
+                    Image burger = new Image(getClass().getResourceAsStream(darkPathTheme + "burger.png"));
+                    burgerMenu.setGraphic(new ImageView(burger));
+
+                    Image newFile = new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png"));
+                    btn_newfile.setGraphic(new ImageView(newFile));
+
+                    Image save = new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png"));
+                    btn_save.setGraphic(new ImageView(save));
+
+                    Image stepBack = new Image(getClass().getResourceAsStream(darkPathTheme + "Undo.png"));
+                    btn_step_back.setGraphic(new ImageView(stepBack));
+
+                    Image pause = new Image(getClass().getResourceAsStream(darkPathTheme + "Pause.png"));
+                    btn_pause.setGraphic(new ImageView(pause));
+
+                    Image stepNext = new Image(getClass().getResourceAsStream(darkPathTheme + "Next step.png"));
+                    btn_step_over.setGraphic(new ImageView(stepNext));
+
+                    Image nextBreakPoint = new Image(getClass().getResourceAsStream(darkPathTheme + "Next Breakpoint.png"));
+                    btn_resume.setGraphic(new ImageView(nextBreakPoint));
+
+                    Image stop = new Image(getClass().getResourceAsStream(darkPathTheme + "Stop.png"));
+                    btn_break.setGraphic(new ImageView(stop));
+
+                    Image rerun = new Image(getClass().getResourceAsStream(darkPathTheme + "Run.png"));
+                    btn_run.setGraphic(new ImageView(rerun));
+
+                    Image debug = new Image(getClass().getResourceAsStream(darkPathTheme + "Redebug.png"));
+                    btn_debug.setGraphic(new ImageView(debug));
+
+
+                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png")));
+                    smallSave.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png")));
+                } else {
+                    Image burger = new Image(getClass().getResourceAsStream(lightPathTheme + "Menu.png"));
+                    burgerMenu.setGraphic(new ImageView(burger));
+
+                    Image newFile = new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png"));
+                    btn_newfile.setGraphic(new ImageView(newFile));
+
+                    Image save = new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png"));
+                    btn_save.setGraphic(new ImageView(save));
+
+                    Image stepBack = new Image(getClass().getResourceAsStream(lightPathTheme + "Undo.png"));
+                    btn_step_back.setGraphic(new ImageView(stepBack));
+
+                    Image pause = new Image(getClass().getResourceAsStream(lightPathTheme + "Pause.png"));
+                    btn_pause.setGraphic(new ImageView(pause));
+
+                    Image stepNext = new Image(getClass().getResourceAsStream(lightPathTheme + "Next step.png"));
+                    btn_step_over.setGraphic(new ImageView(stepNext));
+
+                    Image nextBreakPoint = new Image(getClass().getResourceAsStream(lightPathTheme + "Next Breakpoint.png"));
+                    btn_resume.setGraphic(new ImageView(nextBreakPoint));
+
+                    Image stop = new Image(getClass().getResourceAsStream(lightPathTheme + "Stop.png"));
+                    btn_break.setGraphic(new ImageView(stop));
+
+                    Image debug = new Image(getClass().getResourceAsStream(lightPathTheme + "Redebug.png"));
+                    btn_debug.setGraphic(new ImageView(debug));
+
+                    Image rerun = new Image(getClass().getResourceAsStream(lightPathTheme + "Run.png"));
+                    btn_run.setGraphic(new ImageView(rerun));
+
+                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png")));
+                    smallSave.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png")));
+                }
+            } else if (!simulator.isRunning()) {
+                if (isDarkTheme) {
+                    Image burger = new Image(getClass().getResourceAsStream(darkPathTheme + "burger.png"));
+                    burgerMenu.setGraphic(new ImageView(burger));
+
+                    Image newFile = new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png"));
+                    btn_newfile.setGraphic(new ImageView(newFile));
+
+                    Image save = new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png"));
+                    btn_save.setGraphic(new ImageView(save));
+
+                    Image stepBack = new Image(getClass().getResourceAsStream(darkPathTheme + "Undo.png"));
+                    btn_step_back.setGraphic(new ImageView(stepBack));
+
+                    Image pause = new Image(getClass().getResourceAsStream(darkPathTheme + "Pause.png"));
+                    btn_pause.setGraphic(new ImageView(pause));
+
+                    Image stepNext = new Image(getClass().getResourceAsStream(darkPathTheme + "Next step.png"));
+                    btn_step_over.setGraphic(new ImageView(stepNext));
+
+                    Image nextBreakPoint = new Image(getClass().getResourceAsStream(darkPathTheme + "Next Breakpoint.png"));
+                    btn_resume.setGraphic(new ImageView(nextBreakPoint));
+
+                    Image stop = new Image(getClass().getResourceAsStream(darkPathTheme + "Stop.png"));
+                    btn_break.setGraphic(new ImageView(stop));
+
+                    Image rerun = new Image(getClass().getResourceAsStream(darkPathTheme + "Run.png"));
+                    btn_run.setGraphic(new ImageView(rerun));
+
+                    Image debug = new Image(getClass().getResourceAsStream(darkPathTheme + "debug.png"));
+                    btn_debug.setGraphic(new ImageView(debug));
+
+
+                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png")));
+                    smallSave.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png")));
+
+                } else {
+                    Image burger = new Image(getClass().getResourceAsStream(lightPathTheme + "Menu.png"));
+                    burgerMenu.setGraphic(new ImageView(burger));
+
+                    Image newFile = new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png"));
+                    btn_newfile.setGraphic(new ImageView(newFile));
+
+                    Image save = new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png"));
+                    btn_save.setGraphic(new ImageView(save));
+
+                    Image stepBack = new Image(getClass().getResourceAsStream(lightPathTheme + "Undo.png"));
+                    btn_step_back.setGraphic(new ImageView(stepBack));
+
+                    Image pause = new Image(getClass().getResourceAsStream(lightPathTheme + "Pause.png"));
+                    btn_pause.setGraphic(new ImageView(pause));
+
+                    Image stepNext = new Image(getClass().getResourceAsStream(lightPathTheme + "Next step.png"));
+                    btn_step_over.setGraphic(new ImageView(stepNext));
+
+                    Image nextBreakPoint = new Image(getClass().getResourceAsStream(lightPathTheme + "Next Breakpoint.png"));
+                    btn_resume.setGraphic(new ImageView(nextBreakPoint));
+
+                    Image stop = new Image(getClass().getResourceAsStream(lightPathTheme + "Stop.png"));
+                    btn_break.setGraphic(new ImageView(stop));
+
+                    Image debug = new Image(getClass().getResourceAsStream(lightPathTheme + "Debug.png"));
+                    btn_debug.setGraphic(new ImageView(debug));
+
+                    Image rerun = new Image(getClass().getResourceAsStream(lightPathTheme + "Run.png"));
+                    btn_run.setGraphic(new ImageView(rerun));
+
+                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png")));
+                    smallSave.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png")));
+                }
+            }
+        });
     }
 }
