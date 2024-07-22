@@ -208,6 +208,7 @@ public class DesignController implements Initializable {
 
     private int codeTableLastIndex = 0;
     private int memoryOffset;
+    private int fontSize = 20;
 
 
     @Override
@@ -356,6 +357,34 @@ public class DesignController implements Initializable {
                             closeAllFiles();
                         } else {
                             closeCurrentFile();
+                        }
+                    }
+                    break;
+                case KeyCode.EQUALS:
+                    if (ke.isControlDown()){
+                        if (fontSize == 50){
+                            break;
+                        }
+                        fontSize += 2;
+                        initial_file_text_box.setStyle("-fx-font-size: %dpx;".formatted(fontSize));
+                        for (Tab t: tab_pane_files.getTabs()){
+                            if (!Objects.equals(t.getText(), "EXECUTE")){
+                                ((Parent) t.getContent()).getChildrenUnmodifiable().get(0).setStyle("-fx-font-size: %dpx;".formatted(fontSize));
+                            }
+                        }
+                    }
+                    break;
+                case KeyCode.MINUS:
+                    if (ke.isControlDown()){
+                        if (fontSize == 10){
+                            break;
+                        }
+                        fontSize -= 2;
+                        initial_file_tab.setStyle("-fx-font-size: %dpx;".formatted(fontSize));
+                        for (Tab t: tab_pane_files.getTabs()){
+                            if (!Objects.equals(t.getText(), "EXECUTE")){
+                                ((Parent) t.getContent()).getChildrenUnmodifiable().get(0).setStyle("-fx-font-size: %dpx;".formatted(fontSize));
+                            }
                         }
                     }
                     break;
@@ -709,7 +738,6 @@ public class DesignController implements Initializable {
         newAnchorPane.getChildren().add(newTextArea);
 
         newTextArea.setStyle(initial_file_text_box.getStyle());
-        newTextArea.setFont(initial_file_text_box.getFont());
 
         AnchorPane.setTopAnchor(newTextArea, 0.0);
         AnchorPane.setBottomAnchor(newTextArea, 0.0);
