@@ -41,9 +41,9 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.floatpoint.RegisterFloat64;
 import rarsreborn.core.core.register.floatpoint.RegisterFloat64ChangeEvent;
 import rarsreborn.core.exceptions.execution.ExecutionException;
-import rarsreborn.core.simulator.PausedEvent;
+import rarsreborn.core.simulator.events.PausedEvent;
 import rarsreborn.core.simulator.SimulatorRiscV;
-import rarsreborn.core.simulator.StoppedEvent;
+import rarsreborn.core.simulator.events.StoppedEvent;
 import rarsreborn.core.simulator.backstepper.BackStepFinishedEvent;
 
 
@@ -153,6 +153,30 @@ public class DesignController implements Initializable {
         }
 
         @Override
+        public float requestFloat() {
+            String s = consoleScanner.readLine();
+            try {
+                return Float.parseFloat(s);
+            } catch (Exception e) {
+                consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
+                console_text_box.appendText("\"" + s + "\" is not an Integer");
+            }
+            return 0;
+        }
+
+        @Override
+        public double requestDouble() {
+            String s = consoleScanner.readLine();
+            try {
+                return Double.parseDouble(s);
+            } catch (Exception e) {
+                consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
+                console_text_box.appendText("\"" + s + "\" is not an Integer");
+            }
+            return 0;
+        }
+
+        @Override
         public byte requestChar() {
             String s = consoleScanner.readLine();
             try {
@@ -206,7 +230,7 @@ public class DesignController implements Initializable {
 
         table_code_address.setCellValueFactory(tableRow -> {
             try {
-                return new ReadOnlyObjectWrapper<>(String.valueOf(tableRow.getValue() * 4 + Memory32.TEXT_SECTION_START));
+                return new ReadOnlyObjectWrapper<>("0x" + Long.toHexString(tableRow.getValue() * 4 + Memory32.TEXT_SECTION_START));
             } catch (Exception e) {
                 throw new RuntimeException();
             }
