@@ -38,11 +38,9 @@ import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.memory.MemoryChangeEvent;
 import rarsreborn.core.core.register.Register32ChangeEvent;
-import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.floatpoint.RegisterFloat64;
 import rarsreborn.core.core.register.floatpoint.RegisterFloat64ChangeEvent;
-import rarsreborn.core.core.register.floatpoint.RegisterFloat64File;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.simulator.PausedEvent;
 import rarsreborn.core.simulator.SimulatorRiscV;
@@ -52,9 +50,10 @@ import rarsreborn.core.simulator.backstepper.BackStepFinishedEvent;
 
 public class DesignController implements Initializable {
     @FXML
-    public CheckBox table_hex;
+    public CheckBox check_box_reg_table_hex;
     @FXML
-    public CheckBox hex_address_choice;
+    public CheckBox check_box_memory_table_hex;
+
     @FXML
     private Button btn_break;
     @FXML
@@ -70,24 +69,25 @@ public class DesignController implements Initializable {
     @FXML
     private Button btn_step_over;
     @FXML
-    private Button btn_newfile;
+    private Button btn_new_file;
     @FXML
     private Button btn_save;
-    @FXML
-    private MenuButton burgerMenu;
-    @FXML
-    private ImageView smallNewFile;
-    @FXML
-    private ImageView smallSave;
-
 
     @FXML
-    private TextArea console_box;
+    private MenuButton btn_burger_menu;
+
+    @FXML
+    private ImageView image_menu_new_file;
+    @FXML
+    private ImageView image_menu_save;
+
+    @FXML
+    private TextArea console_text_box;
     @FXML
     private TextArea initial_file_text_box;
 
     @FXML
-    private TabPane file_tab;
+    private TabPane tab_pane_files;
 
     @FXML
     private Tab initial_file_tab;
@@ -95,42 +95,43 @@ public class DesignController implements Initializable {
     private Tab execute_tab;
 
     @FXML
-    private TableView<Register32> reg_table;
+    private TableView<Register32> table_reg;
     @FXML
-    private TableView<Integer> memory_table;
+    private TableView<RegisterFloat64> table_float_reg;
     @FXML
-    private TableView<RegisterFloat64> float_reg_table;
+    private TableView<Integer> table_memory;
     @FXML
-    public TableView<Integer> code_table;
+    public TableView<Integer> table_code;
     @FXML
-    public TableColumn<Integer, String> code_table_address;
+    public TableColumn<Integer, String> table_code_address;
     @FXML
-    public TableColumn<Integer, String> code_table_code;
+    public TableColumn<Integer, String> table_code_code;
     @FXML
-    public TableColumn<Integer, String> code_table_basic;
+    public TableColumn<Integer, String> table_code_basic;
+    @FXML
+    private TableColumn<RegisterFloat64, Integer> table_float_reg_num;
+    @FXML
+    private TableColumn<RegisterFloat64, String> table_float_reg_name;
+    @FXML
+    private TableColumn<RegisterFloat64, String> table_float_reg_value;
+    @FXML
+    private TableColumn<Register32, String> table_reg_name;
+    @FXML
+    private TableColumn<Register32, Integer> table_reg_num;
+    @FXML
+    private TableColumn<Register32, String> table_reg_value;
 
     @FXML
-    private TableColumn<RegisterFloat64, Integer> floating_table_num;
+    private ChoiceBox<String> choice_box_memory;
     @FXML
-    private TableColumn<RegisterFloat64, String> floating_table_name;
-    @FXML
-    private TableColumn<RegisterFloat64, String> floating_table_value;
-    @FXML
-    private TableColumn<Register32, String> reg_table_name;
-    @FXML
-    private TableColumn<Register32, Integer> reg_table_num;
-    @FXML
-    private TableColumn<Register32, String> reg_table_value;
+    private ChoiceBox<String> choice_box_value;
 
     @FXML
-    private ChoiceBox<String> memory_choice;
+    private VBox root_VBox;
+
     @FXML
-    private ChoiceBox<String> value_choice;
-    @FXML
-    private VBox rootVBox;
-    @FXML
-    private AnchorPane header;
-    private boolean isDarkTheme = false;
+    private AnchorPane anchor_pane_instruments;
+
 
     private final SimulatorRiscV simulator = Presets.getClassicalRiscVSimulator(new ITextInputDevice() {
         @Override
@@ -146,7 +147,7 @@ public class DesignController implements Initializable {
                 return Integer.parseInt(s);
             } catch (Exception e) {
                 consoleUneditableText.append("\"").append(s).append("\" is not an Integer");
-                console_box.appendText("\"" + s + "\" is not an Integer");
+                console_text_box.appendText("\"" + s + "\" is not an Integer");
             }
             return 0;
         }
@@ -157,54 +158,52 @@ public class DesignController implements Initializable {
             try {
                 return Byte.parseByte(s);
             } catch (Exception e) {
-                console_box.appendText("\"" + s + "\" is not an Character");
+                console_text_box.appendText("\"" + s + "\" is not an Character");
             }
             return 0;
         }
     });
-
-    private final Register32File registers = simulator.getRegisterFile();
-    private final RegisterFloat64File floatRegisters = simulator.getFloatRegisterFile();
-
-    private final ObservableList<Register32> registersList = FXCollections.observableArrayList(registers.getAllRegisters());
-    private final ObservableList<RegisterFloat64> floatRegistersList = FXCollections.observableArrayList(floatRegisters.getAllRegisters());
-
-    private final ObservableList<IInstruction> instructions = FXCollections.observableArrayList();
-
     private final IMemory memory = simulator.getMemory();
-    ObservableList<Integer> memoryAddresses = FXCollections.observableArrayList();
-    int memoryOffset;
+
+    private final ObservableList<Register32> registersList = FXCollections.observableArrayList(simulator.getRegisterFile().getAllRegisters());
+    private final ObservableList<RegisterFloat64> floatRegistersList = FXCollections.observableArrayList(simulator.getFloatRegisterFile().getAllRegisters());
+    private final ObservableList<IInstruction> instructions = FXCollections.observableArrayList();
+    private final ObservableList<Integer> memoryAddresses = FXCollections.observableArrayList();
+
     private final StringBuilder consoleUneditableText = new StringBuilder();
     private TextAreaScanner consoleScanner;
 
-    private boolean debugMode = false;
-
     private final HashMap<Tab, URI> filesNamesLinker = new HashMap<>();
 
-    private int lastCodeTableIndex = 0;
+    private boolean debugMode = false;
+    private boolean isDarkTheme = false;
+
+
+    private int codeTableLastIndex = 0;
+    private int memoryOffset;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        consoleScanner = new TextAreaScanner(console_box, consoleUneditableText);
+        consoleScanner = new TextAreaScanner(console_text_box, consoleUneditableText);
 
         registersList.add(simulator.getProgramCounter());
-        reg_table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        reg_table_num.setCellValueFactory(new PropertyValueFactory<>("numericName"));
+        table_reg_name.setCellValueFactory(new PropertyValueFactory<>("name"));
+        table_reg_num.setCellValueFactory(new PropertyValueFactory<>("numericName"));
         for (Register32 r : registersList) {
             r.addObserver(Register32ChangeEvent.class, (register32ChangeEvent) -> updateRegistersTable());
         }
 
-        floating_table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        floating_table_num.setCellValueFactory(new PropertyValueFactory<>("numericName"));
+        table_float_reg_name.setCellValueFactory(new PropertyValueFactory<>("name"));
+        table_float_reg_num.setCellValueFactory(new PropertyValueFactory<>("numericName"));
         for (RegisterFloat64 r : floatRegistersList) {
             r.addObserver(RegisterFloat64ChangeEvent.class, (float64ChangeEvent) -> updateFloatTable());
         }
         updateRegisterTables();
 
-        memory_choice.setItems(FXCollections.observableArrayList("0x00400000 (.text)", "0x10010000 (.data)", "0x10040000 (.heap)", "current sp"));
-        value_choice.setItems(FXCollections.observableArrayList("Decimal values", "Hexadecimal values", "ASCII"));
-        memory_choice.getSelectionModel().selectedIndexProperty().addListener((observable) -> {
-            switch (memory_choice.getSelectionModel().getSelectedIndex()) {
+        choice_box_memory.setItems(FXCollections.observableArrayList("0x00400000 (.text)", "0x10010000 (.data)", "0x10040000 (.heap)", "current sp"));
+        choice_box_value.setItems(FXCollections.observableArrayList("Decimal values", "Hexadecimal values", "ASCII"));
+        choice_box_memory.getSelectionModel().selectedIndexProperty().addListener((observable) -> {
+            switch (choice_box_memory.getSelectionModel().getSelectedIndex()) {
                 case 0:
                     memoryOffset = Memory32.TEXT_SECTION_START;
                     break;
@@ -220,19 +219,19 @@ public class DesignController implements Initializable {
             }
             updateMemoryTable();
         });
-        value_choice.getSelectionModel().selectedIndexProperty().addListener((observable -> updateMemoryTable()));
-        memory_choice.getSelectionModel().select("0x10010000 (.data)");
-        value_choice.getSelectionModel().select("Hexadecimal values");
+        choice_box_value.getSelectionModel().selectedIndexProperty().addListener((observable -> updateMemoryTable()));
+        choice_box_memory.getSelectionModel().select("0x10010000 (.data)");
+        choice_box_value.getSelectionModel().select("Hexadecimal values");
         updateMemoryTable();
 
-        code_table_address.setCellValueFactory(integerCellDataFeatures -> {
+        table_code_address.setCellValueFactory(integerCellDataFeatures -> {
             try {
                 return new ReadOnlyObjectWrapper<>(String.valueOf(integerCellDataFeatures.getValue() * 4 + Memory32.TEXT_SECTION_START));
             } catch (Exception e) {
                 throw new RuntimeException();
             }
         });
-        code_table_basic.setCellValueFactory(
+        table_code_basic.setCellValueFactory(
                 integerCellDataFeatures -> {
                     try {
                         return new ReadOnlyObjectWrapper<>(instructions.get(integerCellDataFeatures.getValue()).toString());
@@ -240,7 +239,7 @@ public class DesignController implements Initializable {
                         throw new RuntimeException();
                     }
                 });
-        code_table_code.setCellValueFactory(
+        table_code_code.setCellValueFactory(
                 integerCellDataFeatures -> {
                     try {
                         return new ReadOnlyObjectWrapper<>("0x" + Integer.toHexString(bytesToInt(instructions.get(integerCellDataFeatures.getValue()).serialize())));
@@ -250,37 +249,37 @@ public class DesignController implements Initializable {
                 });
 
         simulator.getExecutionEnvironment().addObserver(ConsolePrintStringEvent.class, (event) -> {
-            console_box.appendText(event.text());
+            console_text_box.appendText(event.text());
             consoleUneditableText.append(event.text());
             consoleScanner.terminalMessage(event.text());
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintCharEvent.class, (event) -> {
-            console_box.appendText(String.valueOf((char) event.character()));
+            console_text_box.appendText(String.valueOf((char) event.character()));
             consoleUneditableText.append((char) event.character());
             consoleScanner.terminalMessage(String.valueOf((char) event.character()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerEvent.class, (event) -> {
             consoleUneditableText.append(event.value());
-            console_box.appendText(String.valueOf(event.value()));
+            console_text_box.appendText(String.valueOf(event.value()));
             consoleScanner.terminalMessage(String.valueOf(event.value()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerHexEvent.class, (event) -> {
-            console_box.appendText(Integer.toHexString(event.value()));
+            console_text_box.appendText(Integer.toHexString(event.value()));
             consoleUneditableText.append(Integer.toHexString(event.value()));
             consoleScanner.terminalMessage(Integer.toHexString(event.value()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerOctalEvent.class, (event) -> {
-            console_box.appendText(Integer.toOctalString(event.value()));
+            console_text_box.appendText(Integer.toOctalString(event.value()));
             consoleUneditableText.append(Integer.toOctalString(event.value()));
             consoleScanner.terminalMessage(Integer.toOctalString(event.value()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerBinaryEvent.class, (event) -> {
-            console_box.appendText(Integer.toBinaryString(event.value()));
+            console_text_box.appendText(Integer.toBinaryString(event.value()));
             consoleUneditableText.append(Integer.toBinaryString(event.value()));
             consoleScanner.terminalMessage(Integer.toBinaryString(event.value()));
         });
         simulator.getExecutionEnvironment().addObserver(ConsolePrintIntegerUnsignedEvent.class, (event) -> {
-            console_box.appendText(Integer.toUnsignedString(event.value()));
+            console_text_box.appendText(Integer.toUnsignedString(event.value()));
             consoleUneditableText.append(Integer.toUnsignedString(event.value()));
             consoleScanner.terminalMessage(Integer.toUnsignedString(event.value()));
         });
@@ -290,12 +289,12 @@ public class DesignController implements Initializable {
             btn_break.setDisable(true);
             btn_pause.setDisable(true);
             btn_resume.setDisable(true);
-            code_table.getItems().clear();
+            table_code.getItems().clear();
             instructions.clear();
             updateButtonsState();
         });
         simulator.addObserver(BackStepFinishedEvent.class, (event) -> updateRegistersTable());
-        memory.addObserver(MemoryChangeEvent.class, (event) -> memory_table.refresh());
+        memory.addObserver(MemoryChangeEvent.class, (event) -> table_memory.refresh());
 
         simulator.addObserver(PausedEvent.class, (event) -> {
             btn_pause.setDisable(true);
@@ -304,7 +303,7 @@ public class DesignController implements Initializable {
         simulator.getProgramCounter().addObserver(Register32ChangeEvent.class, (event) -> updateCodeTableFocus((event.newValue() - Memory32.TEXT_SECTION_START) / 4));
         simulator.addObserver(BackStepFinishedEvent.class, (event) -> updateCodeTableFocus((simulator.getProgramCounter().getValue() - Memory32.TEXT_SECTION_START) / 4));
 
-        rootVBox.addEventFilter(KeyEvent.KEY_PRESSED, ke -> {
+        root_VBox.addEventFilter(KeyEvent.KEY_PRESSED, ke -> {
             switch (ke.getCode()) {
                 case KeyCode.S:
                     if (ke.isControlDown()) {
@@ -365,7 +364,7 @@ public class DesignController implements Initializable {
             }
         });
 
-        console_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
+        console_text_box.setTextFormatter(new TextFormatter<String>((Change c) -> {
             String proposed = c.getControlNewText();
             if (proposed.startsWith(consoleUneditableText.toString())) {
                 return c;
@@ -373,9 +372,9 @@ public class DesignController implements Initializable {
                 return null;
             }
         }));
-        console_box.setEditable(false);
+        console_text_box.setEditable(false);
 
-        file_tab.getTabs().remove(initial_file_tab);
+        tab_pane_files.getTabs().remove(initial_file_tab);
         setControlsDisable(true);
         setDebugControlsVisible(false);
         btn_break.setDisable(true);
@@ -383,7 +382,7 @@ public class DesignController implements Initializable {
         btn_pause.setDisable(true);
 
         createNewTab();
-        file_tab.getSelectionModel().select(1);
+        tab_pane_files.getSelectionModel().select(1);
         updateRegistersTable();
     }
 
@@ -397,7 +396,7 @@ public class DesignController implements Initializable {
     private void OnRunBtnAction() {
         preStartActions();
         try {
-            Tab curTab = file_tab.getSelectionModel().getSelectedItem();
+            Tab curTab = tab_pane_files.getSelectionModel().getSelectedItem();
             if (!Objects.equals(curTab.getText(), "EXECUTE")) {
                 btn_pause.setDisable(false);
                 String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
@@ -417,13 +416,13 @@ public class DesignController implements Initializable {
                         btn_break.setDisable(false);
                         simulator.startWorkerAndRun();
                     } catch (ExecutionException e) {
-                        console_box.appendText(e.getMessage() + "\n");
+                        console_text_box.appendText(e.getMessage() + "\n");
                         btn_break.setDisable(false);
                     }
                 })).start();
             }
         } catch (Exception e) {
-            console_box.setText(e.getMessage()+ "\n");
+            console_text_box.setText(e.getMessage()+ "\n");
         }
     }
 
@@ -437,7 +436,7 @@ public class DesignController implements Initializable {
         preStartActions();
         debugMode = true;
         try {
-            Tab curTab = file_tab.getSelectionModel().getSelectedItem();
+            Tab curTab = tab_pane_files.getSelectionModel().getSelectedItem();
             if (!Objects.equals(curTab.getText(), "EXECUTE")) {
                 btn_resume.setDisable(false);
                 String content = ((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText();
@@ -457,15 +456,15 @@ public class DesignController implements Initializable {
                         btn_break.setDisable(false);
                         simulator.startWorker();
                     } catch (Exception e) {
-                        console_box.appendText(e.getMessage()+ "\n");
+                        console_text_box.appendText(e.getMessage()+ "\n");
                         btn_break.setDisable(true);
                     }
                 })).start();
                 setDebugControlsVisible(true);
-                file_tab.getSelectionModel().select(0);
+                tab_pane_files.getSelectionModel().select(0);
             }
         } catch (Exception e) {
-            console_box.setText(e.getMessage()+ "\n");
+            console_text_box.setText(e.getMessage()+ "\n");
         }
     }
 
@@ -480,7 +479,7 @@ public class DesignController implements Initializable {
                         debugMode = false;
                     }
                 } catch (Exception e) {
-                    console_box.appendText(e.getMessage() + "\n");
+                    console_text_box.appendText(e.getMessage() + "\n");
                 }
             })).start();
         }
@@ -497,7 +496,7 @@ public class DesignController implements Initializable {
                         debugMode = false;
                     }
                 } catch (Exception e) {
-                    console_box.appendText(e.getMessage()+ "\n");
+                    console_text_box.appendText(e.getMessage()+ "\n");
                 }
             })).start();
         }
@@ -511,7 +510,7 @@ public class DesignController implements Initializable {
         btn_resume.setDisable(false);
         debugMode = true;
         btn_resume.setDisable(false);
-        file_tab.getSelectionModel().select(0);
+        tab_pane_files.getSelectionModel().select(0);
         setDebugControlsVisible(true);
     }
 
@@ -524,17 +523,17 @@ public class DesignController implements Initializable {
 
     @FXML
     private void closeCurrentFile() {
-        if (!file_tab.getTabs().isEmpty()) {
-            if (Objects.equals(file_tab.getSelectionModel().getSelectedItem().getText(), "EXECUTE")) {
+        if (!tab_pane_files.getTabs().isEmpty()) {
+            if (Objects.equals(tab_pane_files.getSelectionModel().getSelectedItem().getText(), "EXECUTE")) {
                 return;
             }
-            file_tab.getTabs().remove(file_tab.getSelectionModel().getSelectedItem());
+            tab_pane_files.getTabs().remove(tab_pane_files.getSelectionModel().getSelectedItem());
         }
     }
 
     @FXML
     private void closeAllFiles() {
-        file_tab.getTabs().removeIf(t -> !Objects.equals(t.getText(), "EXECUTE"));
+        tab_pane_files.getTabs().removeIf(t -> !Objects.equals(t.getText(), "EXECUTE"));
     }
 
     @FXML
@@ -545,7 +544,7 @@ public class DesignController implements Initializable {
     @FXML
     private void saveFileAs() {
         try {
-            Tab tab = file_tab.getSelectionModel().getSelectedItem();
+            Tab tab = tab_pane_files.getSelectionModel().getSelectedItem();
             if (Objects.equals(tab.getText(), "EXECUTE")) {
                 return;
             }
@@ -564,13 +563,13 @@ public class DesignController implements Initializable {
                 tab.setText(newFile.getName().split("\\.")[0]);
             }
         } catch (Exception e) {
-            console_box.appendText(e.getMessage()+ "\n");
+            console_text_box.appendText(e.getMessage()+ "\n");
         }
     }
 
     @FXML
     private void saveFile() {
-        Tab tab = file_tab.getSelectionModel().getSelectedItem();
+        Tab tab = tab_pane_files.getSelectionModel().getSelectedItem();
         if (Objects.equals(tab.getText(), "EXECUTE")) {
             return;
         }
@@ -585,7 +584,7 @@ public class DesignController implements Initializable {
                 currentFile.write(((TextArea) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 currentFile.close();
             } catch (Exception e) {
-                console_box.appendText(e.getMessage()+ "\n");
+                console_text_box.appendText(e.getMessage()+ "\n");
             }
         }
     }
@@ -602,10 +601,10 @@ public class DesignController implements Initializable {
             if (file != null) {
                 String content = new String(Files.readAllBytes(file.toPath()));
                 createNewTab(file.getName().split("\\.")[0]);
-                ((TextArea) ((Parent) ((TabPane) ((Parent) file_tab.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).setText(content);
+                ((TextArea) ((Parent) ((TabPane) ((Parent) tab_pane_files.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0)).getTabs().get(0).getContent()).getChildrenUnmodifiable().get(0)).setText(content);
             }
         } catch (Exception e) {
-            console_box.appendText(e.getMessage()+ "\n");
+            console_text_box.appendText(e.getMessage()+ "\n");
         }
     }
 
@@ -632,14 +631,14 @@ public class DesignController implements Initializable {
     @FXML
     private void changeTheme() {
         if (isDarkTheme) {
-            header.setStyle("-fx-background-color: #F7F8FA;");
-            rootVBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
-            rootVBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
+            anchor_pane_instruments.setStyle("-fx-background-color: #F7F8FA;");
+            root_VBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
+            root_VBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
             updateButtonsState();
         } else {
-            header.setStyle("-fx-background-color: #242628;");
-            rootVBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
-            rootVBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
+            anchor_pane_instruments.setStyle("-fx-background-color: #242628;");
+            root_VBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
+            root_VBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
             updateButtonsState();
         }
         isDarkTheme = !isDarkTheme;
@@ -652,11 +651,11 @@ public class DesignController implements Initializable {
     private void createNewTab(String fileName) {
         Tab newTab = new Tab(fileName);
         newTab.setOnClosed(event -> {
-            if (file_tab.getTabs().size() == 1) {
+            if (tab_pane_files.getTabs().size() == 1) {
                 setControlsDisable(true);
             }
         });
-        file_tab.getTabs().add(newTab);
+        tab_pane_files.getTabs().add(newTab);
         newTab.setStyle(execute_tab.getStyle());
 
         AnchorPane newAnchorPane = new AnchorPane();
@@ -675,7 +674,7 @@ public class DesignController implements Initializable {
         AnchorPane.setLeftAnchor(newTextArea, 0.0);
 
         setControlsDisable(false);
-        file_tab.getSelectionModel().select(newTab);
+        tab_pane_files.getSelectionModel().select(newTab);
     }
 
     private void setDebugControlsVisible(boolean visible) {
@@ -689,23 +688,23 @@ public class DesignController implements Initializable {
     }
 
     private void updateRegistersTable() {
-        reg_table.refresh();
+        table_reg.refresh();
     }
 
     private void updateFloatTable() {
-        float_reg_table.refresh();
+        table_float_reg.refresh();
     }
 
     private void updateMemoryTable() {
-        memory_table.getItems().clear();
+        table_memory.getItems().clear();
         memoryAddresses.clear();
         for (int i = 0; i < 8; i++) {
             memoryAddresses.add(memoryOffset + (i * 32));
         }
         StringBuilder buildString = new StringBuilder();
-        if (!hex_address_choice.isSelected()) {
+        if (!check_box_memory_table_hex.isSelected()) {
             //noinspection unchecked
-            ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
+            ((TableColumn<Integer, String>) table_memory.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
                 try {
                     return new ReadOnlyObjectWrapper<>(String.valueOf(integerCellDataFeatures.getValue()));
                 } catch (Exception e) {
@@ -714,7 +713,7 @@ public class DesignController implements Initializable {
             });
         } else {
             //noinspection unchecked
-            ((TableColumn<Integer, String>) memory_table.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
+            ((TableColumn<Integer, String>) table_memory.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
                 try {
                     buildString.setLength(0);
                     buildString.append("0x");
@@ -728,12 +727,12 @@ public class DesignController implements Initializable {
                 }
             });
         }
-        switch (value_choice.getSelectionModel().getSelectedIndex()) {
+        switch (choice_box_value.getSelectionModel().getSelectedIndex()) {
             case 0:
                 for (int i = 1; i < 9; i++) {
                     int finalI = i;
                     //noinspection unchecked
-                    ((TableColumn<Integer, String>) memory_table.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                    ((TableColumn<Integer, String>) table_memory.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
                         try {
                             return new ReadOnlyObjectWrapper<>(String.valueOf(memory.getMultiple(integerCellDataFeatures.getValue() + ((finalI - 1) * 4), 4)));
                         } catch (Exception e) {
@@ -746,7 +745,7 @@ public class DesignController implements Initializable {
                 for (int i = 1; i < 9; i++) {
                     int finalI = i;
                     //noinspection unchecked
-                    ((TableColumn<Integer, String>) memory_table.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                    ((TableColumn<Integer, String>) table_memory.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
                         try {
                             buildString.setLength(0);
                             buildString.append("0x");
@@ -766,7 +765,7 @@ public class DesignController implements Initializable {
                 for (int i = 1; i < 9; i++) {
                     int finalI = i;
                     //noinspection unchecked
-                    ((TableColumn<Integer, String>) memory_table.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                    ((TableColumn<Integer, String>) table_memory.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
                         try {
                             buildString.setLength(0);
                             for (int j = 0; j < 4; j++) {
@@ -787,15 +786,15 @@ public class DesignController implements Initializable {
                 }
                 break;
         }
-        memory_table.getItems().addAll(memoryAddresses);
-        memory_table.refresh();
+        table_memory.getItems().addAll(memoryAddresses);
+        table_memory.refresh();
     }
 
     private void preStartActions() {
         consoleUneditableText.setLength(0);
-        console_box.setText("");
+        console_text_box.setText("");
         consoleScanner.update();
-        console_box.setEditable(true);
+        console_text_box.setEditable(true);
         if (simulator.isRunning()) {
             simulator.stop();
         }
@@ -811,10 +810,10 @@ public class DesignController implements Initializable {
     }
 
     private void updateRegisterTables() {
-        reg_table.getItems().clear();
-        float_reg_table.getItems().clear();
-        if (table_hex.isSelected()) {
-            floating_table_value.setCellValueFactory(integerCellDataFeatures -> {
+        table_reg.getItems().clear();
+        table_float_reg.getItems().clear();
+        if (check_box_reg_table_hex.isSelected()) {
+            table_float_reg_value.setCellValueFactory(integerCellDataFeatures -> {
                 try {
                     StringBuilder buildString = new StringBuilder();
                     buildString.setLength(0);
@@ -829,7 +828,7 @@ public class DesignController implements Initializable {
                     throw new RuntimeException();
                 }
             });
-            reg_table_value.setCellValueFactory(integerCellDataFeatures -> {
+            table_reg_value.setCellValueFactory(integerCellDataFeatures -> {
                 try {
                     StringBuilder buildString = new StringBuilder();
                     buildString.setLength(0);
@@ -845,11 +844,11 @@ public class DesignController implements Initializable {
                 }
             });
         } else {
-            floating_table_value.setCellValueFactory(new PropertyValueFactory<>("float"));
-            reg_table_value.setCellValueFactory(new PropertyValueFactory<>("value"));
+            table_float_reg_value.setCellValueFactory(new PropertyValueFactory<>("float"));
+            table_reg_value.setCellValueFactory(new PropertyValueFactory<>("value"));
         }
-        reg_table.getItems().addAll(registersList);
-        float_reg_table.getItems().addAll(floatRegistersList);
+        table_reg.getItems().addAll(registersList);
+        table_float_reg.getItems().addAll(floatRegistersList);
     }
 
     private void updateCodeTable(){
@@ -857,7 +856,7 @@ public class DesignController implements Initializable {
         for (int i = 0; i < instructions.size(); i++){
             ints.add(i);
         }
-        code_table.getItems().addAll(ints);
+        table_code.getItems().addAll(ints);
     }
 
     private int bytesToInt(byte[] bytes){
@@ -867,12 +866,12 @@ public class DesignController implements Initializable {
     }
 
     private void updateCodeTableFocus(int index){
-        code_table.getSelectionModel().select(index);
-        lastCodeTableIndex = index;
+        table_code.getSelectionModel().select(index);
+        codeTableLastIndex = index;
     }
     @FXML
     private void codeTableMouseClicked(){
-        updateCodeTableFocus(lastCodeTableIndex);
+        updateCodeTableFocus(codeTableLastIndex);
     }
 
     public void updateButtonsState() {
@@ -883,10 +882,10 @@ public class DesignController implements Initializable {
             if (simulator.isRunning() && !debugMode && !simulator.isPaused()) {
                 if (isDarkTheme) {
                     Image burger = new Image(getClass().getResourceAsStream(darkPathTheme + "burger.png"));
-                    burgerMenu.setGraphic(new ImageView(burger));
+                    btn_burger_menu.setGraphic(new ImageView(burger));
 
                     Image newFile = new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png"));
-                    btn_newfile.setGraphic(new ImageView(newFile));
+                    btn_new_file.setGraphic(new ImageView(newFile));
 
                     Image save = new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png"));
                     btn_save.setGraphic(new ImageView(save));
@@ -913,15 +912,15 @@ public class DesignController implements Initializable {
                     btn_debug.setGraphic(new ImageView(debug));
 
 
-                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png")));
-                    smallSave.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png")));
+                    image_menu_new_file.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png")));
+                    image_menu_save.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png")));
 
                 } else {
                     Image burger = new Image(getClass().getResourceAsStream(lightPathTheme + "Menu.png"));
-                    burgerMenu.setGraphic(new ImageView(burger));
+                    btn_burger_menu.setGraphic(new ImageView(burger));
 
                     Image newFile = new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png"));
-                    btn_newfile.setGraphic(new ImageView(newFile));
+                    btn_new_file.setGraphic(new ImageView(newFile));
 
                     Image save = new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png"));
                     btn_save.setGraphic(new ImageView(save));
@@ -947,16 +946,16 @@ public class DesignController implements Initializable {
                     Image rerun = new Image(getClass().getResourceAsStream(lightPathTheme + "Rerun.png"));
                     btn_run.setGraphic(new ImageView(rerun));
 
-                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png")));
-                    smallSave.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png")));
+                    image_menu_new_file.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png")));
+                    image_menu_save.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png")));
                 }
             } else if (debugMode) {
                 if (isDarkTheme) {
                     Image burger = new Image(getClass().getResourceAsStream(darkPathTheme + "burger.png"));
-                    burgerMenu.setGraphic(new ImageView(burger));
+                    btn_burger_menu.setGraphic(new ImageView(burger));
 
                     Image newFile = new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png"));
-                    btn_newfile.setGraphic(new ImageView(newFile));
+                    btn_new_file.setGraphic(new ImageView(newFile));
 
                     Image save = new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png"));
                     btn_save.setGraphic(new ImageView(save));
@@ -983,14 +982,14 @@ public class DesignController implements Initializable {
                     btn_debug.setGraphic(new ImageView(debug));
 
 
-                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png")));
-                    smallSave.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png")));
+                    image_menu_new_file.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png")));
+                    image_menu_save.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png")));
                 } else {
                     Image burger = new Image(getClass().getResourceAsStream(lightPathTheme + "Menu.png"));
-                    burgerMenu.setGraphic(new ImageView(burger));
+                    btn_burger_menu.setGraphic(new ImageView(burger));
 
                     Image newFile = new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png"));
-                    btn_newfile.setGraphic(new ImageView(newFile));
+                    btn_new_file.setGraphic(new ImageView(newFile));
 
                     Image save = new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png"));
                     btn_save.setGraphic(new ImageView(save));
@@ -1016,16 +1015,16 @@ public class DesignController implements Initializable {
                     Image rerun = new Image(getClass().getResourceAsStream(lightPathTheme + "Run.png"));
                     btn_run.setGraphic(new ImageView(rerun));
 
-                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png")));
-                    smallSave.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png")));
+                    image_menu_new_file.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png")));
+                    image_menu_save.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png")));
                 }
             } else if (!simulator.isRunning()) {
                 if (isDarkTheme) {
                     Image burger = new Image(getClass().getResourceAsStream(darkPathTheme + "burger.png"));
-                    burgerMenu.setGraphic(new ImageView(burger));
+                    btn_burger_menu.setGraphic(new ImageView(burger));
 
                     Image newFile = new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png"));
-                    btn_newfile.setGraphic(new ImageView(newFile));
+                    btn_new_file.setGraphic(new ImageView(newFile));
 
                     Image save = new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png"));
                     btn_save.setGraphic(new ImageView(save));
@@ -1052,15 +1051,15 @@ public class DesignController implements Initializable {
                     btn_debug.setGraphic(new ImageView(debug));
 
 
-                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png")));
-                    smallSave.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png")));
+                    image_menu_new_file.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "New file.png")));
+                    image_menu_save.setImage(new Image(getClass().getResourceAsStream(darkPathTheme + "Save.png")));
 
                 } else {
                     Image burger = new Image(getClass().getResourceAsStream(lightPathTheme + "Menu.png"));
-                    burgerMenu.setGraphic(new ImageView(burger));
+                    btn_burger_menu.setGraphic(new ImageView(burger));
 
                     Image newFile = new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png"));
-                    btn_newfile.setGraphic(new ImageView(newFile));
+                    btn_new_file.setGraphic(new ImageView(newFile));
 
                     Image save = new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png"));
                     btn_save.setGraphic(new ImageView(save));
@@ -1086,8 +1085,8 @@ public class DesignController implements Initializable {
                     Image rerun = new Image(getClass().getResourceAsStream(lightPathTheme + "Run.png"));
                     btn_run.setGraphic(new ImageView(rerun));
 
-                    smallNewFile.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png")));
-                    smallSave.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png")));
+                    image_menu_new_file.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "New file.png")));
+                    image_menu_save.setImage(new Image(getClass().getResourceAsStream(lightPathTheme + "Save.png")));
                 }
             }
         });
