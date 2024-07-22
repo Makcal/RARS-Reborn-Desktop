@@ -58,7 +58,7 @@
                   </ImageView>
                </graphic>
             </MenuButton>
-            <Button fx:id="btn_new_file" id="btn-save" mnemonicParsing="false" onAction="#createNewFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
+            <Button id="btn-save" fx:id="btn_new_file" mnemonicParsing="false" onAction="#createNewFile" prefHeight="38.0" prefWidth="119.0" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <Image url="@Images/lightTheme/New file.png" />
@@ -137,19 +137,19 @@
                   <BorderPane prefHeight="440.0" prefWidth="1051.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <bottom>
                         <AnchorPane prefHeight="43.0" prefWidth="908.0" BorderPane.alignment="CENTER">
-                           <Button id="btn-save" fx:id="btn_left_memory" layoutX="267.0" layoutY="6.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#memoryTableLeft" prefHeight="35.0" prefWidth="15.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                           <Button id="btn-save" fx:id="btn_left_memory" layoutX="190.0" layoutY="5.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#memoryTableLeft" prefHeight="35.0" prefWidth="15.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                               <graphic>
                                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@Images/lightTheme/LeftArrow.png"/>
+                                    <Image url="@Images/lightTheme/LeftArrow.png" />
                                  </ImageView>
                               </graphic></Button>
-                           <ChoiceBox fx:id="choice_box_memory" layoutX="382.0" layoutY="3.0" prefWidth="300.0" />
-                           <ChoiceBox fx:id="choice_box_value" layoutX="699.0" layoutY="3.0" prefWidth="300.0" />
+                           <ChoiceBox fx:id="choice_box_memory" layoutX="254.0" layoutY="3.0" prefWidth="300.0" />
+                           <ChoiceBox fx:id="choice_box_value" layoutX="562.0" layoutY="3.0" prefWidth="300.0" />
                            <CheckBox fx:id="check_box_memory_table_hex" layoutX="10.0" layoutY="14.0" mnemonicParsing="false" onAction="#changeAddressView" text="Hexidecimal address" />
-                           <Button id="btn-save" fx:id="btn_right_memory" layoutX="292.0" layoutY="6.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#memoryTableRight" prefHeight="35.0" prefWidth="15.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                           <Button id="btn-save" fx:id="btn_right_memory" layoutX="217.0" layoutY="5.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#memoryTableRight" prefHeight="35.0" prefWidth="15.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                               <graphic>
                                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@Images/lightTheme/RightArrow.png"/>
+                                    <Image url="@Images/lightTheme/RightArrow.png" />
                                  </ImageView>
                               </graphic></Button>
                         </AnchorPane>
@@ -159,9 +159,9 @@
                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                               <TableView fx:id="table_code" onMouseClicked="#codeTableMouseClicked" onMousePressed="#codeTableMouseClicked" prefHeight="351.0" prefWidth="1110.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columns>
-                                    <TableColumn fx:id="table_code_address" editable="false" prefWidth="75.0" sortable="false" text="Address" />
-                                    <TableColumn fx:id="table_code_code" editable="false" prefWidth="75.0" sortable="false" text="Code" />
-                                    <TableColumn fx:id="table_code_basic" editable="false" prefWidth="75.0" sortable="false" text="Basic" />
+                                    <TableColumn fx:id="table_code_address" editable="false" prefWidth="213.0" sortable="false" text="Address" />
+                                    <TableColumn fx:id="table_code_code" editable="false" prefWidth="230.0" sortable="false" text="Code" />
+                                    <TableColumn fx:id="table_code_basic" editable="false" prefWidth="463.0" sortable="false" text="Basic" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -229,10 +229,10 @@
                   </Tab>
                   <Tab closable="false" style="-fx-pref-height: 30;" text="Floating point">
                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <TableView fx:id="table_float_reg" editable="true" prefHeight="640.0" prefWidth="364.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="table_float_reg" editable="true" layoutX="-14.0" prefHeight="587.0" prefWidth="403.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columns>
-                              <TableColumn fx:id="table_float_reg_num" editable="false" prefWidth="40.0" sortable="false" text="Number" />
-                              <TableColumn fx:id="table_float_reg_name" editable="false" prefWidth="164.0" sortable="false" text="Name" />
+                              <TableColumn fx:id="table_float_reg_num" editable="false" prefWidth="106.0" sortable="false" text="Number" />
+                              <TableColumn fx:id="table_float_reg_name" editable="false" prefWidth="121.0" sortable="false" text="Name" />
                               <TableColumn fx:id="table_float_reg_value" editable="false" prefWidth="156.0" sortable="false" text="Value" />
                            </columns>
                            <columnResizePolicy>
