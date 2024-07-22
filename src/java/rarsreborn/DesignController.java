@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -197,6 +198,8 @@ public class DesignController implements Initializable {
     private final StringBuilder consoleUneditableText = new StringBuilder();
     private TextAreaScanner consoleScanner;
 
+    private Tab runningTab;
+
     private final HashMap<Tab, URI> filesNamesLinker = new HashMap<>();
     private final HashMap<Button, ImageView> lightImages = new HashMap<>();
     private final HashMap<Button, ImageView> darkImages = new HashMap<>();
@@ -349,29 +352,27 @@ public class DesignController implements Initializable {
                     break;
                 case KeyCode.W:
                     if (ke.isControlDown()) {
-                        if (ke.isShiftDown()){
+                        if (ke.isShiftDown()) {
                             closeAllFiles();
-                        }
-                        else {
+                        } else {
                             closeCurrentFile();
                         }
                     }
                     break;
                 case KeyCode.F5:
-                    if (ke.isShiftDown()){
+                    if (ke.isShiftDown()) {
                         runFileStepMode();
-                    }
-                    else {
+                    } else {
                         runFile();
                     }
                     break;
                 case KeyCode.F6:
-                    if (simulator.isPaused()){
+                    if (simulator.isPaused()) {
                         stepBack();
                     }
                     break;
                 case KeyCode.F7:
-                    if (simulator.isPaused()){
+                    if (simulator.isPaused()) {
                         stepOver();
                     }
                     break;
@@ -409,12 +410,14 @@ public class DesignController implements Initializable {
     private void createNewFile() {
         createNewTab();
     }
+
     @FXML
     private void runFile() {
         preStartActions();
         try {
             Tab curTab = tab_pane_files.getSelectionModel().getSelectedItem();
-            if (!Objects.equals(curTab.getText(), "EXECUTE")) {
+            if (runningTab != null && Objects.equals(curTab.getText(), "EXECUTE")) {
+                curTab = runningTab;
                 simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 instructions.addAll(simulator.getProgramInstructions());
                 curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
@@ -427,21 +430,39 @@ public class DesignController implements Initializable {
                         console_text_box.appendText(e.getMessage() + "\n");
                     }
                 })).start();
+            } else if (!Objects.equals(curTab.getText(), "EXECUTE")) {
+                simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
+                instructions.addAll(simulator.getProgramInstructions());
+                curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
+                runningTab = curTab;
+                updateCodeTable();
+                updateButtonsState();
+                (new Thread(() -> {
+                    try {
+                        simulator.startWorkerAndRun();
+                    } catch (ExecutionException e) {
+                        console_text_box.appendText(e.getMessage() + "\n");
+                    }
+                })).start();
             }
         } catch (Exception e) {
-            console_text_box.setText(e.getMessage()+ "\n");
+            console_text_box.setText(e.getMessage() + "\n");
         }
     }
+
     @FXML
     private void stopRunning() {
         simulator.stop();
     }
+
     @FXML
     private void runFileStepMode() {
         preStartActions();
         try {
             Tab curTab = tab_pane_files.getSelectionModel().getSelectedItem();
-            if (!Objects.equals(curTab.getText(), "EXECUTE")) {
+
+            if (runningTab != null && Objects.equals(curTab.getText(), "EXECUTE")) {
+                curTab = runningTab;
                 simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 instructions.addAll(simulator.getProgramInstructions());
                 curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
@@ -451,16 +472,32 @@ public class DesignController implements Initializable {
                     try {
                         simulator.startWorker();
                     } catch (Exception e) {
-                        console_text_box.appendText(e.getMessage()+ "\n");
+                        console_text_box.appendText(e.getMessage() + "\n");
                     }
                 })).start();
-                setDebugControlsVisible(true);
-                tab_pane_files.getSelectionModel().select(0);
+            } else if(!Objects.equals(curTab.getText(), "EXECUTE")){
+                simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
+                instructions.addAll(simulator.getProgramInstructions());
+                curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
+                runningTab = curTab;
+                updateCodeTable();
+                updateButtonsState();
+                (new Thread(() -> {
+                    try {
+                        simulator.startWorker();
+                    } catch (Exception e) {
+                        console_text_box.appendText(e.getMessage() + "\n");
+                    }
+                })).start();
             }
+            setDebugControlsVisible(true);
+            tab_pane_files.getSelectionModel().select(0);
+
         } catch (Exception e) {
-            console_text_box.setText(e.getMessage()+ "\n");
+            console_text_box.setText(e.getMessage() + "\n");
         }
     }
+
     @FXML
     private void stepBack() {
         if (simulator.isPaused()) {
@@ -476,6 +513,7 @@ public class DesignController implements Initializable {
         }
         updateRegistersTable();
     }
+
     @FXML
     private void stepOver() {
         if (simulator.isRunning()) {
@@ -485,21 +523,24 @@ public class DesignController implements Initializable {
                         simulator.runSteps(1);
                     }
                 } catch (Exception e) {
-                    console_text_box.appendText(e.getMessage()+ "\n");
+                    console_text_box.appendText(e.getMessage() + "\n");
                 }
             })).start();
         }
     }
+
     @FXML
     private void pauseRunning() {
         simulator.pause();
         tab_pane_files.getSelectionModel().select(0);
         setDebugControlsVisible(true);
     }
+
     @FXML
     private void resumeRunning() {
         simulator.run();
     }
+
     @FXML
     private void closeCurrentFile() {
         if (!tab_pane_files.getTabs().isEmpty()) {
@@ -508,14 +549,17 @@ public class DesignController implements Initializable {
             }
         }
     }
+
     @FXML
     private void closeAllFiles() {
         tab_pane_files.getTabs().removeIf(t -> !Objects.equals(t.getText(), "EXECUTE"));
     }
+
     @FXML
     private void closeApplication() {
         Platform.exit();
     }
+
     @FXML
     private void saveFileAs() {
         try {
@@ -537,9 +581,10 @@ public class DesignController implements Initializable {
                 tab.setText(newFile.getName().split("\\.")[0]);
             }
         } catch (Exception e) {
-            console_text_box.appendText(e.getMessage()+ "\n");
+            console_text_box.appendText(e.getMessage() + "\n");
         }
     }
+
     @FXML
     private void saveFile() {
         Tab tab = tab_pane_files.getSelectionModel().getSelectedItem();
@@ -555,11 +600,12 @@ public class DesignController implements Initializable {
                     currentFile.write(((TextArea) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                     currentFile.close();
                 } catch (Exception e) {
-                    console_text_box.appendText(e.getMessage()+ "\n");
+                    console_text_box.appendText(e.getMessage() + "\n");
                 }
             }
         }
     }
+
     @FXML
     public void openFile() {
         try {
@@ -574,9 +620,10 @@ public class DesignController implements Initializable {
                 (((TextArea) ((Parent) tab_pane_files.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0))).setText(new String(Files.readAllBytes(file.toPath())));
             }
         } catch (Exception e) {
-            console_text_box.appendText(e.getMessage()+ "\n");
+            console_text_box.appendText(e.getMessage() + "\n");
         }
     }
+
     @FXML
     void memoryTableLeft() {
         memoryOffset -= 32;
@@ -586,6 +633,7 @@ public class DesignController implements Initializable {
             memoryOffset += 32;
         }
     }
+
     @FXML
     void memoryTableRight() {
         memoryOffset += 32;
@@ -595,10 +643,11 @@ public class DesignController implements Initializable {
             memoryOffset -= 32;
         }
     }
+
     @FXML
     private void changeTheme() {
         HashMap<Button, ImageView> map;
-        if (isDarkTheme){
+        if (isDarkTheme) {
             map = lightImages;
             anchor_pane_instruments.setStyle("-fx-background-color: #F7F8FA;");
             anchor_pane_reg_table_bottom.setStyle("-fx-background-color: #F7F8FA");
@@ -608,8 +657,7 @@ public class DesignController implements Initializable {
             root_VBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
             root_VBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
             btn_burger_menu.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/rarsreborn/Images/lightTheme/Menu.png")))));
-        }
-        else {
+        } else {
             map = darkImages;
             anchor_pane_instruments.setStyle("-fx-background-color: #242628;");
             anchor_pane_reg_table_bottom.setStyle("-fx-background-color: #242628;");
@@ -624,22 +672,26 @@ public class DesignController implements Initializable {
         isDarkTheme = !isDarkTheme;
         updateButtonsState();
     }
+
     @FXML
     public void changeAddressView() {
         updateMemoryTable();
     }
+
     @FXML
     public void changeValueView() {
         updateRegisterTables();
     }
+
     @FXML
-    private void codeTableMouseClicked(){
+    private void codeTableMouseClicked() {
         updateCodeTableFocus(codeTableLastIndex);
     }
 
-    private void createNewTab(){
+    private void createNewTab() {
         createNewTab("New file");
     }
+
     private void createNewTab(String fileName) {
         Tab newTab = new Tab(fileName);
         newTab.setOnClosed(event -> {
@@ -675,9 +727,11 @@ public class DesignController implements Initializable {
     private void updateRegistersTable() {
         table_reg.refresh();
     }
+
     private void updateFloatTable() {
         table_float_reg.refresh();
     }
+
     private void updateMemoryTable() {
         table_memory.getItems().clear();
         memoryAddresses.clear();
@@ -772,6 +826,7 @@ public class DesignController implements Initializable {
         table_memory.getItems().addAll(memoryAddresses);
         table_memory.refresh();
     }
+
     private void updateRegisterTables() {
         table_reg.getItems().clear();
         table_float_reg.getItems().clear();
@@ -813,14 +868,16 @@ public class DesignController implements Initializable {
         table_reg.getItems().addAll(registersList);
         table_float_reg.getItems().addAll(floatRegistersList);
     }
-    private void updateCodeTable(){
+
+    private void updateCodeTable() {
         final ObservableList<Integer> ints = FXCollections.observableArrayList();
-        for (int i = 0; i < instructions.size(); i++){
+        for (int i = 0; i < instructions.size(); i++) {
             ints.add(i);
         }
         table_code.getItems().addAll(ints);
     }
-    private void updateCodeTableFocus(int index){
+
+    private void updateCodeTableFocus(int index) {
         table_code.getSelectionModel().select(index);
         codeTableLastIndex = index;
     }
@@ -835,7 +892,7 @@ public class DesignController implements Initializable {
         }
     }
 
-    private int bytesToInt(byte[] bytes){
+    private int bytesToInt(byte[] bytes) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         byteBuffer.order(ByteOrder.BIG_ENDIAN);
         return byteBuffer.getInt();
@@ -844,14 +901,13 @@ public class DesignController implements Initializable {
     public void updateButtonsState() {
         Platform.runLater(() -> {
             String path;
-            if (isDarkTheme){
+            if (isDarkTheme) {
                 path = "/rarsreborn/Images/darkTheme/";
-            }
-            else {
+            } else {
                 path = "/rarsreborn/Images/lightTheme/";
             }
 
-            if (tab_pane_files.getTabs().size() == 1){
+            if (tab_pane_files.getTabs().size() == 1) {
                 btn_run.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Run.png")))));
                 btn_debug.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Debug.png")))));
                 btn_run.setDisable(true);
@@ -859,8 +915,7 @@ public class DesignController implements Initializable {
                 btn_break.setDisable(true);
                 btn_pause.setDisable(true);
                 btn_resume.setDisable(true);
-            }
-            else if (!simulator.isRunning()){
+            } else if (!simulator.isRunning()) {
                 btn_run.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Run.png")))));
                 btn_debug.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Debug.png")))));
                 btn_run.setDisable(false);
@@ -868,8 +923,7 @@ public class DesignController implements Initializable {
                 btn_break.setDisable(true);
                 btn_pause.setDisable(true);
                 btn_resume.setDisable(true);
-            }
-            else if (simulator.isPaused()){
+            } else if (simulator.isPaused()) {
                 btn_run.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Rerun.png")))));
                 btn_debug.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Redebug.png")))));
                 btn_run.setDisable(false);
@@ -877,8 +931,7 @@ public class DesignController implements Initializable {
                 btn_break.setDisable(false);
                 btn_pause.setDisable(true);
                 btn_resume.setDisable(false);
-            }
-            else {
+            } else {
                 btn_run.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Rerun.png")))));
                 btn_debug.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Redebug.png")))));
                 btn_run.setDisable(false);
@@ -890,9 +943,10 @@ public class DesignController implements Initializable {
         });
     }
 
-    private ImageView createImage(String theme, String name){
+    private ImageView createImage(String theme, String name) {
         return new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(theme + name))));
     }
+
     private void createButtonIcons(String path, HashMap<Button, ImageView> images) {
         images.put(btn_new_file, createImage(path, "New file.png"));
         images.put(btn_save, createImage(path, "Save.png"));
@@ -905,9 +959,14 @@ public class DesignController implements Initializable {
         images.put(btn_left_memory, createImage(path, "LeftArrow.png"));
         images.put(btn_right_memory, createImage(path, "RightArrow.png"));
     }
+
     private void clearTabsColor() {
-        for(Tab current : tab_pane_files.getTabs()) {
-            current.setStyle("-fx-background-color: white; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 26px");
+        for (Tab current : tab_pane_files.getTabs()) {
+            if (isDarkTheme) {
+                current.setStyle("-fx-background-color: #2B2D30; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 26px");
+            } else {
+                current.setStyle("-fx-background-color: white; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 26px");
+            }
         }
     }
 }
