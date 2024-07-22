@@ -1,13 +1,14 @@
 .root {
     -fx-font-family: "Monospaced";
 }
+
 .root:focused {
-    -fx-border-color: black;
+    -fx-border-color: #242628;
 }
 
-.separator{
-    -fx-background-color: black;
-    -fx-border-color: black;
+.separator {
+    -fx-background-color: #242628;
+    -fx-border-color: #242628;
 }
 
 .text-area {
@@ -18,7 +19,8 @@
     -fx-control-inner-background: #242628;
     -fx-border-color: #2B2D30;
 }
-.tab-pane *.tab-header-background{
+
+.tab-pane *.tab-header-background {
     -fx-background-color: #2B2D30;
 }
 
@@ -56,6 +58,10 @@
     -fx-border-width: 1px;
 }
 
+.split-pane {
+    -fx-background-color: #242628;
+}
+
 .split-pane .split-pane-divider {
     -fx-background-color: #2B2D30;
 }
@@ -67,10 +73,12 @@
     -fx-font-size: 17px;
     -fx-background-color: #2B2D30;
 }
+
 .tab-pane .tab-label {
     -fx-text-fill: white;
 
 }
+
 .tab-pane .tab:selected {
     -fx-background-color: #4D5156;
 }
@@ -82,23 +90,69 @@
     -fx-text-fill: white;
 }
 
-.choice-box{
+.choice-box {
     -fx-border-color: #242628;
 }
 
 .tab-pane {
     -fx-background-color: #2B2D30
 }
-.label {
+
+.table-view .label {
     -fx-font-size: 20px;
     -fx-background-color: #242628;
     -fx-border-color: #242628;
     -fx-border-width: 1px;
     -fx-text-fill: white;
 }
+
 .scroll-pane {
-    -fx-background-color: black;
+    -fx-background-color: #242628;
 }
+
 .scroll-bar {
     -fx-background-color: #2B2D30;
+}
+
+
+.menu-button .context-menu {
+    -fx-background-color: #242628;
+}
+
+.menu-button .menu-item:focused {
+    -fx-background-color: #4D5156;
+    -fx-text-fill: white;
+}
+
+.menu-button .menu-item > .label {
+    -fx-text-fill: white;
+}
+
+.menu-button .menu-item:focused > .label {
+    -fx-text-fill: white;
+}
+
+.choice-box .context-menu {
+    -fx-background-color: #242628;
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: #4D5156;
+    -fx-text-fill: white;
+}
+
+.choice-box .menu-item > .label {
+    -fx-text-fill: white;
+}
+
+.choice-box .menu-item:focused > .label {
+    -fx-text-fill: white;
+}
+
+.choice-box {
+    -fx-background-color: #4D5156;
+}
+
+.choice-box > .label {
+    -fx-text-fill: white;
 }

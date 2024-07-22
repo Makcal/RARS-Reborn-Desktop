@@ -72,6 +72,10 @@ public class DesignController implements Initializable {
     private Button btn_new_file;
     @FXML
     private Button btn_save;
+    @FXML
+    private Button btn_left_memory;
+    @FXML
+    private Button btn_right_memory;
 
     @FXML
     private MenuButton btn_burger_menu;
@@ -386,6 +390,7 @@ public class DesignController implements Initializable {
         createNewTab();
         tab_pane_files.getSelectionModel().select(1);
         updateRegistersTable();
+        updateButtonsState();
     }
 
     @FXML
@@ -637,6 +642,14 @@ public class DesignController implements Initializable {
             anchor_pane_reg_table_button.setStyle("-fx-background-color: #F7F8FA");
             check_box_reg_table_hex.setStyle("-fx-text-fill: #242628");
             check_box_memory_table_hex.setStyle("-fx-text-fill: #242628");
+            root_VBox.setStyle("-fx-background-color: #F7F8FA");
+
+            Image leftArrow = new Image(getClass().getResourceAsStream("/rarsreborn/Images/lightTheme/leftArrow.png"));
+            btn_left_memory.setGraphic(new ImageView(leftArrow));
+
+            Image rightArrow = new Image(getClass().getResourceAsStream("/rarsreborn/Images/lightTheme/rightArrow.png"));
+            btn_right_memory.setGraphic(new ImageView(rightArrow));
+
             root_VBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
             root_VBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
             updateButtonsState();
@@ -645,6 +658,14 @@ public class DesignController implements Initializable {
             anchor_pane_reg_table_button.setStyle("-fx-background-color: #242628;");
             check_box_reg_table_hex.setStyle("-fx-text-fill: #F7F8FA");
             check_box_memory_table_hex.setStyle("-fx-text-fill: #F7F8FA");
+            root_VBox.setStyle("-fx-background-color: #242628");
+
+            Image leftArrow = new Image(getClass().getResourceAsStream("/rarsreborn/Images/darkTheme/leftArrow.png"));
+            btn_left_memory.setGraphic(new ImageView(leftArrow));
+
+            Image rightArrow = new Image(getClass().getResourceAsStream("/rarsreborn/Images/darkTheme/rightArrow.png"));
+            btn_right_memory.setGraphic(new ImageView(rightArrow));
+
             root_VBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/darkTheme.css")).toExternalForm());
             root_VBox.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("/rarsreborn/Styles/global.css")).toExternalForm());
             updateButtonsState();
