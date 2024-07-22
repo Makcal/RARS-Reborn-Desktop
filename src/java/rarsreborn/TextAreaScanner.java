@@ -22,7 +22,7 @@ public class TextAreaScanner{
                     charPtr++;
                 }
                 inputQueue.add(text.getText().substring(start));
-                uneditable.append(text.getText().substring(start));
+                uneditable.append(text.getText().substring(start).split("\n")[0]);
             }
         });
     }
