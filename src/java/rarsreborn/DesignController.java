@@ -432,48 +432,56 @@ public class DesignController implements Initializable {
     private void createNewFile() {
         createNewTab();
     }
+    
+    private void run(boolean debug) {
+        Tab curTab = tab_pane_files.getSelectionModel().getSelectedItem();
+        if (Objects.equals(curTab.getText(), "EXECUTE"))
+            return;
 
-    @FXML
-    private void runFile() {
         preStartActions();
+        if (runningTab != null) {
+            curTab = runningTab;
+        } else {
+            runningTab = curTab;
+        }
+        
         try {
-            Tab curTab = tab_pane_files.getSelectionModel().getSelectedItem();
-            if (runningTab != null && Objects.equals(curTab.getText(), "EXECUTE")) {
-                curTab = runningTab;
-                simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
-                instructions.addAll(simulator.getProgramInstructions());
-                curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
-                updateCodeTable();
-                updateButtonsState();
-                simThread = new Thread(() -> {
-                    try {
+            simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().getFirst()).getText());
+            instructions.addAll(simulator.getProgramInstructions());
+            curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
+            updateCodeTable();
+            updateButtonsState();
+            simThread = new Thread(() -> {
+                try {
+                    if (debug) {
+                        simulator.startWorker();
+                    } else {
                         simulator.startWorkerAndRun();
-                    } catch (ExecutionException e) {
-                        console_text_box.appendText(e.getMessage() + "\n");
-                        consoleUneditableText.append(e.getMessage()).append("\n");
                     }
-                });
-                simThread.start();
-            } else if (!Objects.equals(curTab.getText(), "EXECUTE")) {
-                simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
-                instructions.addAll(simulator.getProgramInstructions());
-                curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
-                runningTab = curTab;
-                updateCodeTable();
-                updateButtonsState();
-                simThread = new Thread(() -> {
-                    try {
-                        simulator.startWorkerAndRun();
-                    } catch (ExecutionException e) {
-                        console_text_box.appendText(e.getMessage() + "\n");
-                        consoleUneditableText.append(e.getMessage()).append("\n");
-                    }
-                });
-                simThread.start();
+                } catch (ExecutionException e) {
+                    console_text_box.appendText(e.getMessage() + "\n");
+                    consoleUneditableText.append(e.getMessage()).append("\n");
+                }
+            });
+            simThread.start();
+            if (debug) {
+                setDebugControlsVisible(true);
+                tab_pane_files.getSelectionModel().select(0);
             }
         } catch (Exception e) {
             console_text_box.setText(e.getMessage() + "\n");
+            consoleUneditableText.append(e.getMessage()).append("\n");
         }
+    }
+
+    @FXML
+    private void runFile() {
+        run(false);
+    }
+
+    @FXML
+    private void runFileStepMode() {
+        run(true);
     }
 
     @FXML
@@ -482,67 +490,16 @@ public class DesignController implements Initializable {
     }
 
     @FXML
-    private void runFileStepMode() {
-        preStartActions();
-        try {
-            Tab curTab = tab_pane_files.getSelectionModel().getSelectedItem();
-
-            if (runningTab != null && Objects.equals(curTab.getText(), "EXECUTE")) {
-                curTab = runningTab;
-                simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
-                instructions.addAll(simulator.getProgramInstructions());
-                curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
-                updateCodeTable();
-                updateButtonsState();
-                simThread = new Thread(() -> {
-                    try {
-                        simulator.startWorker();
-                    } catch (Exception e) {
-                        console_text_box.appendText(e.getMessage() + "\n");
-                        consoleUneditableText.append(e.getMessage()).append("\n");
-                    }
-                });
-                simThread.start();
-            } else if(!Objects.equals(curTab.getText(), "EXECUTE")){
-                simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
-                instructions.addAll(simulator.getProgramInstructions());
-                curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
-                runningTab = curTab;
-                updateCodeTable();
-                updateButtonsState();
-                simThread = new Thread(() -> {
-                    try {
-                        simulator.startWorker();
-                    } catch (Exception e) {
-                        console_text_box.appendText(e.getMessage() + "\n");
-                        consoleUneditableText.append(e.getMessage()).append("\n");
-                    }
-                });
-                simThread.start();
-            }
-            setDebugControlsVisible(true);
-            tab_pane_files.getSelectionModel().select(0);
-
-        } catch (Exception e) {
-            console_text_box.setText(e.getMessage() + "\n");
-        }
-    }
-
-    @FXML
     private void stepBack() {
-        if (simulator.isPaused()) {
-            (new Thread(() -> {
-                try {
-                    if (simulator.isRunning()) {
-                        simulator.stepBack();
-                    }
-                } catch (Exception e) {
-                    console_text_box.appendText(e.getMessage() + "\n");
-                    consoleUneditableText.append(e.getMessage()).append("\n");
-                }
-            })).start();
+        if (simulator.isRunning() && simulator.isPaused()) {
+            try {
+                simulator.stepBack();
+            } catch (Exception e) {
+                console_text_box.appendText(e.getMessage() + "\n");
+                consoleUneditableText.append(e.getMessage()).append("\n");
+            }
+            updateRegistersTable();
         }
-        updateRegistersTable();
     }
 
     @FXML
@@ -567,7 +524,7 @@ public class DesignController implements Initializable {
     @FXML
     private void closeCurrentFile() {
         if (!tab_pane_files.getTabs().isEmpty()) {
-            if (!Objects.equals(tab_pane_files.getSelectionModel().getSelectedItem().getText(), "EXECUTE")) {
+            if (!"EXECUTE".equals(tab_pane_files.getSelectionModel().getSelectedItem().getText())) {
                 tab_pane_files.getTabs().remove(tab_pane_files.getSelectionModel().getSelectedItem());
             }
         }
@@ -575,7 +532,7 @@ public class DesignController implements Initializable {
 
     @FXML
     private void closeAllFiles() {
-        tab_pane_files.getTabs().removeIf(t -> !Objects.equals(t.getText(), "EXECUTE"));
+        tab_pane_files.getTabs().removeIf(t -> !"EXECUTE".equals(t.getText()));
     }
 
     @FXML
@@ -587,7 +544,7 @@ public class DesignController implements Initializable {
     private void saveFileAs() {
         try {
             Tab tab = tab_pane_files.getSelectionModel().getSelectedItem();
-            if (Objects.equals(tab.getText(), "EXECUTE")) {
+            if ("EXECUTE".equals(tab.getText())) {
                 return;
             }
             FileChooser fileChooser = new FileChooser();
@@ -595,10 +552,10 @@ public class DesignController implements Initializable {
             fileChooser.setInitialFileName(tab.getText());
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ASM files (*.asm)", "*.asm"));
 
-            File newFile = fileChooser.showSaveDialog(Window.getWindows().get(0));
+            File newFile = fileChooser.showSaveDialog(Window.getWindows().getFirst());
             if (newFile != null) {
                 FileWriter currentFile = new FileWriter(newFile);
-                currentFile.write(((TextArea) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getText());
+                currentFile.write(((TextArea) ((Parent) tab.getContent()).getChildrenUnmodifiable().getFirst()).getText());
                 currentFile.close();
                 filesNamesLinker.put(tab, newFile.toURI());
                 tab.setText(newFile.getName().split("\\.")[0]);
@@ -612,7 +569,7 @@ public class DesignController implements Initializable {
     @FXML
     private void saveFile() {
         Tab tab = tab_pane_files.getSelectionModel().getSelectedItem();
-        if (!Objects.equals(tab.getText(), "EXECUTE")) {
+        if (!"EXECUTE".equals(tab.getText())) {
             if (filesNamesLinker.get(tab) == null) {
                 saveFileAs();
             } else if (!Files.exists(Path.of(filesNamesLinker.get(tab)))) {
@@ -621,7 +578,7 @@ public class DesignController implements Initializable {
                 try {
                     File newFile = new File(filesNamesLinker.get(tab));
                     FileWriter currentFile = new FileWriter(newFile);
-                    currentFile.write(((TextArea) ((Parent) tab.getContent()).getChildrenUnmodifiable().get(0)).getText());
+                    currentFile.write(((TextArea) ((Parent) tab.getContent()).getChildrenUnmodifiable().getFirst()).getText());
                     currentFile.close();
                 } catch (Exception e) {
                     console_text_box.appendText(e.getMessage() + "\n");
@@ -638,11 +595,11 @@ public class DesignController implements Initializable {
             fileChooser.setTitle("Choose the file");
             FileChooser.ExtensionFilter asmFilter = new FileChooser.ExtensionFilter("ASM files (*.asm)", "*.asm");
             fileChooser.getExtensionFilters().add(asmFilter);
-            File file = fileChooser.showOpenDialog(Window.getWindows().get(0));
+            File file = fileChooser.showOpenDialog(Window.getWindows().getFirst());
 
             if (file != null) {
                 createNewTab(file.getName().split("\\.")[0]);
-                (((TextArea) ((Parent) tab_pane_files.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().get(0))).setText(new String(Files.readAllBytes(file.toPath())));
+                (((TextArea) ((Parent) tab_pane_files.getSelectionModel().getSelectedItem().getContent()).getChildrenUnmodifiable().getFirst())).setText(new String(Files.readAllBytes(file.toPath())));
             }
         } catch (Exception e) {
             console_text_box.appendText(e.getMessage() + "\n");
@@ -764,9 +721,10 @@ public class DesignController implements Initializable {
             memoryAddresses.add(memoryOffset + (i * 32));
         }
         StringBuilder buildString = new StringBuilder();
+        //noinspection unchecked
+        TableColumn<Integer, String> tableColumn = (TableColumn<Integer, String>) table_memory.getColumns().getFirst();
         if (!check_box_memory_table_hex.isSelected()) {
-            //noinspection unchecked
-            ((TableColumn<Integer, String>) table_memory.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
+            tableColumn.setCellValueFactory(integerCellDataFeatures -> {
                 try {
                     return new ReadOnlyObjectWrapper<>(String.valueOf(integerCellDataFeatures.getValue()));
                 } catch (Exception e) {
@@ -774,8 +732,7 @@ public class DesignController implements Initializable {
                 }
             });
         } else {
-            //noinspection unchecked
-            ((TableColumn<Integer, String>) table_memory.getColumns().get(0)).setCellValueFactory(integerCellDataFeatures -> {
+            tableColumn.setCellValueFactory(integerCellDataFeatures -> {
                 try {
                     buildString.setLength(0);
                     buildString.append("0x");
@@ -794,7 +751,8 @@ public class DesignController implements Initializable {
                 for (int i = 1; i < 9; i++) {
                     int finalI = i;
                     //noinspection unchecked
-                    ((TableColumn<Integer, String>) table_memory.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                    TableColumn<Integer, String> tableColumn1 = (TableColumn<Integer, String>) table_memory.getColumns().get(i);
+                    tableColumn1.setCellValueFactory(integerCellDataFeatures -> {
                         try {
                             return new ReadOnlyObjectWrapper<>(String.valueOf(memory.getMultiple(integerCellDataFeatures.getValue() + ((finalI - 1) * 4), 4)));
                         } catch (Exception e) {
@@ -807,7 +765,8 @@ public class DesignController implements Initializable {
                 for (int i = 1; i < 9; i++) {
                     int finalI = i;
                     //noinspection unchecked
-                    ((TableColumn<Integer, String>) table_memory.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                    TableColumn<Integer, String> tableColumn1 = (TableColumn<Integer, String>) table_memory.getColumns().get(i);
+                    tableColumn1.setCellValueFactory(integerCellDataFeatures -> {
                         try {
                             buildString.setLength(0);
                             buildString.append("0x");
@@ -827,7 +786,8 @@ public class DesignController implements Initializable {
                 for (int i = 1; i < 9; i++) {
                     int finalI = i;
                     //noinspection unchecked
-                    ((TableColumn<Integer, String>) table_memory.getColumns().get(i)).setCellValueFactory(integerCellDataFeatures -> {
+                    TableColumn<Integer, String> tableColumn1 = (TableColumn<Integer, String>) table_memory.getColumns().get(i);
+                    tableColumn1.setCellValueFactory(integerCellDataFeatures -> {
                         try {
                             buildString.setLength(0);
                             for (int j = 0; j < 4; j++) {
@@ -895,11 +855,11 @@ public class DesignController implements Initializable {
     }
 
     private void updateCodeTable() {
-        final ObservableList<Integer> ints = FXCollections.observableArrayList();
+        final ObservableList<Integer> integers = FXCollections.observableArrayList();
         for (int i = 0; i < instructions.size(); i++) {
-            ints.add(i);
+            integers.add(i);
         }
-        table_code.getItems().addAll(ints);
+        table_code.getItems().addAll(integers);
     }
 
     private void updateCodeTableFocus(int index) {
@@ -957,22 +917,22 @@ public class DesignController implements Initializable {
                 btn_break.setDisable(true);
                 btn_pause.setDisable(true);
                 btn_resume.setDisable(true);
-            } else if (simulator.isPaused()) {
-                btn_run.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Rerun.png")))));
-                btn_debug.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Redebug.png")))));
-                btn_run.setDisable(false);
-                btn_debug.setDisable(false);
-                btn_break.setDisable(false);
-                btn_pause.setDisable(true);
-                btn_resume.setDisable(false);
+                setDebugControlsVisible(false);
             } else {
                 btn_run.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Rerun.png")))));
                 btn_debug.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Redebug.png")))));
                 btn_run.setDisable(false);
                 btn_debug.setDisable(false);
                 btn_break.setDisable(false);
-                btn_pause.setDisable(false);
-                btn_resume.setDisable(true);
+                if (simulator.isPaused()) {
+                    btn_pause.setDisable(true);
+                    btn_resume.setDisable(false);
+                    setDebugControlsVisible(true);
+                } else {
+                    btn_pause.setDisable(false);
+                    btn_resume.setDisable(true);
+                    setDebugControlsVisible(false);
+                }
             }
         });
     }
@@ -1009,7 +969,7 @@ public class DesignController implements Initializable {
         console_text_box.setStyle("-fx-font-size: %dpx;".formatted(fontSize));
         for (Tab t: tab_pane_files.getTabs()){
             if (!Objects.equals(t.getText(), "EXECUTE")){
-                ((Parent) t.getContent()).getChildrenUnmodifiable().get(0).setStyle("-fx-font-size: %dpx;".formatted(fontSize));
+                ((Parent) t.getContent()).getChildrenUnmodifiable().getFirst().setStyle("-fx-font-size: %dpx;".formatted(fontSize));
             }
         }
     }
