@@ -421,6 +421,9 @@ public class DesignController implements Initializable {
 
         tab_pane_files.getTabs().remove(initial_file_tab);
         createNewTab();
+        tab_pane_files.getSelectionModel().selectedItemProperty().addListener(
+            observable -> updateButtonsState()
+        );
         tab_pane_files.getSelectionModel().select(1);
 
         setDebugControlsVisible(false);
@@ -435,7 +438,7 @@ public class DesignController implements Initializable {
     
     private void run(boolean debug) {
         Tab curTab = tab_pane_files.getSelectionModel().getSelectedItem();
-        if (Objects.equals(curTab.getText(), "EXECUTE"))
+        if (Objects.equals(curTab.getText(), "EXECUTE") && runningTab == null)
             return;
 
         preStartActions();
@@ -519,6 +522,7 @@ public class DesignController implements Initializable {
     @FXML
     private void resumeRunning() {
         simulator.run();
+        updateButtonsState();
     }
 
     @FXML
@@ -912,8 +916,8 @@ public class DesignController implements Initializable {
             } else if (!simulator.isRunning()) {
                 btn_run.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Run.png")))));
                 btn_debug.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path + "Debug.png")))));
-                btn_run.setDisable(false);
-                btn_debug.setDisable(false);
+                btn_run.setDisable("EXECUTE".equals(tab_pane_files.getSelectionModel().getSelectedItem().getText()));
+                btn_debug.setDisable("EXECUTE".equals(tab_pane_files.getSelectionModel().getSelectedItem().getText()));
                 btn_break.setDisable(true);
                 btn_pause.setDisable(true);
                 btn_resume.setDisable(true);
