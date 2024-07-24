@@ -211,6 +211,7 @@ public class DesignController implements Initializable {
     private int memoryOffset;
     private int fontSize = 20;
 
+    private Thread simThread;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -444,14 +445,15 @@ public class DesignController implements Initializable {
                 curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
                 updateCodeTable();
                 updateButtonsState();
-                (new Thread(() -> {
+                simThread = new Thread(() -> {
                     try {
                         simulator.startWorkerAndRun();
                     } catch (ExecutionException e) {
                         console_text_box.appendText(e.getMessage() + "\n");
                         consoleUneditableText.append(e.getMessage()).append("\n");
                     }
-                })).start();
+                });
+                simThread.start();
             } else if (!Objects.equals(curTab.getText(), "EXECUTE")) {
                 simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 instructions.addAll(simulator.getProgramInstructions());
@@ -459,14 +461,15 @@ public class DesignController implements Initializable {
                 runningTab = curTab;
                 updateCodeTable();
                 updateButtonsState();
-                (new Thread(() -> {
+                simThread = new Thread(() -> {
                     try {
                         simulator.startWorkerAndRun();
                     } catch (ExecutionException e) {
                         console_text_box.appendText(e.getMessage() + "\n");
                         consoleUneditableText.append(e.getMessage()).append("\n");
                     }
-                })).start();
+                });
+                simThread.start();
             }
         } catch (Exception e) {
             console_text_box.setText(e.getMessage() + "\n");
@@ -475,7 +478,7 @@ public class DesignController implements Initializable {
 
     @FXML
     private void stopRunning() {
-        simulator.stop();
+        stopSimulator();
     }
 
     @FXML
@@ -491,14 +494,15 @@ public class DesignController implements Initializable {
                 curTab.setStyle("-fx-border-color: green; -fx-border-width: 1.5px; -fx-font-size: 17px; -fx-focus-color: transparent; -fx-pref-height: 30px");
                 updateCodeTable();
                 updateButtonsState();
-                (new Thread(() -> {
+                simThread = new Thread(() -> {
                     try {
                         simulator.startWorker();
                     } catch (Exception e) {
                         console_text_box.appendText(e.getMessage() + "\n");
                         consoleUneditableText.append(e.getMessage()).append("\n");
                     }
-                })).start();
+                });
+                simThread.start();
             } else if(!Objects.equals(curTab.getText(), "EXECUTE")){
                 simulator.compile(((TextArea) ((Parent) curTab.getContent()).getChildrenUnmodifiable().get(0)).getText());
                 instructions.addAll(simulator.getProgramInstructions());
@@ -506,14 +510,15 @@ public class DesignController implements Initializable {
                 runningTab = curTab;
                 updateCodeTable();
                 updateButtonsState();
-                (new Thread(() -> {
+                simThread = new Thread(() -> {
                     try {
                         simulator.startWorker();
                     } catch (Exception e) {
                         console_text_box.appendText(e.getMessage() + "\n");
                         consoleUneditableText.append(e.getMessage()).append("\n");
                     }
-                })).start();
+                });
+                simThread.start();
             }
             setDebugControlsVisible(true);
             tab_pane_files.getSelectionModel().select(0);
@@ -543,16 +548,7 @@ public class DesignController implements Initializable {
     @FXML
     private void stepOver() {
         if (simulator.isRunning()) {
-            (new Thread(() -> {
-                try {
-                    if (simulator.isRunning()) {
-                        simulator.runSteps(1);
-                    }
-                } catch (Exception e) {
-                    console_text_box.appendText(e.getMessage() + "\n");
-                    consoleUneditableText.append(e.getMessage()).append("\n");
-                }
-            })).start();
+            simulator.runSteps(1);
         }
     }
 
@@ -911,14 +907,23 @@ public class DesignController implements Initializable {
         codeTableLastIndex = index;
     }
 
+    private void stopSimulator() {
+        if (simulator.isRunning()) {
+            simulator.stop();
+            try {
+                simThread.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     private void preStartActions() {
         consoleUneditableText.setLength(0);
         console_text_box.setText("");
         consoleScanner.update();
         console_text_box.setEditable(true);
-        if (simulator.isRunning()) {
-            simulator.stop();
-        }
+        stopSimulator();
     }
 
     private int bytesToInt(byte[] bytes) {
