@@ -1,8 +1,9 @@
-module com.example.rarsreborn {
+module rarsreborn.desktop {
     requires javafx.controls;
     requires javafx.fxml;
-    requires rars.reborn.core;
-
+    requires javafx.graphics;
+    requires javafx.base;
+    requires rarsreborn.core;
 
     opens rarsreborn to javafx.fxml;
     exports rarsreborn;

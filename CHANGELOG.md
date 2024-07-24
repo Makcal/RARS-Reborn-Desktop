@@ -1,0 +1,192 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0] - 2024-07-24
+
+### Added
+
+- Added working tab pane
+- Added tab pane for files
+- Added names to tab panes
+- Add new pure tabs creation
+- Add tab deletion
+- Add table.css
+- Add execution from Main
+- Add threads for input
+- Add removing symbols via scanner
+- Add enter press in console event
+- Add .jar compiling via Maven
+- Add libs/ to .gitignore
+- Add .mvn/, packing script
+- Add CHANGELOG.md via git-cliff
+- Add Core as a submodule
+- Add historical build script on the Windows VM
+- Add step over and step back buttons
+- Add pause and resume buttons in design
+- Add possibility to set file name
+- Add close file button action
+- Add close all files button action
+- Add exit button action
+- Add initial save file action
+- Add save files as .asm
+- Add save file
+- Add open .asm file
+- Add memory table sample
+- Add update memory table method
+- Add memory table settings sample
+- Add working memory table
+- Add change theme button
+- Add dark theme
+- Add dark theme
+- Add floating point table sample
+- Add floating point table
+- Add dark header for dark theme
+- Add hex values in reg tables
+- Add code table
+- Add file to edit from start
+- Add hot keys
+- Add icons for dark theme
+- Add headers in the table
+- Add highlighting the current file
+- Add highlighting buttons on execute tab while rerun and redebug modes
+- Add font size changeable
+
+### Changed
+
+- Add tab pane with style
+- Change buttons' size
+- Change tabpane's background color
+- Change tab panes order
+- Initial commit
+- New core
+- New core version update
+- Change .gitignore (mvnw)
+- Update CHANGELOG.md
+- Update CHANGELOG.md
+- Update README.md
+- Update README.md
+- Update README.md
+- Final pom.xml
+- Set up building CI/CD
+- Update .gitlab-ci.yml file
+- Update core submodule
+- Use GitLab Maven registry instead of git submodules
+- Step-by-step execution
+- Debug button disable properties
+- New icon sprites
+- Warnings reduce
+- Design refactor
+- Initial open file method
+- Change fonts to Monospaced
+- Run button action
+- Fast file creation
+- Hexadecimal memory
+- Instruction highlighting while executing
+- Fxml elements names
+- Replace left and right buttons with icons
+- Replace left and right buttons with icons
+- Icons change in theme
+- New core version
+- Install Core v1.3.1
+- Install Core v1.3.2
+- Allow rerun on the "execute" tab
+
+### Fixed
+
+- File can compile
+- Close initial file
+- Fix text-areas outlines
+- Update register value in table
+- Output to console
+- Edit and execute tab closure properties
+- Run button disable properties
+- Fix build CI/CD
+- Code edit box scaling
+- Table update when undo event
+- Scanner for integers
+- Initial table content
+- Fix bug with font in console
+- User input
+- Change pause and resume buttons logic
+- Fix bug with execute window and pause and resume buttons
+- File saving
+- No empty lines in tables
+- Change check boxes colors in dark theme
+- Fix bug with open file
+- Console box scaling
+- Console box scaling
+- Input stream
+- Input stream
+- Input stream
+- Input stream
+- Fix tab borders
+- Input stream
+- Resume simulator waiting for input on stop
+- Wait for simulator thread to stop
+- Fix warnings, remove duplicating code
+- Install Core 1.3.5
+
+### Removed
+
+- Remove arrow from menu button
+- Delete table's header
+- Delete lightblue outline
+- Remove warnings
+
+## [MVP-v2] - 2024-07-08
+
+### Changed
+
+- Disable script for assigning reviewers
+
+## [MVP-v1] - 2024-06-28
+
+### Added
+
+- Adding fxml design file
+- Adding design controller and application classes
+- Adding popup menu in design
+- Adding Text editing space
+- Adding id to fxml elements
+- Adding table sample and console output
+- Add register table and output in console
+- Add error output in console
+- Add creating .jar file via maven
+- Add text box for code
+- Add a separate window for execute button
+
+### Changed
+
+- Change src structure
+- Connect core compilation to frontend
+- Final refactoring step
+
+## [MVP-v0] - 2024-06-23
+
+### Added
+
+- Add LICENSE
+- Add technical directory .gitlab
+- Add issue template for user stories
+- Add template for a user story issue with acceptance criteria
+- Add script for random selection of code reviewer
+
+### Changed
+
+- Improve .gitlab-ci.yml reviewer script
+- Change mvnw mode
+
+### Removed
+
+- Remove trash from git
+- Remove trash from git
+
+[1.0]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-interface/compare/MVP-v2...v1.0
+[MVP-v2]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-interface/compare/MVP-v1...MVP-v2
+[MVP-v1]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-interface/compare/MVP-v0...MVP-v1
+
+<!-- generated by git-cliff -->
