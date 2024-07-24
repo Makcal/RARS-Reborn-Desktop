@@ -1,0 +1,7 @@
+.tab {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: red;
+    -fx-border-color: blue;
+    -fx-font-size: 17px;
+}
